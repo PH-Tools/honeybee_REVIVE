@@ -4,21 +4,32 @@
 """Honeybee-Energy-REVIVE properties for Honeybee-Energy OpaqueConstruction Objects"""
 
 try:
-    from typing import TYPE_CHECKING
+    from typing import TYPE_CHECKING, Union
 except ImportError:
     TYPE_CHECKING = False
     pass  # Python 2.7
 
 try:
-    if TYPE_CHECKING:
-        from honeybee_energy.construction.opaque import OpaqueConstruction
-except ImportError as e:
-    raise ImportError("\nFailed to import honeybee_energy:\n\t{}".format(e))
-
-try:
-    from honeybee_energy_revive.properties.materials.opaque import EnergyMaterialReviveProperties
+    from honeybee_energy_revive.properties.materials.opaque import (
+        EnergyMaterialReviveProperties,
+        EnergyMaterialNoMassReviveProperties,
+        EnergyMaterialVegetationReviveProperties,
+    )
 except ImportError as e:
     raise ImportError("\nFailed to import honeybee_energy_revive:\n\t{}".format(e))
+
+try:
+    if TYPE_CHECKING:
+        from honeybee_energy.construction.opaque import OpaqueConstruction
+
+        # -- Type Alias
+        energy_material = Union[
+            EnergyMaterialReviveProperties,
+            EnergyMaterialNoMassReviveProperties,
+            EnergyMaterialVegetationReviveProperties,
+        ]
+except ImportError as e:
+    raise ImportError("\nFailed to import honeybee_energy:\n\t{}".format(e))
 
 try:
     from ph_units.unit_type import Unit
@@ -60,7 +71,7 @@ class OpaqueConstructionReviveProperties(object):
 
         total = 0.0
         for mat in self.host.materials:
-            mat_prop = getattr(mat.properties, "revive")  # type: EnergyMaterialReviveProperties
+            mat_prop = getattr(mat.properties, "revive")  # type: energy_material
             total += mat_prop.kg_CO2_per_m2.value
         return Unit(total, "KG/M2")
 

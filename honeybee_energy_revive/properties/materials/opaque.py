@@ -136,6 +136,8 @@ class EnergyMaterialNoMassReviveProperties(object):
         # type: (EnergyMaterialNoMass | None) -> None
         self._host = _host
         self.id_num = 0
+        self.kg_CO2_per_m2 = Unit(0.0, "KG/M2")
+        self.cost_per_m2 = Unit(0.0, "COST/M2")
 
     @property
     def host(self):
@@ -167,6 +169,8 @@ class EnergyMaterialNoMassReviveProperties(object):
         host = new_host or self.host
         new_obj = self.__class__(host)
         new_obj.id_num = self.id_num
+        new_obj.kg_CO2_per_m2 = Unit(self.kg_CO2_per_m2.value, self.kg_CO2_per_m2.unit)
+        new_obj.cost_per_m2 = Unit(self.cost_per_m2.value, self.cost_per_m2.unit)
         return new_obj
 
     def to_dict(self, abridged=False):
@@ -187,6 +191,8 @@ class EnergyMaterialNoMassReviveProperties(object):
             d["type"] = "EnergyMaterialNoMassRevivePropertiesAbridged"
         else:
             d["type"] = "EnergyMaterialNoMassReviveProperties"
+        d["kg_CO2_per_m2"] = self.kg_CO2_per_m2.to_dict()
+        d["cost_per_m2"] = self.cost_per_m2.to_dict()
         return {"revive": d}
 
     @classmethod
@@ -212,6 +218,8 @@ class EnergyMaterialNoMassReviveProperties(object):
             raise EnergyMaterialReviveProperties_FromDictError(valid_types, _input_dict["type"])
         new_obj = cls(host)
         new_obj.id_num = _input_dict["id_num"]
+        new_obj.kg_CO2_per_m2 = Unit.from_dict(_input_dict["kg_CO2_per_m2"])
+        new_obj.cost_per_m2 = Unit.from_dict(_input_dict["cost_per_m2"])
         return new_obj
 
     def __str__(self):
@@ -231,6 +239,8 @@ class EnergyMaterialVegetationReviveProperties(object):
         # type: (EnergyMaterialVegetation | None) -> None
         self._host = _host
         self.id_num = 0
+        self.kg_CO2_per_m2 = Unit(0.0, "KG/M2")
+        self.cost_per_m2 = Unit(0.0, "COST/M2")
 
     @property
     def host(self):
@@ -262,6 +272,8 @@ class EnergyMaterialVegetationReviveProperties(object):
         host = new_host or self.host
         new_obj = self.__class__(host)
         new_obj.id_num = self.id_num
+        new_obj.kg_CO2_per_m2 = Unit(self.kg_CO2_per_m2.value, self.kg_CO2_per_m2.unit)
+        new_obj.cost_per_m2 = Unit(self.cost_per_m2.value, self.cost_per_m2.unit)
         return new_obj
 
     def to_dict(self, abridged=False):
@@ -282,6 +294,8 @@ class EnergyMaterialVegetationReviveProperties(object):
             d["type"] = "EnergyMaterialVegetationRevivePropertiesAbridged"
         else:
             d["type"] = "EnergyMaterialVegetationReviveProperties"
+        d["kg_CO2_per_m2"] = self.kg_CO2_per_m2.to_dict()
+        d["cost_per_m2"] = self.cost_per_m2.to_dict()
         return {"revive": d}
 
     @classmethod
@@ -307,6 +321,8 @@ class EnergyMaterialVegetationReviveProperties(object):
             raise EnergyMaterialReviveProperties_FromDictError(valid_types, _input_dict["type"])
         new_obj = cls(host)
         new_obj.id_num = _input_dict["id_num"]
+        new_obj.kg_CO2_per_m2 = Unit.from_dict(_input_dict["kg_CO2_per_m2"])
+        new_obj.cost_per_m2 = Unit.from_dict(_input_dict["cost_per_m2"])
         return new_obj
 
     def __str__(self):
