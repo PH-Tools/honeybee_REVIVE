@@ -15,6 +15,8 @@ try:
 except ImportError as e:
     raise ImportError("Failed to import honeybee_energy_ph: {}".format(e))
 
+from ph_units.unit_type import Unit
+
 
 class EnergyMaterialReviveProperties_FromDictError(Exception):
     def __init__(self, _expected_types, _input_type):
@@ -29,6 +31,8 @@ class EnergyMaterialReviveProperties(object):
         # type: (EnergyMaterial | None) -> None
         self._host = _host
         self.id_num = 0
+        self.kg_CO2_per_m2 = Unit(0.0, "KG/M2")
+        self.cost_per_m2 = Unit(0.0, "COST/M2")
 
     @property
     def host(self):
@@ -60,6 +64,8 @@ class EnergyMaterialReviveProperties(object):
         host = new_host or self.host
         new_obj = self.__class__(host)
         new_obj.id_num = self.id_num
+        new_obj.kg_CO2_per_m2 = Unit(self.kg_CO2_per_m2.value, self.kg_CO2_per_m2.unit)
+        new_obj.cost_per_m2 = Unit(self.cost_per_m2.value, self.cost_per_m2.unit)
         return new_obj
 
     def to_dict(self, abridged=False):
@@ -80,6 +86,10 @@ class EnergyMaterialReviveProperties(object):
             d["type"] = "EnergyMaterialRevivePropertiesAbridged"
         else:
             d["type"] = "EnergyMaterialReviveProperties"
+
+        d["id_num"] = self.id_num
+        d["kg_CO2_per_m2"] = self.kg_CO2_per_m2.to_dict()
+        d["cost_per_m2"] = self.cost_per_m2.to_dict()
         return {"revive": d}
 
     @classmethod
@@ -105,6 +115,8 @@ class EnergyMaterialReviveProperties(object):
             raise EnergyMaterialReviveProperties_FromDictError(valid_types, _input_dict["type"])
         new_obj = cls(host)
         new_obj.id_num = _input_dict["id_num"]
+        new_obj.kg_CO2_per_m2 = Unit.from_dict(_input_dict["kg_CO2_per_m2"])
+        new_obj.cost_per_m2 = Unit.from_dict(_input_dict["cost_per_m2"])
         return new_obj
 
     def __str__(self):

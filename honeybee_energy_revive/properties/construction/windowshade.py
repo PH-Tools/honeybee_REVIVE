@@ -25,7 +25,7 @@ class ShadeConstructionReviveProperties_FromDictError(Exception):
 class ShadeConstructionReviveProperties(object):
     """Honeybee-REVIVE Properties for storing REVIVE data."""
 
-    def __init__(self, _host):
+    def __init__(self, _host=None):
         # type: (ShadeConstruction | None) -> None
         self._host = _host
         self.id_num = 0
@@ -42,6 +42,17 @@ class ShadeConstructionReviveProperties(object):
 
     def duplicate(self, new_host=None):
         # type: (ShadeConstruction | None) -> ShadeConstructionReviveProperties
+        """Duplicate this object with a new host.
+
+        Arguments:
+        ----------
+            * new_host (ShadeConstruction | None): The new host for the duplicated object.
+
+        Returns:
+        --------
+            * (ShadeConstructionReviveProperties): The duplicated object.
+        """
+
         return self.__copy__(new_host)
 
     def __copy__(self, new_host=None):
@@ -53,6 +64,17 @@ class ShadeConstructionReviveProperties(object):
 
     def to_dict(self, abridged=False):
         # type: (bool) -> dict
+        """Return a dictionary representation of the object.
+
+        Arguments:
+        ----------
+            * abridged (bool): Default=False. Set to True to return an abridged version of the object.
+
+        Returns:
+        --------
+            * (dict): A dictionary representation of the object.
+        """
+
         d = {}
         if abridged:
             d["type"] = "ShadeConstructionRevivePropertiesAbridged"
@@ -63,6 +85,18 @@ class ShadeConstructionReviveProperties(object):
     @classmethod
     def from_dict(cls, _input_dict, host):
         # type: (dict, ShadeConstruction | None) -> ShadeConstructionReviveProperties
+        """Create an object from a dictionary.
+
+        Arguments:
+        ----------
+            * _input_dict (dict): The dictionary to create the object from.
+            * host (ShadeConstruction | None): The host for the new object.
+
+        Returns:
+        --------
+            * (ShadeConstructionReviveProperties): The new object.
+        """
+
         valid_types = (
             "ShadeConstructionReviveProperties",
             "ShadeConstructionRevivePropertiesAbridged",

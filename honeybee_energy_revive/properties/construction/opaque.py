@@ -15,6 +15,16 @@ try:
 except ImportError as e:
     raise ImportError("\nFailed to import honeybee_energy:\n\t{}".format(e))
 
+try:
+    from honeybee_energy_revive.properties.materials.opaque import EnergyMaterialReviveProperties
+except ImportError as e:
+    raise ImportError("\nFailed to import honeybee_energy_revive:\n\t{}".format(e))
+
+try:
+    from ph_units.unit_type import Unit
+except ImportError as e:
+    raise ImportError("\nFailed to import ph_units:\n\t{}".format(e))
+
 
 class OpaqueConstructionReviveProperties_FromDictError(Exception):
     def __init__(self, _expected_types, _input_type):
@@ -39,6 +49,34 @@ class OpaqueConstructionReviveProperties(object):
     def host_name(self):
         # type: () -> str
         return self.host.display_name if self.host else "No Host"
+
+    @property
+    def kg_CO2_per_m2(self):
+        # type: () -> Unit
+        """Return the total kg-of-CO2-per-m2 of all the materials in the construction."""
+
+        if not self.host:
+            return Unit(0.0, "KG/M2")
+
+        total = 0.0
+        for mat in self.host.materials:
+            mat_prop = getattr(mat.properties, "revive")  # type: EnergyMaterialReviveProperties
+            total += mat_prop.kg_CO2_per_m2.value
+        return Unit(total, "KG/M2")
+
+    @property
+    def cost_per_m2(self):
+        # type: () -> Unit
+        """Return the total cost-per-m2 of all the materials in the construction."""
+
+        if not self.host:
+            return Unit(0.0, "COST/M2")
+
+        total = 0.0
+        for mat in self.host.materials:
+            mat_prop = getattr(mat.properties, "revive")
+            total += mat_prop.cost_per_m2.value
+        return Unit(total, "COST/M2")
 
     def duplicate(self, new_host=None):
         # type: (OpaqueConstruction | None) -> OpaqueConstructionReviveProperties

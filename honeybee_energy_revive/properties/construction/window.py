@@ -25,7 +25,7 @@ class WindowConstructionReviveProperties_FromDictError(Exception):
 class WindowConstructionReviveProperties(object):
     """Honeybee-REVIVE Properties for storing REVIVE data."""
 
-    def __init__(self, _host):
+    def __init__(self, _host=None):
         # type: (WindowConstruction | None) -> None
         self._host = _host
         self.id_num = 0
@@ -42,6 +42,17 @@ class WindowConstructionReviveProperties(object):
 
     def duplicate(self, new_host=None):
         # type: (WindowConstruction | None) -> WindowConstructionReviveProperties
+        """Duplicate this object with a new host.
+
+        Arguments:
+        ----------
+            * new_host (WindowConstruction | None): The new host for the duplicated object.
+
+        Returns:
+        --------
+            * (WindowConstructionReviveProperties): The duplicated object.
+        """
+
         return self.__copy__(new_host)
 
     def __copy__(self, new_host=None):
@@ -53,6 +64,17 @@ class WindowConstructionReviveProperties(object):
 
     def to_dict(self, abridged=False):
         # type: (bool) -> dict
+        """Return a dictionary representation of the object.
+
+        Arguments:
+        ----------
+            * abridged (bool): Default=False. Set to True to return an abridged version of the object.
+
+        Returns:
+        --------
+            * (dict): A dictionary representation of the object.
+        """
+
         d = {}
         if abridged:
             d["type"] = "WindowConstructionRevivePropertiesAbridged"
@@ -63,6 +85,18 @@ class WindowConstructionReviveProperties(object):
     @classmethod
     def from_dict(cls, _input_dict, host):
         # type: (dict, WindowConstruction | None) -> WindowConstructionReviveProperties
+        """Create an object from a dictionary.
+
+        Arguments:
+        ----------
+            * _input_dict (dict): The dictionary to create the object from.
+            * host (WindowConstruction | None): The host for the new object.
+
+        Returns:
+        --------
+            * (WindowConstructionReviveProperties): The new object.
+        """
+
         valid_types = (
             "WindowConstructionReviveProperties",
             "WindowConstructionRevivePropertiesAbridged",
