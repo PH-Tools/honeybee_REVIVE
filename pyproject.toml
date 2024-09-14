@@ -23,7 +23,7 @@ changelog = "https://example.com/changelog"
 
 [tool.coverage.run]
 command_line = "-m pytest tests"
-source = ["ph_adorb"]
+source = ["ph_revive"]
 branch = true
 cover_pylib = false
 omit = ["*/__init__.py", "*.venv/*", "*.venv_mbair/*"]
