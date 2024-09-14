@@ -33,6 +33,8 @@ class EnergyMaterialReviveProperties(object):
         self.id_num = 0
         self.kg_CO2_per_m2 = Unit(0.0, "KG/M2")
         self.cost_per_m2 = Unit(0.0, "COST/M2")
+        self.labor_fraction = 0.4
+        self.lifetime_years = 25
 
     @property
     def host(self):
@@ -66,6 +68,8 @@ class EnergyMaterialReviveProperties(object):
         new_obj.id_num = self.id_num
         new_obj.kg_CO2_per_m2 = Unit(self.kg_CO2_per_m2.value, self.kg_CO2_per_m2.unit)
         new_obj.cost_per_m2 = Unit(self.cost_per_m2.value, self.cost_per_m2.unit)
+        new_obj.labor_fraction = self.labor_fraction
+        new_obj.lifetime_years = self.lifetime_years
         return new_obj
 
     def to_dict(self, abridged=False):
@@ -90,6 +94,8 @@ class EnergyMaterialReviveProperties(object):
         d["id_num"] = self.id_num
         d["kg_CO2_per_m2"] = self.kg_CO2_per_m2.to_dict()
         d["cost_per_m2"] = self.cost_per_m2.to_dict()
+        d["labor_fraction"] = self.labor_fraction
+        d["lifetime_years"] = self.lifetime_years
         return {"revive": d}
 
     @classmethod
@@ -117,6 +123,8 @@ class EnergyMaterialReviveProperties(object):
         new_obj.id_num = _input_dict["id_num"]
         new_obj.kg_CO2_per_m2 = Unit.from_dict(_input_dict["kg_CO2_per_m2"])
         new_obj.cost_per_m2 = Unit.from_dict(_input_dict["cost_per_m2"])
+        new_obj.labor_fraction = _input_dict["labor_fraction"]
+        new_obj.lifetime_years = _input_dict["lifetime_years"]
         return new_obj
 
     def __str__(self):
