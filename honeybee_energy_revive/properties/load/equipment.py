@@ -80,6 +80,7 @@ class ElectricEquipmentReviveProperties(object):
             d["type"] = "ElectricEquipmentRevivePropertiesAbridged"
         else:
             d["type"] = "ElectricEquipmentReviveProperties"
+        d["id_num"] = self.id_num
         return {"revive": d}
 
     @classmethod

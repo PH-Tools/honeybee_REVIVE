@@ -80,6 +80,7 @@ class LightingReviveProperties(object):
             d["type"] = "LightingRevivePropertiesAbridged"
         else:
             d["type"] = "LightingReviveProperties"
+        d["id_num"] = self.id_num
         return {"revive": d}
 
     @classmethod

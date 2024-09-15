@@ -80,6 +80,7 @@ class ShadeConstructionReviveProperties(object):
             d["type"] = "ShadeConstructionRevivePropertiesAbridged"
         else:
             d["type"] = "ShadeConstructionReviveProperties"
+        d["id_num"] = self.id_num
         return {"revive": d}
 
     @classmethod

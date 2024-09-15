@@ -80,6 +80,7 @@ class ServiceHotWaterReviveProperties(object):
             d["type"] = "ServiceHotWaterRevivePropertiesAbridged"
         else:
             d["type"] = "ServiceHotWaterReviveProperties"
+        d["id_num"] = self.id_num
         return {"revive": d}
 
     @classmethod

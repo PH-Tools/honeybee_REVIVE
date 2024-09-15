@@ -80,6 +80,7 @@ class WindowConstructionReviveProperties(object):
             d["type"] = "WindowConstructionRevivePropertiesAbridged"
         else:
             d["type"] = "WindowConstructionReviveProperties"
+        d["id_num"] = self.id_num
         return {"revive": d}
 
     @classmethod

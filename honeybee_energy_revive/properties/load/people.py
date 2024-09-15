@@ -80,6 +80,7 @@ class PeopleReviveProperties(object):
             d["type"] = "PeopleRevivePropertiesAbridged"
         else:
             d["type"] = "PeopleReviveProperties"
+        d["id_num"] = self.id_num
         return {"revive": d}
 
     @classmethod

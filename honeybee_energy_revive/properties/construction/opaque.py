@@ -129,6 +129,7 @@ class OpaqueConstructionReviveProperties(object):
             d["type"] = "OpaqueConstructionRevivePropertiesAbridged"
         else:
             d["type"] = "OpaqueConstructionReviveProperties"
+        d["id_num"] = self.id_num
         return {"revive": d}
 
     @classmethod

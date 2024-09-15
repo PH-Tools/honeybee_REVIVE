@@ -80,6 +80,7 @@ class ScheduleRulesetReviveProperties(object):
             d["type"] = "ScheduleRulesetRevivePropertiesAbridged"
         else:
             d["type"] = "ScheduleRulesetReviveProperties"
+        d["id_num"] = self.id_num
         return {"revive": d}
 
     @classmethod
