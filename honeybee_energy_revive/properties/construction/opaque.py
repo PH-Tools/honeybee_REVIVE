@@ -11,8 +11,8 @@ except ImportError:
 
 try:
     from honeybee_energy_revive.properties.materials.opaque import (
-        EnergyMaterialReviveProperties,
         EnergyMaterialNoMassReviveProperties,
+        EnergyMaterialReviveProperties,
         EnergyMaterialVegetationReviveProperties,
     )
 except ImportError as e:

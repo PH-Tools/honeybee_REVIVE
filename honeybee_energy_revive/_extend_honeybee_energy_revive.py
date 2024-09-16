@@ -26,9 +26,6 @@ from honeybee_energy.properties.extension import (
 )
 from honeybee_energy.schedule.ruleset import ScheduleRulesetProperties
 
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
-
 from honeybee_energy_revive.properties.construction.opaque import OpaqueConstructionReviveProperties
 from honeybee_energy_revive.properties.construction.window import WindowConstructionReviveProperties
 from honeybee_energy_revive.properties.construction.windowshade import ShadeConstructionReviveProperties
@@ -42,6 +39,10 @@ from honeybee_energy_revive.properties.materials.opaque import (
     EnergyMaterialVegetationReviveProperties,
 )
 from honeybee_energy_revive.properties.ruleset import ScheduleRulesetReviveProperties
+
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+
 
 # -----------------------------------------------------------------------------
 # -- Now import the relevant HB-PH classes
