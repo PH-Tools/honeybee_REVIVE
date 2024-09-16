@@ -28,6 +28,7 @@ except ImportError as e:
 try:
     from honeybee_revive.grid_region import GridRegion
     from honeybee_revive.national_emissions import NationalEmissionsFactors
+    from honeybee_revive.CO2_measures import CO2ReductionMeasureCollection
 
     if TYPE_CHECKING:
         from honeybee_revive.properties.aperture import ApertureReviveProperties
@@ -46,6 +47,7 @@ class ModelReviveProperties(object):
         self.national_emissions_factors = NationalEmissionsFactors()
         self.analysis_duration = 50
         self.envelope_labor_cost_fraction = 0.4
+        self.co2_measures = CO2ReductionMeasureCollection()
 
     @property
     def host(self):
@@ -85,6 +87,7 @@ class ModelReviveProperties(object):
         new_properties_obj.national_emissions_factors = self.national_emissions_factors.duplicate()
         new_properties_obj.analysis_duration = self.analysis_duration
         new_properties_obj.envelope_labor_cost_fraction = self.envelope_labor_cost_fraction
+        new_properties_obj.co2_measures = self.co2_measures.duplicate()
 
         return new_properties_obj
 
@@ -127,6 +130,7 @@ class ModelReviveProperties(object):
         d["national_emissions_factors"] = self.national_emissions_factors.to_dict()
         d["analysis_duration"] = self.analysis_duration
         d["envelope_labor_cost_fraction"] = self.envelope_labor_cost_fraction
+        d["co2_measures"] = self.co2_measures.to_dict()
 
         return {"revive": d}
 
@@ -154,12 +158,13 @@ class ModelReviveProperties(object):
         new_prop.national_emissions_factors = NationalEmissionsFactors.from_dict(_dict["national_emissions_factors"])
         new_prop.analysis_duration = _dict["analysis_duration"]
         new_prop.envelope_labor_cost_fraction = _dict["envelope_labor_cost_fraction"]
+        new_prop.co2_measures = CO2ReductionMeasureCollection.from_dict(_dict["co2_measures"])
 
         return new_prop
 
     @staticmethod
     def load_properties_from_dict(data):
-        # type: (dict[str, dict]) -> tuple[GridRegion, NationalEmissionsFactors, int, float]
+        # type: (dict[str, dict]) -> tuple[GridRegion, NationalEmissionsFactors, int, float, CO2ReductionMeasureCollection]
         """Load the HB-Model .revive properties from an HB-Model dictionary as Python objects.
 
         The function is called when re-serializing an HB-Model object from a
@@ -182,8 +187,15 @@ class ModelReviveProperties(object):
         )
         analysis_duration = data["properties"]["revive"]["analysis_duration"]
         envelope_labor_cost_fraction = data["properties"]["revive"]["envelope_labor_cost_fraction"]
+        measures_collection = CO2ReductionMeasureCollection.from_dict(data["properties"]["revive"]["co2_measures"])
 
-        return (grid_region, national_emissions_factors, analysis_duration, envelope_labor_cost_fraction)
+        return (
+            grid_region,
+            national_emissions_factors,
+            analysis_duration,
+            envelope_labor_cost_fraction,
+            measures_collection,
+        )
 
     def apply_properties_from_dict(self, data):
         # type: (dict) -> None
@@ -217,9 +229,13 @@ class ModelReviveProperties(object):
         ) = extensionutil.model_extension_dicts(data, "revive", [], [], [], [], [])
 
         # re-build all of the .revive property objects from the HB-Model dict as python objects
-        self.grid_region, self.national_emissions_factors, self.analysis_duration, self.envelope_labor_cost_fraction = (
-            self.load_properties_from_dict(data)
-        )
+        (
+            self.grid_region,
+            self.national_emissions_factors,
+            self.analysis_duration,
+            self.envelope_labor_cost_fraction,
+            self.co2_measures,
+        ) = self.load_properties_from_dict(data)
 
         # apply the .revive properties to all the sub-model objects in the HB-Model
         for room, room_dict in zip(self.host_rooms, room_revive_dicts):
