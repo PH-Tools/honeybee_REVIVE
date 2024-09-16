@@ -26,6 +26,8 @@ except ImportError as e:
     raise ImportError("\nFailed to import honeybee:\n\t{}".format(e))
 
 try:
+    from honeybee_revive.grid_region import GridRegion
+
     if TYPE_CHECKING:
         from honeybee_revive.properties.aperture import ApertureReviveProperties
         from honeybee_revive.properties.face import FaceReviveProperties
@@ -39,6 +41,7 @@ class ModelReviveProperties(object):
         # type: (Model | None) -> None
         self._host = _host
         self.id_num = 0
+        self.grid_region = GridRegion()
 
     @property
     def host(self):
@@ -74,6 +77,7 @@ class ModelReviveProperties(object):
         _host = new_host or self._host
         new_properties_obj = ModelReviveProperties(_host)
         new_properties_obj.id_num = self.id_num
+        new_properties_obj.grid_region = self.grid_region.duplicate()
 
         return new_properties_obj
 
@@ -108,10 +112,11 @@ class ModelReviveProperties(object):
 
         if abridged == False:
             d["type"] = "ModelRevivePropertiesAbridged"
-            d["id_num"] = self.id_num
         else:
             d["type"] = "ModelReviveProperties"
-            d["id_num"] = self.id_num
+
+        d["id_num"] = self.id_num
+        d["grid_region"] = self.grid_region.to_dict()
 
         return {"revive": d}
 
@@ -134,13 +139,14 @@ class ModelReviveProperties(object):
         assert _dict["type"] == "ModelReviveProperties", "Expected ModelReviveProperties. Got {}.".format(_dict["type"])
 
         new_prop = cls(host)
-        new_prop.id_num = _dict.get("id_num", 0)
+        new_prop.id_num = _dict["id_num"]
+        new_prop.grid_region = GridRegion.from_dict(_dict["grid_region"])
 
         return new_prop
 
     @staticmethod
     def load_properties_from_dict(data):
-        # type: (dict[str, dict]) -> None
+        # type: (dict[str, dict]) -> tuple[GridRegion, None]
         """Load the HB-Model .revive properties from an HB-Model dictionary as Python objects.
 
         The function is called when re-serializing an HB-Model object from a
@@ -157,7 +163,9 @@ class ModelReviveProperties(object):
         """
         assert "revive" in data["properties"], "HB-Model Dictionary possesses no ModelReviveProperties?"
 
-        return None
+        grid_region = GridRegion.from_dict(data["properties"]["revive"]["grid_region"])
+
+        return (grid_region, None)
 
     def apply_properties_from_dict(self, data):
         # type: (dict) -> None
@@ -191,7 +199,7 @@ class ModelReviveProperties(object):
         ) = extensionutil.model_extension_dicts(data, "revive", [], [], [], [], [])
 
         # re-build all of the .revive property objects from the HB-Model dict as python objects
-        _ = self.load_properties_from_dict(data)
+        self.grid_region, _ = self.load_properties_from_dict(data)
 
         # apply the .revive properties to all the sub-model objects in the HB-Model
         for room, room_dict in zip(self.host_rooms, room_revive_dicts):
