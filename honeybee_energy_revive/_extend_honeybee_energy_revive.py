@@ -9,7 +9,7 @@
 ## ALL HONEYBEE-CORE / HONEYBEE-ENERGY CLASSES MUST BE IMPORTED **FIRST** BEFORE ANY OF THE
 ## HONEYBEE-REVIVE EXTENSIONS CAN BE LOADED. SEE ISSUE HERE:
 ## https://discourse.pollination.cloud/t/honeybee-ph-causing-error/
-
+#
 
 import honeybee_energy
 from honeybee_energy.properties.extension import (
@@ -17,6 +17,8 @@ from honeybee_energy.properties.extension import (
     EnergyMaterialNoMassProperties,
     EnergyMaterialProperties,
     EnergyMaterialVegetationProperties,
+    EnergyWindowMaterialGlazingsProperties,
+    EnergyWindowMaterialSimpleGlazSysProperties,
     LightingProperties,
     OpaqueConstructionProperties,
     PeopleProperties,
@@ -25,6 +27,14 @@ from honeybee_energy.properties.extension import (
     WindowConstructionShadeProperties,
 )
 from honeybee_energy.schedule.ruleset import ScheduleRulesetProperties
+
+
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+
+
+# -----------------------------------------------------------------------------
+# -- Now that Honeybee-Energy is imported, import the relevant HB-REVIVE classes
 
 from honeybee_energy_revive.properties.construction.opaque import OpaqueConstructionReviveProperties
 from honeybee_energy_revive.properties.construction.window import WindowConstructionReviveProperties
@@ -38,15 +48,11 @@ from honeybee_energy_revive.properties.materials.opaque import (
     EnergyMaterialReviveProperties,
     EnergyMaterialVegetationReviveProperties,
 )
+from honeybee_energy_revive.properties.materials.glazing import (
+    EnergyWindowMaterialGlazingReviveProperties,
+    EnergyWindowMaterialSimpleGlazSysReviveProperties,
+)
 from honeybee_energy_revive.properties.ruleset import ScheduleRulesetReviveProperties
-
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
-
-
-# -----------------------------------------------------------------------------
-# -- Now import the relevant HB-PH classes
-
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
@@ -59,6 +65,8 @@ setattr(OpaqueConstructionProperties, "_revive", None)
 setattr(EnergyMaterialProperties, "_revive", None)
 setattr(EnergyMaterialNoMassProperties, "_revive", None)
 setattr(EnergyMaterialVegetationProperties, "_revive", None)
+setattr(EnergyWindowMaterialGlazingsProperties, "_revive", None)
+setattr(EnergyWindowMaterialSimpleGlazSysProperties, "_revive", None)
 setattr(WindowConstructionProperties, "_revive", None)
 setattr(WindowConstructionShadeProperties, "_revive", None)
 setattr(ServiceHotWaterProperties, "_revive", None)
@@ -100,6 +108,18 @@ def energy_material_no_mass_revive_properties(self):
 def energy_material_vegetation_revive_properties(self):
     if self._revive is None:
         self._revive = EnergyMaterialVegetationReviveProperties(self.host)
+    return self._revive
+
+
+def energy_material_window_glazing_revive_properties(self):
+    if self._revive is None:
+        self._revive = EnergyWindowMaterialGlazingReviveProperties(self.host)
+    return self._revive
+
+
+def energy_material_window_simple_glazing_system_revive_properties(self):
+    if self._revive is None:
+        self._revive = EnergyWindowMaterialSimpleGlazSysReviveProperties(self.host)
     return self._revive
 
 
@@ -157,6 +177,12 @@ setattr(
     EnergyMaterialVegetationProperties,
     "revive",
     property(energy_material_vegetation_revive_properties),
+)
+setattr(EnergyWindowMaterialGlazingsProperties, "revive", property(energy_material_window_glazing_revive_properties))
+setattr(
+    EnergyWindowMaterialSimpleGlazSysProperties,
+    "revive",
+    property(energy_material_window_simple_glazing_system_revive_properties),
 )
 setattr(ServiceHotWaterProperties, "revive", property(hot_water_program_revive_properties))
 setattr(ElectricEquipmentProperties, "revive", property(elec_equip_revive_properties))

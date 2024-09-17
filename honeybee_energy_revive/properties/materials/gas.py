@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -*- Python Version: 2.7 -*-
 
-"""Honeybee-Energy-REVIVE Properties Extension for Honeybee-Energy Opaque material-layer classes."""
+"""Honeybee-Energy-REVIVE Properties Extension for Honeybee-Energy Glazing Gas-Layer classes."""
 
 try:
     from typing import TYPE_CHECKING
@@ -11,27 +11,32 @@ except ImportError:
 
 try:
     if TYPE_CHECKING:
-        from honeybee_energy.material.opaque import EnergyMaterial, EnergyMaterialNoMass, EnergyMaterialVegetation
+        from honeybee_energy.material.gas import (
+            EnergyWindowMaterialGas,
+            EnergyWindowMaterialGasMixture,
+            EnergyWindowMaterialGasCustom,
+        )
 except ImportError as e:
     raise ImportError("Failed to import honeybee_energy_ph: {}".format(e))
 
 try:
     from ph_units.unit_type import Unit
+
 except ImportError as e:
     raise ImportError("Failed to import ph_units: {}".format(e))
 
 
-class EnergyMaterialReviveProperties_FromDictError(Exception):
+class EnergyWindowMaterialGasReviveProperties_FromDictError(Exception):
     def __init__(self, _expected_types, _input_type):
         self.msg = 'Error: Expected type of "{}". Got: {}'.format(_expected_types, _input_type)
-        super(EnergyMaterialReviveProperties_FromDictError, self).__init__(self.msg)
+        super(EnergyWindowMaterialGasReviveProperties_FromDictError, self).__init__(self.msg)
 
 
-class EnergyMaterialReviveProperties(object):
+class EnergyWindowMaterialGasReviveProperties(object):
     """Honeybee-REVIVE Properties for storing REVIVE data."""
 
     def __init__(self, _host=None):
-        # type: (EnergyMaterial | None) -> None
+        # type: (EnergyWindowMaterialGas | None) -> None
         self._host = _host
         self.id_num = 0
         self.kg_CO2_per_m2 = Unit(0.0, "KG/M2")
@@ -41,7 +46,7 @@ class EnergyMaterialReviveProperties(object):
 
     @property
     def host(self):
-        # type: () -> EnergyMaterial | None
+        # type: () -> EnergyWindowMaterialGas | None
         return self._host
 
     @property
@@ -49,23 +54,23 @@ class EnergyMaterialReviveProperties(object):
         # type: () -> str
         return self.host.display_name if self.host else "No Host"
 
-    def duplicate(self, new_host=None):
-        # type: (EnergyMaterial | None) -> EnergyMaterialReviveProperties
+    def duplicate(self, _host=None):
+        # type: (EnergyWindowMaterialGas | None) -> EnergyWindowMaterialGasReviveProperties
         """Duplicate this object with a new host.
 
         Arguments:
         ----------
-            * new_host (EnergyMaterial | None): The new host for the duplicated object.
+            * new_host (EnergyWindowMaterialGas | None): The new host for the duplicated object.
 
         Returns:
         --------
-            * (EnergyMaterialReviveProperties): The duplicated object.
+            * (EnergyWindowMaterialGasReviveProperties): The duplicated object.
         """
 
-        return self.__copy__(new_host)
+        return self.__copy__(_host)
 
     def __copy__(self, _host=None):
-        # type: (EnergyMaterial | None) -> EnergyMaterialReviveProperties
+        # type: (EnergyWindowMaterialGas | None) -> EnergyWindowMaterialGasReviveProperties
         host = _host or self.host
         new_obj = self.__class__(host)
         new_obj.id_num = self.id_num
@@ -90,9 +95,9 @@ class EnergyMaterialReviveProperties(object):
 
         d = {}
         if abridged:
-            d["type"] = "EnergyMaterialRevivePropertiesAbridged"
+            d["type"] = "EnergyWindowMaterialGasRevivePropertiesAbridged"
         else:
-            d["type"] = "EnergyMaterialReviveProperties"
+            d["type"] = "EnergyWindowMaterialGasReviveProperties"
 
         d["id_num"] = self.id_num
         d["kg_CO2_per_m2"] = self.kg_CO2_per_m2.to_dict()
@@ -103,25 +108,25 @@ class EnergyMaterialReviveProperties(object):
 
     @classmethod
     def from_dict(cls, _input_dict, _host):
-        # type: (dict, EnergyMaterial | None) -> EnergyMaterialReviveProperties
+        # type: (dict, EnergyWindowMaterialGas | None) -> EnergyWindowMaterialGasReviveProperties
         """Create an object from a dictionary.
 
         Arguments:
         ----------
             * _input_dict (dict): The dictionary to create the object from.
-            * host (EnergyMaterial | None): The host for the new object.
+            * host (EnergyWindowMaterialGas | None): The host for the new object.
 
         Returns:
         --------
-            * (EnergyMaterialReviveProperties): The new object.
+            * (EnergyWindowMaterialGasReviveProperties): The new object.
         """
 
         valid_types = (
-            "EnergyMaterialReviveProperties",
-            "EnergyMaterialRevivePropertiesAbridged",
+            "EnergyWindowMaterialGasReviveProperties",
+            "EnergyWindowMaterialGasRevivePropertiesAbridged",
         )
         if _input_dict["type"] not in valid_types:
-            raise EnergyMaterialReviveProperties_FromDictError(valid_types, _input_dict["type"])
+            raise EnergyWindowMaterialGasReviveProperties_FromDictError(valid_types, _input_dict["type"])
         new_obj = cls(_host)
         new_obj.id_num = _input_dict["id_num"]
         new_obj.kg_CO2_per_m2 = Unit.from_dict(_input_dict["kg_CO2_per_m2"])
@@ -134,17 +139,17 @@ class EnergyMaterialReviveProperties(object):
         return self.__repr__()
 
     def __repr__(self):
-        return "HBE-EnergyMaterial Phius REVIVE Property: [host: {}]".format(self.host_name)
+        return "HBE-EnergyWindowMaterialGas Phius REVIVE Property: [host: {}]".format(self.host_name)
 
     def ToString(self):
         return str(self)
 
 
-class EnergyMaterialNoMassReviveProperties(object):
+class EnergyWindowMaterialGasMixtureReviveProperties(object):
     """Honeybee-REVIVE Properties for storing REVIVE data."""
 
     def __init__(self, _host=None):
-        # type: (EnergyMaterialNoMass | None) -> None
+        # type: (EnergyWindowMaterialGasMixture | None) -> None
         self._host = _host
         self.id_num = 0
         self.kg_CO2_per_m2 = Unit(0.0, "KG/M2")
@@ -154,7 +159,7 @@ class EnergyMaterialNoMassReviveProperties(object):
 
     @property
     def host(self):
-        # type: () -> EnergyMaterialNoMass | None
+        # type: () -> EnergyWindowMaterialGasMixture | None
         return self._host
 
     @property
@@ -163,23 +168,23 @@ class EnergyMaterialNoMassReviveProperties(object):
         return self.host.display_name if self.host else "No Host"
 
     def duplicate(self, _host=None):
-        # type: (EnergyMaterialNoMass | None) -> EnergyMaterialNoMassReviveProperties
+        # type: (EnergyWindowMaterialGasMixture | None) -> EnergyWindowMaterialGasMixtureReviveProperties
         """Duplicate this object with a new host.
 
         Arguments:
         ----------
-            * new_host (EnergyMaterialNoMass | None): The new host for the duplicated object.
+            * new_host (EnergyWindowMaterialGasMixture | None): The new host for the duplicated object.
 
         Returns:
         --------
-            * (EnergyMaterialNoMassReviveProperties): The duplicated object.
+            * (EnergyWindowMaterialGasMixtureReviveProperties): The duplicated object.
         """
 
         return self.__copy__(_host)
 
-    def __copy__(self, new_host=None):
-        # type: (EnergyMaterialNoMass | None) -> EnergyMaterialNoMassReviveProperties
-        host = new_host or self.host
+    def __copy__(self, _host=None):
+        # type: (EnergyWindowMaterialGasMixture | None) -> EnergyWindowMaterialGasMixtureReviveProperties
+        host = _host or self.host
         new_obj = self.__class__(host)
         new_obj.id_num = self.id_num
         new_obj.kg_CO2_per_m2 = Unit(self.kg_CO2_per_m2.value, self.kg_CO2_per_m2.unit)
@@ -203,9 +208,10 @@ class EnergyMaterialNoMassReviveProperties(object):
 
         d = {}
         if abridged:
-            d["type"] = "EnergyMaterialNoMassRevivePropertiesAbridged"
+            d["type"] = "EnergyWindowMaterialGasMixtureRevivePropertiesAbridged"
         else:
-            d["type"] = "EnergyMaterialNoMassReviveProperties"
+            d["type"] = "EnergyWindowMaterialGasMixtureReviveProperties"
+
         d["id_num"] = self.id_num
         d["kg_CO2_per_m2"] = self.kg_CO2_per_m2.to_dict()
         d["cost_per_m2"] = self.cost_per_m2.to_dict()
@@ -215,25 +221,25 @@ class EnergyMaterialNoMassReviveProperties(object):
 
     @classmethod
     def from_dict(cls, _input_dict, _host):
-        # type: (dict, EnergyMaterialNoMass | None) -> EnergyMaterialNoMassReviveProperties
+        # type: (dict, EnergyWindowMaterialGasMixture | None) -> EnergyWindowMaterialGasMixtureReviveProperties
         """Create an object from a dictionary.
 
         Arguments:
         ----------
             * _input_dict (dict): The dictionary to create the object from.
-            * host (EnergyMaterialNoMass | None): The host for the new object.
+            * host (EnergyWindowMaterialGasMixture | None): The host for the new object.
 
         Returns:
         --------
-            * (EnergyMaterialNoMassReviveProperties): The new object.
+            * (EnergyWindowMaterialGasMixtureReviveProperties): The new object.
         """
 
         valid_types = (
-            "EnergyMaterialNoMassReviveProperties",
-            "EnergyMaterialNoMassRevivePropertiesAbridged",
+            "EnergyWindowMaterialGasMixtureReviveProperties",
+            "EnergyWindowMaterialGasMixtureRevivePropertiesAbridged",
         )
         if _input_dict["type"] not in valid_types:
-            raise EnergyMaterialReviveProperties_FromDictError(valid_types, _input_dict["type"])
+            raise EnergyWindowMaterialGasReviveProperties_FromDictError(valid_types, _input_dict["type"])
         new_obj = cls(_host)
         new_obj.id_num = _input_dict["id_num"]
         new_obj.kg_CO2_per_m2 = Unit.from_dict(_input_dict["kg_CO2_per_m2"])
@@ -246,17 +252,17 @@ class EnergyMaterialNoMassReviveProperties(object):
         return self.__repr__()
 
     def __repr__(self):
-        return "HBE-EnergyMaterialNoMass Phius REVIVE Property: [host: {}]".format(self.host_name)
+        return "HBE-EnergyWindowMaterialGasMixture Phius REVIVE Property: [host: {}]".format(self.host_name)
 
     def ToString(self):
         return str(self)
 
 
-class EnergyMaterialVegetationReviveProperties(object):
+class EnergyWindowMaterialGasCustomReviveProperties(object):
     """Honeybee-REVIVE Properties for storing REVIVE data."""
 
     def __init__(self, _host=None):
-        # type: (EnergyMaterialVegetation | None) -> None
+        # type: (EnergyWindowMaterialGasCustom | None) -> None
         self._host = _host
         self.id_num = 0
         self.kg_CO2_per_m2 = Unit(0.0, "KG/M2")
@@ -266,7 +272,7 @@ class EnergyMaterialVegetationReviveProperties(object):
 
     @property
     def host(self):
-        # type: () -> EnergyMaterialVegetation | None
+        # type: () -> EnergyWindowMaterialGasCustom | None
         return self._host
 
     @property
@@ -274,24 +280,24 @@ class EnergyMaterialVegetationReviveProperties(object):
         # type: () -> str
         return self.host.display_name if self.host else "No Host"
 
-    def duplicate(self, new_host=None):
-        # type: (EnergyMaterialVegetation | None) -> EnergyMaterialVegetationReviveProperties
+    def duplicate(self, _host=None):
+        # type: (EnergyWindowMaterialGasCustom | None) -> EnergyWindowMaterialGasCustomReviveProperties
         """Duplicate this object with a new host.
 
         Arguments:
         ----------
-            * new_host (EnergyMaterialVegetation | None): The new host for the duplicated object.
+            * new_host (EnergyWindowMaterialGasCustom | None): The new host for the duplicated object.
 
         Returns:
         --------
-            * (EnergyMaterialVegetationReviveProperties): The duplicated object.
+            * (EnergyWindowMaterialGasCustomReviveProperties): The duplicated object.
         """
 
-        return self.__copy__(new_host)
+        return self.__copy__(_host)
 
-    def __copy__(self, new_host=None):
-        # type: (EnergyMaterialVegetation | None) -> EnergyMaterialVegetationReviveProperties
-        host = new_host or self.host
+    def __copy__(self, _host=None):
+        # type: (EnergyWindowMaterialGasCustom | None) -> EnergyWindowMaterialGasCustomReviveProperties
+        host = _host or self.host
         new_obj = self.__class__(host)
         new_obj.id_num = self.id_num
         new_obj.kg_CO2_per_m2 = Unit(self.kg_CO2_per_m2.value, self.kg_CO2_per_m2.unit)
@@ -315,9 +321,10 @@ class EnergyMaterialVegetationReviveProperties(object):
 
         d = {}
         if abridged:
-            d["type"] = "EnergyMaterialVegetationRevivePropertiesAbridged"
+            d["type"] = "EnergyWindowMaterialGasCustomRevivePropertiesAbridged"
         else:
-            d["type"] = "EnergyMaterialVegetationReviveProperties"
+            d["type"] = "EnergyWindowMaterialGasCustomReviveProperties"
+
         d["id_num"] = self.id_num
         d["kg_CO2_per_m2"] = self.kg_CO2_per_m2.to_dict()
         d["cost_per_m2"] = self.cost_per_m2.to_dict()
@@ -327,25 +334,25 @@ class EnergyMaterialVegetationReviveProperties(object):
 
     @classmethod
     def from_dict(cls, _input_dict, _host):
-        # type: (dict, EnergyMaterialVegetation | None) -> EnergyMaterialVegetationReviveProperties
+        # type: (dict, EnergyWindowMaterialGasCustom | None) -> EnergyWindowMaterialGasCustomReviveProperties
         """Create an object from a dictionary.
 
         Arguments:
         ----------
             * _input_dict (dict): The dictionary to create the object from.
-            * host (EnergyMaterialVegetation | None): The host for the new object.
+            * host (EnergyWindowMaterialGasCustom | None): The host for the new object.
 
         Returns:
         --------
-            * (EnergyMaterialVegetationReviveProperties): The new object.
+            * (EnergyWindowMaterialGasCustomReviveProperties): The new object.
         """
 
         valid_types = (
-            "EnergyMaterialVegetationReviveProperties",
-            "EnergyMaterialVegetationRevivePropertiesAbridged",
+            "EnergyWindowMaterialGasCustomReviveProperties",
+            "EnergyWindowMaterialGasCustomRevivePropertiesAbridged",
         )
         if _input_dict["type"] not in valid_types:
-            raise EnergyMaterialReviveProperties_FromDictError(valid_types, _input_dict["type"])
+            raise EnergyWindowMaterialGasReviveProperties_FromDictError(valid_types, _input_dict["type"])
         new_obj = cls(_host)
         new_obj.id_num = _input_dict["id_num"]
         new_obj.kg_CO2_per_m2 = Unit.from_dict(_input_dict["kg_CO2_per_m2"])
@@ -358,7 +365,7 @@ class EnergyMaterialVegetationReviveProperties(object):
         return self.__repr__()
 
     def __repr__(self):
-        return "HBE-EnergyMaterialVegetation Phius REVIVE Property: [host: {}]".format(self.host_name)
+        return "HBE-EnergyWindowMaterialGasCustom Phius REVIVE Property: [host: {}]".format(self.host_name)
 
     def ToString(self):
         return str(self)

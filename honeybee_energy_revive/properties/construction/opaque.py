@@ -133,7 +133,7 @@ class OpaqueConstructionReviveProperties(object):
         return {"revive": d}
 
     @classmethod
-    def from_dict(cls, _input_dict, host):
+    def from_dict(cls, _input_dict, _host):
         # type: (dict, OpaqueConstruction | None) -> OpaqueConstructionReviveProperties
         """Create an object from a dictionary.
 
@@ -153,7 +153,7 @@ class OpaqueConstructionReviveProperties(object):
         )
         if _input_dict["type"] not in valid_types:
             raise OpaqueConstructionReviveProperties_FromDictError(valid_types, _input_dict["type"])
-        new_obj = cls(host)
+        new_obj = cls(_host)
         new_obj.id_num = _input_dict["id_num"]
         return new_obj
 

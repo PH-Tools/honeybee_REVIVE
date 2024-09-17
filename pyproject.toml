@@ -23,7 +23,11 @@ changelog = "https://example.com/changelog"
 
 [tool.coverage.run]
 command_line = "-m pytest tests"
-source = ["ph_revive"]
+source = [
+    "honeybee_energy_revive",
+    "honeybee_revive",
+    "honeybee_revive_standards",
+]
 branch = true
 cover_pylib = false
 omit = ["*/__init__.py", "*.venv/*", "*.venv_mbair/*"]
