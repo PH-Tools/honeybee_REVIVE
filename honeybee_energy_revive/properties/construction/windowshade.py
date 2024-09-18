@@ -99,8 +99,8 @@ class WindowConstructionShadeReviveProperties(object):
         """
 
         valid_types = (
-            " WindowConstructionShadeReviveProperties",
-            " WindowConstructionShadeRevivePropertiesAbridged",
+            "WindowConstructionShadeReviveProperties",
+            "WindowConstructionShadeRevivePropertiesAbridged",
         )
         if _input_dict["type"] not in valid_types:
             raise WindowConstructionShadeReviveProperties_FromDictError(valid_types, _input_dict["type"])
@@ -112,7 +112,7 @@ class WindowConstructionShadeReviveProperties(object):
         return self.__repr__()
 
     def __repr__(self):
-        return "HBE- WindowConstructionShade Phius REVIVE Property: [host: {}]".format(self.host_name)
+        return "HBE-WindowConstructionShade Phius REVIVE Property: [host: {}]".format(self.host_name)
 
     def ToString(self):
         return str(self)
