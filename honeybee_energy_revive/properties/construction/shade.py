@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -*- Python Version: 2.7 -*-
 
-"""Honeybee-Energy-REVIVE properties for Honeybee-Energy  WindowConstructionShade Objects"""
+"""Honeybee-Energy-REVIVE properties for Honeybee-Energy ShadeConstruction Objects"""
 
 try:
     from typing import TYPE_CHECKING
@@ -11,28 +11,28 @@ except ImportError:
 
 try:
     if TYPE_CHECKING:
-        from honeybee_energy.construction.windowshade import WindowConstructionShade
+        from honeybee_energy.construction.shade import ShadeConstruction
 except ImportError as e:
     raise ImportError("\nFailed to import honeybee_energy:\n\t{}".format(e))
 
 
-class WindowConstructionShadeReviveProperties_FromDictError(Exception):
+class ShadeConstructionReviveProperties_FromDictError(Exception):
     def __init__(self, _expected_types, _input_type):
         self.msg = 'Error: Expected type of "{}". Got: {}'.format(_expected_types, _input_type)
-        super(WindowConstructionShadeReviveProperties_FromDictError, self).__init__(self.msg)
+        super(ShadeConstructionReviveProperties_FromDictError, self).__init__(self.msg)
 
 
-class WindowConstructionShadeReviveProperties(object):
+class ShadeConstructionReviveProperties(object):
     """Honeybee-REVIVE Properties for storing REVIVE data."""
 
     def __init__(self, _host=None):
-        # type: ( WindowConstructionShade | None) -> None
+        # type: (ShadeConstruction | None) -> None
         self._host = _host
         self.id_num = 0
 
     @property
     def host(self):
-        # type: () ->  WindowConstructionShade | None
+        # type: () -> ShadeConstruction | None
         return self._host
 
     @property
@@ -41,22 +41,22 @@ class WindowConstructionShadeReviveProperties(object):
         return self.host.display_name if self.host else "No Host"
 
     def duplicate(self, new_host=None):
-        # type: ( WindowConstructionShade | None) -> WindowConstructionShadeReviveProperties
+        # type: (ShadeConstruction | None) -> ShadeConstructionReviveProperties
         """Duplicate this object with a new host.
 
         Arguments:
         ----------
-            * new_host ( WindowConstructionShade | None): The new host for the duplicated object.
+            * new_host (ShadeConstruction | None): The new host for the duplicated object.
 
         Returns:
         --------
-            * ( WindowConstructionShadeReviveProperties): The duplicated object.
+            * (ShadeConstructionReviveProperties): The duplicated object.
         """
 
         return self.__copy__(new_host)
 
     def __copy__(self, new_host=None):
-        # type: ( WindowConstructionShade | None) -> WindowConstructionShadeReviveProperties
+        # type: (ShadeConstruction | None) -> ShadeConstructionReviveProperties
         host = new_host or self.host
         new_obj = self.__class__(host)
         new_obj.id_num = self.id_num
@@ -77,33 +77,33 @@ class WindowConstructionShadeReviveProperties(object):
 
         d = {}
         if abridged:
-            d["type"] = " WindowConstructionShadeRevivePropertiesAbridged"
+            d["type"] = "ShadeConstructionRevivePropertiesAbridged"
         else:
-            d["type"] = " WindowConstructionShadeReviveProperties"
+            d["type"] = "ShadeConstructionReviveProperties"
         d["id_num"] = self.id_num
         return {"revive": d}
 
     @classmethod
     def from_dict(cls, _input_dict, host):
-        # type: (dict,  WindowConstructionShade | None) -> WindowConstructionShadeReviveProperties
+        # type: (dict, ShadeConstruction | None) -> ShadeConstructionReviveProperties
         """Create an object from a dictionary.
 
         Arguments:
         ----------
             * _input_dict (dict): The dictionary to create the object from.
-            * host ( WindowConstructionShade | None): The host for the new object.
+            * host (ShadeConstruction | None): The host for the new object.
 
         Returns:
         --------
-            * ( WindowConstructionShadeReviveProperties): The new object.
+            * (ShadeConstructionReviveProperties): The new object.
         """
 
         valid_types = (
-            " WindowConstructionShadeReviveProperties",
-            " WindowConstructionShadeRevivePropertiesAbridged",
+            "ShadeConstructionReviveProperties",
+            "ShadeConstructionRevivePropertiesAbridged",
         )
         if _input_dict["type"] not in valid_types:
-            raise WindowConstructionShadeReviveProperties_FromDictError(valid_types, _input_dict["type"])
+            raise ShadeConstructionReviveProperties_FromDictError(valid_types, _input_dict["type"])
         new_obj = cls(host)
         new_obj.id_num = _input_dict["id_num"]
         return new_obj
@@ -112,7 +112,7 @@ class WindowConstructionShadeReviveProperties(object):
         return self.__repr__()
 
     def __repr__(self):
-        return "HBE- WindowConstructionShade Phius REVIVE Property: [host: {}]".format(self.host_name)
+        return "HBE-ShadeConstruction Phius REVIVE Property: [host: {}]".format(self.host_name)
 
     def ToString(self):
         return str(self)
