@@ -1,4 +1,5 @@
 # Honeybee-REVIVE:
+### A Phius-REVIVE plugin for Honeybee and Ladybug-Tools
 
 Honeybee-REVIVE is a free plugin for [Ladybug Tools](https://www.ladybug.tools/) which enables users to add detailed [Phius-REVIVE](https://www.phius.org/phius-revive-2024) style attributes to their models alongside the normal Honeybee inputs. 
 
@@ -6,7 +7,7 @@ This plugin is designed as a plugin for Honeybee v1.8. It can also be utilized b
 
 
 ## Note: 
-PH-Tools and the Honeybee-REVIVE plugin is in no way affiliated with Phius, and the library here is neither reviewed, nor approved by Phius for use in complying with the REVIVE program.
+*PH-Tools and the Honeybee-REVIVE plugin is in no way affiliated with Phius, and the library here is neither reviewed, nor approved by Phius for use in complying with the REVIVE program.*
 
 ## Packages:
 - **honeybee_revive:** Extend the basic Honeybee extension package with new Phius-REVIVE specific model elements.
@@ -17,7 +18,6 @@ PH-Tools and the Honeybee-REVIVE plugin is in no way affiliated with Phius, and 
 
 
 ## More Information:
-
 For more information on the use of these tools, check out the the Passive House Tools website:
 [https://www.PassiveHouseTools.com](https://www.PassiveHouseTools.com)
 
