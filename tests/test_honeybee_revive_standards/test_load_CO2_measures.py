@@ -1,6 +1,7 @@
 import pytest
 import tempfile
 import json
+from pathlib import Path
 from honeybee_revive_standards.CO2_measures._load_CO2_measures import load_CO2_measures_from_json_file
 from honeybee_revive.CO2_measures import CO2ReductionMeasure
 
@@ -48,3 +49,13 @@ def test_load_CO2_measures_from_json_file_valid():
 def test_load_CO2_measures_from_json_file_invalid():
     with pytest.raises(ValueError):
         load_CO2_measures_from_json_file("non_existent_file.json")
+
+
+def test_load_sample_file_from_standards_library():
+    filepath = Path("honeybee_revive_standards/CO2_measures/phius_2024_CO2_measures.json")
+    results = load_CO2_measures_from_json_file(str(filepath))
+
+    assert isinstance(results, dict)
+    assert len(results) > 0
+    for measure in results.values():
+        assert isinstance(measure, CO2ReductionMeasure)

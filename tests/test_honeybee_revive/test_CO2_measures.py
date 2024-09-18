@@ -39,7 +39,7 @@ def test_CO2ReductionMeasure_to_dict():
     )
     measure_dict = measure.to_dict()
     assert measure_dict["name"] == "Test Measure"
-    assert measure_dict["measure_type"]["value"] == "PERFORMANCE"
+    assert measure_dict["measure_type"] == "PERFORMANCE"
     assert measure_dict["year"] == 2022
     assert measure_dict["cost"] == 10000.0
     assert measure_dict["kg_CO2"] == 500.0
@@ -50,7 +50,7 @@ def test_CO2ReductionMeasure_to_dict():
 def test_CO2ReductionMeasure_from_dict():
     measure_dict = {
         "name": "Test Measure",
-        "measure_type": {"value": "PERFORMANCE"},
+        "measure_type": "PERFORMANCE",
         "year": 2022,
         "cost": 10000.0,
         "kg_CO2": 500.0,
@@ -95,7 +95,7 @@ def test_CO2ReductionMeasureCollection_from_dict():
     collection_dict = {
         "Measure 1-1-60-8500-0.4": {
             "name": "Measure 1",
-            "measure_type": {"value": "PERFORMANCE"},
+            "measure_type": "PERFORMANCE",
             "year": 60,
             "cost": 8500.0,
             "kg_CO2": 0.0,
@@ -104,7 +104,7 @@ def test_CO2ReductionMeasureCollection_from_dict():
         },
         "Measure 2-2-60-8500-0.4": {
             "name": "Measure 2",
-            "measure_type": {"value": "NON_PERFORMANCE"},
+            "measure_type": "NON_PERFORMANCE",
             "year": 60,
             "cost": 8500.0,
             "kg_CO2": 0.0,

@@ -1,6 +1,7 @@
 import json
 import pytest
 import tempfile
+from pathlib import Path
 from honeybee_revive_standards.national_emission_factors._load_national_emissions import (
     load_national_emissions_from_json_file,
 )
@@ -58,3 +59,13 @@ def test_load_national_emissions_from_json_file_valid():
 def test_load_national_emissions_from_json_file_invalid_path():
     with pytest.raises(ValueError):
         load_national_emissions_from_json_file("non_existent_file.json")
+
+
+def test_sample_file_from_standards_library():
+    filepath = Path("honeybee_revive_standards/national_emission_factors/national_emissions.json")
+    results = load_national_emissions_from_json_file(str(filepath))
+
+    assert isinstance(results, dict)
+    assert len(results) > 0
+    for country in results.values():
+        assert isinstance(country, NationalEmissionsFactors)

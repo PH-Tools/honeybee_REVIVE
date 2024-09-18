@@ -54,7 +54,7 @@ class CO2ReductionMeasure(object):
     def to_dict(self):
         # type: () -> dict
         d = {}
-        d["measure_type"] = self.measure_type.to_dict()
+        d["measure_type"] = self.measure_type.value
         d["name"] = self.name
         d["year"] = self.year
         d["cost"] = self.cost
@@ -67,7 +67,7 @@ class CO2ReductionMeasure(object):
     def from_dict(cls, _dict):
         # type: (dict) -> CO2ReductionMeasure
         measure = cls()
-        measure.measure_type = CO2ReductionMeasureType.from_dict(_dict["measure_type"])
+        measure.measure_type = CO2ReductionMeasureType(_dict["measure_type"])
         measure.name = _dict["name"]
         measure.year = _dict["year"]
         measure.cost = _dict["cost"]
