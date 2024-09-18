@@ -30,7 +30,13 @@ source = [
 ]
 branch = true
 cover_pylib = false
-omit = ["*/__init__.py", "*.venv/*", "*.venv_mbair/*"]
+omit = [
+    "*/__init__.py",
+    "*.venv/*",
+    "*.venv_mbair/*",
+    "honeybee_revive_standards/cambium_factors/_generate_json_files.py",
+]
+
 
 [tool.coverage.report]
 show_missing = true
