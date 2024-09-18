@@ -34,7 +34,12 @@ class GridRegion(object):
 
     def duplicate(self):
         # type: () -> GridRegion
-        new_obj = GridRegion(self.display_name, self.region_code, self.filepath)
+        new_obj = GridRegion(
+            _display_name=self.display_name,
+            _region_code=self.region_code,
+            _description=self.description,
+            _filepath=self.filepath,
+        )
         return new_obj
 
     def __copy__(self):

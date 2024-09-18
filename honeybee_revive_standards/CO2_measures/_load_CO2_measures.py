@@ -19,5 +19,5 @@ def load_CO2_measures_from_json_file(_filepath):
         raise ValueError("File not found: {}".format(_filepath))
 
     with open(_filepath, "r") as json_file:
-        all_measures = (CO2ReductionMeasure(**item) for item in json.load(json_file))
+        all_measures = (CO2ReductionMeasure.from_dict(d) for d in json.load(json_file))
         return {_.name: _ for _ in all_measures}

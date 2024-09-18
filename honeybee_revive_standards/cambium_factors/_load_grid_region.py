@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -*- Python Version: 2.7 -*-
 
-"""Utility function to load GridRegion data from a JSON file."""
+"""Utility function to load Cambium GridRegion Data from a JSON file."""
 
 import json
 import os

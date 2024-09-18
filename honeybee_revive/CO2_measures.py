@@ -47,7 +47,9 @@ class CO2ReductionMeasure(object):
     @property
     def unique_id(self):
         # type: () -> str
-        return "{}-{}-{}-{}-{}".format(self.name, self.measure_type.number, self.year, self.cost, self.labor_fraction)
+        return "{}-{}-{}-{}-{}".format(
+            self.name, self.measure_type.number, self.year, int(self.cost), self.labor_fraction
+        )
 
     def to_dict(self):
         # type: () -> dict

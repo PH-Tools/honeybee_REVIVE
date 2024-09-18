@@ -39,7 +39,11 @@ class NationalEmissionsFactors(object):
     def duplicate(self):
         # type: () -> NationalEmissionsFactors
         new_obj = NationalEmissionsFactors(
-            self.country_name, self.us_trading_rank, self.GDP_million_USD, self.CO2_MT, self.kg_CO2_per_USD
+            country_name=self.country_name,
+            us_trading_rank=self.us_trading_rank,
+            GDP_million_USD=self.GDP_million_USD,
+            CO2_MT=self.CO2_MT,
+            kg_CO2_per_USD=self.kg_CO2_per_USD,
         )
         return new_obj
 

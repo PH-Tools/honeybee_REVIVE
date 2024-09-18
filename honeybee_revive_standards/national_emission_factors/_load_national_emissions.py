@@ -19,5 +19,5 @@ def load_national_emissions_from_json_file(_filepath):
         raise ValueError("File does not exist: {}".format(_filepath))
 
     with open(_filepath, "r") as json_file:
-        all_emissions = (NationalEmissionsFactors(**item) for item in json.load(json_file))
+        all_emissions = (NationalEmissionsFactors.from_dict(d) for d in json.load(json_file))
         return {_.country_name: _ for _ in all_emissions}
