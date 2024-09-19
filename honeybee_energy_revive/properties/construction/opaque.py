@@ -62,6 +62,14 @@ class OpaqueConstructionReviveProperties(object):
         return self.host.display_name if self.host else "No Host"
 
     @property
+    def total_thickness_m(self):
+        # type: () -> Unit
+        """Return the total thickness of all the materials in the construction."""
+        if not self.host:
+            return Unit(0.0, "M")
+        return Unit(self.host.thickness, "M")
+
+    @property
     def kg_CO2_per_m2(self):
         # type: () -> Unit
         """Return the total kg-of-CO2-per-m2 of all the materials in the construction."""
@@ -71,7 +79,7 @@ class OpaqueConstructionReviveProperties(object):
 
         total = 0.0
         for mat in self.host.materials:
-            mat_prop = getattr(mat.properties, "revive")  # type: energy_material
+            mat_prop = getattr(mat.properties, "revive")  # type: EnergyMaterialReviveProperties
             total += mat_prop.kg_CO2_per_m2.value
         return Unit(total, "KG/M2")
 
@@ -85,9 +93,43 @@ class OpaqueConstructionReviveProperties(object):
 
         total = 0.0
         for mat in self.host.materials:
-            mat_prop = getattr(mat.properties, "revive")
+            mat_prop = getattr(mat.properties, "revive")  # type: EnergyMaterialReviveProperties
             total += mat_prop.cost_per_m2.value
         return Unit(total, "COST/M2")
+
+    @property
+    def labor_fraction(self):
+        # type: () -> float
+        """Return the weighted-average labor fraction of all the materials in the construction."""
+
+        if not self.host:
+            return 0.0
+
+        total = 0.0
+        for mat in self.host.materials:
+            mat_prop = getattr(mat.properties, "revive")  # type: EnergyMaterialReviveProperties
+            total += mat_prop.labor_fraction * mat.thickness
+        try:
+            return total / self.total_thickness_m.value
+        except ZeroDivisionError:
+            return 0.0
+
+    @property
+    def lifetime_years(self):
+        # type: () -> int
+        """Return the weighted-average lifetime of all the materials in the construction."""
+
+        if not self.host:
+            return 0
+
+        total = 0.0
+        for mat in self.host.materials:
+            mat_prop = getattr(mat.properties, "revive")  # type: EnergyMaterialReviveProperties
+            total += mat_prop.lifetime_years * mat.thickness
+        try:
+            return round(total / self.total_thickness_m.value)
+        except ZeroDivisionError:
+            return 0
 
     def duplicate(self, new_host=None):
         # type: (OpaqueConstruction | None) -> OpaqueConstructionReviveProperties
