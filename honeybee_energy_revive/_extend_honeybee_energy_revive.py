@@ -42,6 +42,7 @@ from honeybee_energy.properties.extension import (
     LightingProperties,
     PeopleProperties,
     ServiceHotWaterProperties,
+    ProcessProperties,
 )
 from honeybee_energy.schedule.ruleset import ScheduleRulesetProperties
 
@@ -53,13 +54,12 @@ from honeybee_energy.schedule.ruleset import ScheduleRulesetProperties
 # -----------------------------------------------------------------------------
 # -- Now that Honeybee-Energy is imported, import the relevant HB-REVIVE classes
 
+# -- Constructions
 from honeybee_energy_revive.properties.construction.opaque import OpaqueConstructionReviveProperties
 from honeybee_energy_revive.properties.construction.window import WindowConstructionReviveProperties
 from honeybee_energy_revive.properties.construction.windowshade import WindowConstructionShadeReviveProperties
-from honeybee_energy_revive.properties.hot_water.hw_program import ServiceHotWaterReviveProperties
-from honeybee_energy_revive.properties.load.equipment import ElectricEquipmentReviveProperties
-from honeybee_energy_revive.properties.load.lighting import LightingReviveProperties
-from honeybee_energy_revive.properties.load.people import PeopleReviveProperties
+
+# -- Materials
 from honeybee_energy_revive.properties.materials.opaque import (
     EnergyMaterialNoMassReviveProperties,
     EnergyMaterialReviveProperties,
@@ -69,7 +69,6 @@ from honeybee_energy_revive.properties.materials.glazing import (
     EnergyWindowMaterialGlazingReviveProperties,
     EnergyWindowMaterialSimpleGlazSysReviveProperties,
 )
-from honeybee_energy_revive.properties.ruleset import ScheduleRulesetReviveProperties
 from honeybee_energy_revive.properties.materials.shade import (
     EnergyWindowMaterialShadeReviveProperties,
     EnergyWindowMaterialBlindReviveProperties,
@@ -80,7 +79,15 @@ from honeybee_energy_revive.properties.materials.gas import (
     EnergyWindowMaterialGasReviveProperties,
     EnergyWindowMaterialGasMixtureReviveProperties,
 )
+
+# -- Program / Load
+from honeybee_energy_revive.properties.ruleset import ScheduleRulesetReviveProperties
+from honeybee_energy_revive.properties.hot_water.hw_program import ServiceHotWaterReviveProperties
+from honeybee_energy_revive.properties.load.equipment import ElectricEquipmentReviveProperties
+from honeybee_energy_revive.properties.load.lighting import LightingReviveProperties
+from honeybee_energy_revive.properties.load.people import PeopleReviveProperties
 from honeybee_energy_revive.properties.construction.shade import ShadeConstructionReviveProperties
+from honeybee_energy_revive.properties.load.process import ProcessReviveProperties
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
@@ -112,6 +119,7 @@ setattr(ServiceHotWaterProperties, "_revive", None)
 setattr(ElectricEquipmentProperties, "_revive", None)
 setattr(PeopleProperties, "_revive", None)
 setattr(LightingProperties, "_revive", None)
+setattr(ProcessProperties, "_revive", None)
 
 
 # -----------------------------------------------------------------------------
@@ -240,6 +248,12 @@ def shade_construction_revive_properties(self):
     return self._revive
 
 
+def process_load_revive_properties(self):
+    if self._revive is None:
+        self._revive = ProcessReviveProperties(self.host)
+    return self._revive
+
+
 # -----------------------------------------------------------------------------
 
 # Step 3)
@@ -276,3 +290,4 @@ setattr(ElectricEquipmentProperties, "revive", property(elec_equip_revive_proper
 setattr(PeopleProperties, "revive", property(people_revive_properties))
 setattr(LightingProperties, "revive", property(lighting_revive_properties))
 setattr(ScheduleRulesetProperties, "revive", property(schedule_ruleset_revive_properties))
+setattr(ProcessProperties, "revive", property(process_load_revive_properties))

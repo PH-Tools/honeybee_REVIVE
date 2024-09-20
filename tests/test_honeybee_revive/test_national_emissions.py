@@ -1,3 +1,4 @@
+import pytest
 from honeybee_revive.national_emissions import NationalEmissionsFactors
 
 
@@ -22,6 +23,7 @@ def test_to_dict():
 
 def test_from_dict():
     nef_dict = {
+        "type": "NationalEmissionsFactors",
         "country_name": "USA",
         "us_trading_rank": 1,
         "GDP_million_USD": 21000000.0,
@@ -34,6 +36,19 @@ def test_from_dict():
     assert nef.GDP_million_USD == 21000000.0
     assert nef.CO2_MT == 5000.0
     assert nef.kg_CO2_per_USD == 0.24
+
+
+def test_wrong_type_raises_error_from_dict():
+    nef_dict = {
+        "type": "Not The Right Type",
+        "country_name": "USA",
+        "us_trading_rank": 1,
+        "GDP_million_USD": 21000000.0,
+        "CO2_MT": 5000.0,
+        "kg_CO2_per_USD": 0.24,
+    }
+    with pytest.raises(ValueError):
+        NationalEmissionsFactors.from_dict(nef_dict)
 
 
 def test_duplicate():

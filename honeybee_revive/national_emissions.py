@@ -17,6 +17,7 @@ class NationalEmissionsFactors(object):
     def to_dict(self):
         # type: () -> dict
         d = {}
+        d["type"] = "NationalEmissionsFactors"
         d["country_name"] = self.country_name
         d["us_trading_rank"] = self.us_trading_rank
         d["GDP_million_USD"] = self.GDP_million_USD
@@ -27,6 +28,9 @@ class NationalEmissionsFactors(object):
     @classmethod
     def from_dict(cls, _input_dict):
         # type: (dict) -> NationalEmissionsFactors
+        if not _input_dict["type"] == "NationalEmissionsFactors":
+            raise ValueError("This is not a 'NationalEmissionsFactors' dict. Got: {}".format(_input_dict["type"]))
+
         new_obj = cls(
             _input_dict["country_name"],
             _input_dict["us_trading_rank"],

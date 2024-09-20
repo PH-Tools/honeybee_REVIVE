@@ -1,3 +1,4 @@
+import pytest
 from honeybee_revive.CO2_measures import CO2ReductionMeasure, CO2ReductionMeasureCollection
 
 
@@ -49,6 +50,7 @@ def test_CO2ReductionMeasure_to_dict():
 
 def test_CO2ReductionMeasure_from_dict():
     measure_dict = {
+        "type": "CO2ReductionMeasure",
         "name": "Test Measure",
         "measure_type": "PERFORMANCE",
         "year": 2022,
@@ -94,6 +96,7 @@ def test_CO2ReductionMeasureCollection_to_dict():
 def test_CO2ReductionMeasureCollection_from_dict():
     collection_dict = {
         "Measure 1-1-60-8500-0.4": {
+            "type": "CO2ReductionMeasure",
             "name": "Measure 1",
             "measure_type": "PERFORMANCE",
             "year": 60,
@@ -103,6 +106,7 @@ def test_CO2ReductionMeasureCollection_from_dict():
             "labor_fraction": 0.4,
         },
         "Measure 2-2-60-8500-0.4": {
+            "type": "CO2ReductionMeasure",
             "name": "Measure 2",
             "measure_type": "NON_PERFORMANCE",
             "year": 60,
@@ -116,3 +120,19 @@ def test_CO2ReductionMeasureCollection_from_dict():
     assert len(collection) == 2
     assert "Measure 1-1-60-8500-0.4" in collection
     assert "Measure 2-2-60-8500-0.4" in collection
+
+
+def test_non_CO2Measure_dict_from_dict_raises_error():
+    measure_dict = {
+        "type": "Not A CO2 Measure",
+        "name": "Test Measure",
+        "measure_type": "PERFORMANCE",
+        "year": 2022,
+        "cost": 10000.0,
+        "kg_CO2": 500.0,
+        "country_name": "USA",
+        "labor_fraction": 0.5,
+    }
+
+    with pytest.raises(ValueError):
+        measure = CO2ReductionMeasure.from_dict(measure_dict)

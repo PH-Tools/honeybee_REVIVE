@@ -54,6 +54,7 @@ class CO2ReductionMeasure(object):
     def to_dict(self):
         # type: () -> dict
         d = {}
+        d["type"] = "CO2ReductionMeasure"
         d["measure_type"] = self.measure_type.value
         d["name"] = self.name
         d["year"] = self.year
@@ -66,6 +67,9 @@ class CO2ReductionMeasure(object):
     @classmethod
     def from_dict(cls, _dict):
         # type: (dict) -> CO2ReductionMeasure
+        if not _dict["type"] == "CO2ReductionMeasure":
+            raise ValueError("The supplied dict is not a CO2ReductionMeasure? Got: {}".format(_dict["type"]))
+
         measure = cls()
         measure.measure_type = CO2ReductionMeasureType(_dict["measure_type"])
         measure.name = _dict["name"]

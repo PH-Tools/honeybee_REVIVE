@@ -52,7 +52,7 @@ def test_load_CO2_measures_from_json_file_invalid():
 
 
 def test_load_sample_file_from_standards_library():
-    filepath = Path("honeybee_revive_standards/CO2_measures/phius_2024_CO2_measures.json")
+    filepath = Path("honeybee_revive_standards/CO2_measures/phius_revive_2024_CO2_measures.json")
     results = load_CO2_measures_from_json_file(str(filepath))
 
     assert isinstance(results, dict)

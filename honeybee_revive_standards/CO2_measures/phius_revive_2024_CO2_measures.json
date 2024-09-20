@@ -1,5 +1,6 @@
 [
     {
+        "type": "CO2ReductionMeasure",
         "measure_type": "PERFORMANCE",
         "name": "HP Replace 1",
         "year": 20,
@@ -9,6 +10,7 @@
         "labor_fraction": 0.4
     },
     {
+        "type": "CO2ReductionMeasure",
         "measure_type": "PERFORMANCE",
         "name": "HP Replace 2",
         "year": 40,
@@ -18,6 +20,7 @@
         "labor_fraction": 0.4
     },
     {
+        "type": "CO2ReductionMeasure",
         "measure_type": "PERFORMANCE",
         "name": "HP Replace 3",
         "year": 60,
@@ -27,6 +30,7 @@
         "labor_fraction": 0.4
     },
     {
+        "type": "CO2ReductionMeasure",
         "measure_type": "PERFORMANCE",
         "name": "Vegan Bike Riding Carpenters",
         "year": 15,
@@ -36,6 +40,7 @@
         "labor_fraction": 1.0
     },
     {
+        "type": "CO2ReductionMeasure",
         "measure_type": "NON_PERFORMANCE",
         "name": "Non-performant correction 1",
         "year": 20,

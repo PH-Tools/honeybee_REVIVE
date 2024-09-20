@@ -1,5 +1,6 @@
 [
     {
+        "type": "NationalEmissionsFactors",
         "country_name": "USA",
         "us_trading_rank": 0,
         "GDP_million_USD": 20936600.0,
@@ -7,6 +8,7 @@
         "kg_CO2_per_USD": 0.234
     },
     {
+        "type": "NationalEmissionsFactors",
         "country_name": "CANADA",
         "us_trading_rank": 3,
         "GDP_million_USD": 1643407.98,
@@ -14,6 +16,7 @@
         "kg_CO2_per_USD": 0.344
     },
     {
+        "type": "NationalEmissionsFactors",
         "country_name": "CHINA",
         "us_trading_rank": 1,
         "GDP_million_USD": 14722730.7,
@@ -21,6 +24,7 @@
         "kg_CO2_per_USD": 0.645
     },
     {
+        "type": "NationalEmissionsFactors",
         "country_name": "FRANCE",
         "us_trading_rank": 15,
         "GDP_million_USD": 2603004.4,
@@ -28,6 +32,7 @@
         "kg_CO2_per_USD": 0.117
     },
     {
+        "type": "NationalEmissionsFactors",
         "country_name": "GERMANY",
         "us_trading_rank": 5,
         "GDP_million_USD": 3806060.14,
@@ -35,6 +40,7 @@
         "kg_CO2_per_USD": 0.183
     },
     {
+        "type": "NationalEmissionsFactors",
         "country_name": "INDIA",
         "us_trading_rank": 10,
         "GDP_million_USD": 2622983.73,
@@ -42,6 +48,7 @@
         "kg_CO2_per_USD": 0.877
     },
     {
+        "type": "NationalEmissionsFactors",
         "country_name": "IRELAND",
         "us_trading_rank": 8,
         "GDP_million_USD": 418621.82,
@@ -49,6 +56,7 @@
         "kg_CO2_per_USD": 0.084
     },
     {
+        "type": "NationalEmissionsFactors",
         "country_name": "ITALY",
         "us_trading_rank": 12,
         "GDP_million_USD": 1886445.27,
@@ -56,6 +64,7 @@
         "kg_CO2_per_USD": 0.168
     },
     {
+        "type": "NationalEmissionsFactors",
         "country_name": "JAPAN",
         "us_trading_rank": 4,
         "GDP_million_USD": 5064872.88,
@@ -63,6 +72,7 @@
         "kg_CO2_per_USD": 0.217
     },
     {
+        "type": "NationalEmissionsFactors",
         "country_name": "SOUTH KOREA",
         "us_trading_rank": 7,
         "GDP_million_USD": 1630525.01,
@@ -70,6 +80,7 @@
         "kg_CO2_per_USD": 0.372
     },
     {
+        "type": "NationalEmissionsFactors",
         "country_name": "MALAYSIA",
         "us_trading_rank": 13,
         "GDP_million_USD": 336664.44,
@@ -77,6 +88,7 @@
         "kg_CO2_per_USD": 0.677
     },
     {
+        "type": "NationalEmissionsFactors",
         "country_name": "MEXICO",
         "us_trading_rank": 2,
         "GDP_million_USD": 1076163.32,
@@ -84,6 +96,7 @@
         "kg_CO2_per_USD": 0.417
     },
     {
+        "type": "NationalEmissionsFactors",
         "country_name": "SWITZERLAND",
         "us_trading_rank": 11,
         "GDP_million_USD": 747968.64,
@@ -91,6 +104,7 @@
         "kg_CO2_per_USD": 0.048
     },
     {
+        "type": "NationalEmissionsFactors",
         "country_name": "TAIWAN",
         "us_trading_rank": 9,
         "GDP_million_USD": 668510.0,
@@ -98,6 +112,7 @@
         "kg_CO2_per_USD": 0.414
     },
     {
+        "type": "NationalEmissionsFactors",
         "country_name": "UNITED KINGDOM",
         "us_trading_rank": 14,
         "GDP_million_USD": 2707743.78,
@@ -105,6 +120,7 @@
         "kg_CO2_per_USD": 0.13
     },
     {
+        "type": "NationalEmissionsFactors",
         "country_name": "VIETNAM",
         "us_trading_rank": 6,
         "GDP_million_USD": 271158.44,
