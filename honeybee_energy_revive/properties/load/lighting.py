@@ -29,6 +29,9 @@ class LightingReviveProperties(object):
         # type: (Lighting | None) -> None
         self._host = _host
         self.id_num = 0
+        self.cost = 0.0
+        self.labor_fraction = 0.4
+        self.lifetime_years = 25
 
     @property
     def host(self):
@@ -60,6 +63,9 @@ class LightingReviveProperties(object):
         host = new_host or self.host
         new_obj = self.__class__(host)
         new_obj.id_num = self.id_num
+        new_obj.cost = self.cost
+        new_obj.labor_fraction = self.labor_fraction
+        new_obj.lifetime_years = self.lifetime_years
         return new_obj
 
     def to_dict(self, abridged=False):
@@ -81,6 +87,9 @@ class LightingReviveProperties(object):
         else:
             d["type"] = "LightingReviveProperties"
         d["id_num"] = self.id_num
+        d["cost"] = self.cost
+        d["labor_fraction"] = self.labor_fraction
+        d["lifetime_years"] = self.lifetime_years
         return {"revive": d}
 
     @classmethod
@@ -106,6 +115,9 @@ class LightingReviveProperties(object):
             raise LightingReviveProperties_FromDictError(valid_types, _input_dict["type"])
         new_obj = cls(host)
         new_obj.id_num = _input_dict["id_num"]
+        new_obj.cost = _input_dict["cost"]
+        new_obj.labor_fraction = _input_dict["labor_fraction"]
+        new_obj.lifetime_years = _input_dict["lifetime_years"]
         return new_obj
 
     def __str__(self):
