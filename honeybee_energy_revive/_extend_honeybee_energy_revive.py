@@ -44,6 +44,10 @@ from honeybee_energy.properties.extension import (
     ServiceHotWaterProperties,
     ProcessProperties,
     PVPropertiesProperties,
+    AllAirSystemProperties,
+    DOASSystemProperties,
+    HeatCoolSystemProperties,
+    IdealAirSystemProperties,
 )
 from honeybee_energy.schedule.ruleset import ScheduleRulesetProperties
 
@@ -91,6 +95,12 @@ from honeybee_energy_revive.properties.construction.shade import ShadeConstructi
 from honeybee_energy_revive.properties.load.process import ProcessReviveProperties
 from honeybee_energy_revive.properties.generator.pv import PVPropertiesReviveProperties
 
+# -- HVAC
+from honeybee_energy_revive.properties.hvac.allair import AllAirSystemReviveProperties
+from honeybee_energy_revive.properties.hvac.doas import DOASSystemReviveProperties
+from honeybee_energy_revive.properties.hvac.heatcool import HeatCoolSystemReviveProperties
+from honeybee_energy_revive.properties.hvac.idealair import IdealAirSystemReviveProperties
+
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 
@@ -123,6 +133,11 @@ setattr(PeopleProperties, "_revive", None)
 setattr(LightingProperties, "_revive", None)
 setattr(ProcessProperties, "_revive", None)
 setattr(PVPropertiesProperties, "_revive", None)
+
+setattr(AllAirSystemProperties, "_revive", None)
+setattr(DOASSystemProperties, "_revive", None)
+setattr(HeatCoolSystemProperties, "_revive", None)
+setattr(IdealAirSystemProperties, "_revive", None)
 
 # -----------------------------------------------------------------------------
 
@@ -262,6 +277,30 @@ def pv_properties_revive_properties(self):
     return self._revive
 
 
+def all_air_system_revive_properties(self):
+    if self._revive is None:
+        self._revive = AllAirSystemReviveProperties(self.host)
+    return self._revive
+
+
+def doas_system_revive_properties(self):
+    if self._revive is None:
+        self._revive = DOASSystemReviveProperties(self.host)
+    return self._revive
+
+
+def heat_cool_system_revive_properties(self):
+    if self._revive is None:
+        self._revive = HeatCoolSystemReviveProperties(self.host)
+    return self._revive
+
+
+def ideal_air_system_revive_properties(self):
+    if self._revive is None:
+        self._revive = IdealAirSystemReviveProperties(self.host)
+    return self._revive
+
+
 # -----------------------------------------------------------------------------
 
 # Step 3)
@@ -300,3 +339,10 @@ setattr(LightingProperties, "revive", property(lighting_revive_properties))
 setattr(ScheduleRulesetProperties, "revive", property(schedule_ruleset_revive_properties))
 setattr(ProcessProperties, "revive", property(process_load_revive_properties))
 setattr(PVPropertiesProperties, "revive", property(pv_properties_revive_properties))
+
+
+# -- HVAC
+setattr(AllAirSystemProperties, "revive", property(all_air_system_revive_properties))
+setattr(DOASSystemProperties, "revive", property(doas_system_revive_properties))
+setattr(HeatCoolSystemProperties, "revive", property(heat_cool_system_revive_properties))
+setattr(IdealAirSystemProperties, "revive", property(ideal_air_system_revive_properties))
