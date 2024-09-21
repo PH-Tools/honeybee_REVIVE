@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -*- Python Version: 2.7 -*-
 
-"""Honeybee-Energy-REVIVE properties for Honeybee-Energy-PvProperties Objects"""
+"""Honeybee-Energy-REVIVE properties for Honeybee-Energy-PVProperties Objects"""
 
 try:
     from typing import TYPE_CHECKING
@@ -11,22 +11,22 @@ except ImportError:
 
 try:
     if TYPE_CHECKING:
-        from honeybee_energy.generator.pv import PvProperties
+        from honeybee_energy.generator.pv import PVProperties
 except ImportError as e:
     raise ImportError("\nFailed to import honeybee_energy:\n\t{}".format(e))
 
 
-class PvPropertiesReviveProperties_FromDictError(Exception):
+class PVPropertiesReviveProperties_FromDictError(Exception):
     def __init__(self, _expected_types, _input_type):
         self.msg = 'Error: Expected type of "{}". Got: {}'.format(_expected_types, _input_type)
-        super(PvPropertiesReviveProperties_FromDictError, self).__init__(self.msg)
+        super(PVPropertiesReviveProperties_FromDictError, self).__init__(self.msg)
 
 
-class PvPropertiesReviveProperties(object):
+class PVPropertiesReviveProperties(object):
     """Honeybee-REVIVE Properties for storing REVIVE data."""
 
     def __init__(self, _host=None):
-        # type: (PvProperties | None) -> None
+        # type: (PVProperties | None) -> None
         self._host = _host
         self.id_num = 0
         self.cost = 0.0
@@ -35,7 +35,7 @@ class PvPropertiesReviveProperties(object):
 
     @property
     def host(self):
-        # type: () -> PvProperties | None
+        # type: () -> PVProperties | None
         return self._host
 
     @property
@@ -44,22 +44,22 @@ class PvPropertiesReviveProperties(object):
         return self.host.display_name if self.host else "No Host"
 
     def duplicate(self, new_host=None):
-        # type: (PvProperties | None) -> PvPropertiesReviveProperties
+        # type: (PVProperties | None) -> PVPropertiesReviveProperties
         """Duplicate this object with a new host.
 
         Arguments:
         ----------
-            * new_host (PvProperties| None): The new host for the duplicated object.
+            * new_host (PVProperties| None): The new host for the duplicated object.
 
         Returns:
         --------
-            * (PvPropertiesReviveProperties): The duplicated object.
+            * (PVPropertiesReviveProperties): The duplicated object.
         """
 
         return self.__copy__(new_host)
 
     def __copy__(self, new_host=None):
-        # type: (PvProperties | None) -> PvPropertiesReviveProperties
+        # type: (PVProperties | None) -> PVPropertiesReviveProperties
         host = new_host or self.host
         new_obj = self.__class__(host)
         new_obj.id_num = self.id_num
@@ -83,9 +83,9 @@ class PvPropertiesReviveProperties(object):
 
         d = {}
         if abridged:
-            d["type"] = "PvPropertiesRevivePropertiesAbridged"
+            d["type"] = "PVPropertiesRevivePropertiesAbridged"
         else:
-            d["type"] = "PvPropertiesReviveProperties"
+            d["type"] = "PVPropertiesReviveProperties"
         d["id_num"] = self.id_num
         d["cost"] = self.cost
         d["labor_fraction"] = self.labor_fraction
@@ -94,25 +94,25 @@ class PvPropertiesReviveProperties(object):
 
     @classmethod
     def from_dict(cls, _input_dict, _host):
-        # type: (dict, PvProperties | None) -> PvPropertiesReviveProperties
+        # type: (dict, PVProperties | None) -> PVPropertiesReviveProperties
         """Create an object from a dictionary.
 
         Arguments:
         ----------
             * _input_dict (dict): The dictionary to create the object from.
-            * host (PvProperties | None): The host for the new object.
+            * host (PVProperties | None): The host for the new object.
 
         Returns:
         --------
-            * (PvPropertiesReviveProperties): The new object.
+            * (PVPropertiesReviveProperties): The new object.
         """
 
         valid_types = (
-            "PvPropertiesReviveProperties",
-            "PvPropertiesRevivePropertiesAbridged",
+            "PVPropertiesReviveProperties",
+            "PVPropertiesRevivePropertiesAbridged",
         )
         if _input_dict["type"] not in valid_types:
-            raise PvPropertiesReviveProperties_FromDictError(valid_types, _input_dict["type"])
+            raise PVPropertiesReviveProperties_FromDictError(valid_types, _input_dict["type"])
         new_obj = cls(_host)
         new_obj.id_num = _input_dict["id_num"]
         new_obj.cost = _input_dict["cost"]
@@ -124,7 +124,7 @@ class PvPropertiesReviveProperties(object):
         return self.__repr__()
 
     def __repr__(self):
-        return "HBE-PvPropertiesRevive Phius REVIVE Property: [host: {}]".format(self.host_name)
+        return "HBE-PVPropertiesRevive Phius REVIVE Property: [host: {}]".format(self.host_name)
 
     def ToString(self):
         return str(self)

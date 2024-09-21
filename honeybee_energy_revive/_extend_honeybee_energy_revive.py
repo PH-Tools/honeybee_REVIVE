@@ -89,7 +89,7 @@ from honeybee_energy_revive.properties.load.lighting import LightingReviveProper
 from honeybee_energy_revive.properties.load.people import PeopleReviveProperties
 from honeybee_energy_revive.properties.construction.shade import ShadeConstructionReviveProperties
 from honeybee_energy_revive.properties.load.process import ProcessReviveProperties
-from honeybee_energy_revive.properties.generator.pv import PvPropertiesReviveProperties
+from honeybee_energy_revive.properties.generator.pv import PVPropertiesReviveProperties
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
@@ -258,7 +258,7 @@ def process_load_revive_properties(self):
 
 def pv_properties_revive_properties(self):
     if self._revive is None:
-        self._revive = PvPropertiesReviveProperties(self.host)
+        self._revive = PVPropertiesReviveProperties(self.host)
     return self._revive
 
 
