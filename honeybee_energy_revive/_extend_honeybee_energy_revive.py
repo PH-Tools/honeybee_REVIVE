@@ -36,13 +36,14 @@ from honeybee_energy.properties.extension import (
     EnergyWindowMaterialGasMixtureProperties,
 )
 
-# -- Import the Honeybee-Energy Program Items
+# -- Import the Honeybee-Energy Program and HVAC Items
 from honeybee_energy.properties.extension import (
     ElectricEquipmentProperties,
     LightingProperties,
     PeopleProperties,
     ServiceHotWaterProperties,
     ProcessProperties,
+    PVPropertiesProperties,
 )
 from honeybee_energy.schedule.ruleset import ScheduleRulesetProperties
 
@@ -88,6 +89,7 @@ from honeybee_energy_revive.properties.load.lighting import LightingReviveProper
 from honeybee_energy_revive.properties.load.people import PeopleReviveProperties
 from honeybee_energy_revive.properties.construction.shade import ShadeConstructionReviveProperties
 from honeybee_energy_revive.properties.load.process import ProcessReviveProperties
+from honeybee_energy_revive.properties.generator.pv import PvPropertiesReviveProperties
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
@@ -120,7 +122,7 @@ setattr(ElectricEquipmentProperties, "_revive", None)
 setattr(PeopleProperties, "_revive", None)
 setattr(LightingProperties, "_revive", None)
 setattr(ProcessProperties, "_revive", None)
-
+setattr(PVPropertiesProperties, "_revive", None)
 
 # -----------------------------------------------------------------------------
 
@@ -254,6 +256,12 @@ def process_load_revive_properties(self):
     return self._revive
 
 
+def pv_properties_revive_properties(self):
+    if self._revive is None:
+        self._revive = PvPropertiesReviveProperties(self.host)
+    return self._revive
+
+
 # -----------------------------------------------------------------------------
 
 # Step 3)
@@ -291,3 +299,4 @@ setattr(PeopleProperties, "revive", property(people_revive_properties))
 setattr(LightingProperties, "revive", property(lighting_revive_properties))
 setattr(ScheduleRulesetProperties, "revive", property(schedule_ruleset_revive_properties))
 setattr(ProcessProperties, "revive", property(process_load_revive_properties))
+setattr(PVPropertiesProperties, "revive", property(pv_properties_revive_properties))

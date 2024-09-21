@@ -45,15 +45,37 @@ def test_lighting_revive_properties_to_dict(mock_host):
     lighting_props = LightingReviveProperties(mock_host)
     lighting_props.id_num = 5
 
-    expected_dict = {"revive": {"type": "LightingReviveProperties", "id_num": 5}}
+    expected_dict = {
+        "revive": {
+            "type": "LightingReviveProperties",
+            "id_num": 5,
+            "cost": 0.0,
+            "labor_fraction": 0.4,
+            "lifetime_years": 25,
+        }
+    }
     assert lighting_props.to_dict() == expected_dict
 
-    expected_abridged_dict = {"revive": {"type": "LightingRevivePropertiesAbridged", "id_num": 5}}
+    expected_abridged_dict = {
+        "revive": {
+            "type": "LightingRevivePropertiesAbridged",
+            "id_num": 5,
+            "cost": 0.0,
+            "labor_fraction": 0.4,
+            "lifetime_years": 25,
+        }
+    }
     assert lighting_props.to_dict(abridged=True) == expected_abridged_dict
 
 
 def test_lighting_revive_properties_from_dict(mock_host):
-    input_dict = {"type": "LightingReviveProperties", "id_num": 5}
+    input_dict = {
+        "type": "LightingReviveProperties",
+        "id_num": 5,
+        "cost": 0.0,
+        "labor_fraction": 0.4,
+        "lifetime_years": 25,
+    }
 
     lighting_props = LightingReviveProperties.from_dict(input_dict, mock_host)
     assert lighting_props.host == mock_host
