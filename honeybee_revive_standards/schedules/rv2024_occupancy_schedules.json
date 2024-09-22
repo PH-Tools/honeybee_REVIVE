@@ -1,0 +1,259 @@
+[
+    {
+        "day_schedules": [
+            {
+                "times": [
+                    [
+                        0,
+                        0
+                    ]
+                ],
+                "values": [
+                    1.0
+                ],
+                "type": "ScheduleDay",
+                "identifier": "PhiusRevive2024_Occupant_Activity_Day Schedule",
+                "interpolate": false
+            }
+        ],
+        "display_name": "PhiusRevive2024_Occupant_Activity",
+        "default_day_schedule": "PhiusRevive2024_Occupant_Activity_Day Schedule",
+        "properties": {},
+        "schedule_type_limit": {
+            "upper_limit": {
+                "type": "NoLimit"
+            },
+            "numeric_type": "Continuous",
+            "type": "ScheduleTypeLimit",
+            "identifier": "Activity Level",
+            "unit_type": "ActivityLevel",
+            "lower_limit": 0.0
+        },
+        "identifier": "PhiusRevive2024_Occupant_Activity",
+        "type": "ScheduleRuleset"
+    },
+    {
+        "identifier": "PhiusRevive2024_Occupant_Eff",
+        "display_name": "PhiusRevive2024_Occupant_Eff",
+        "default_day_schedule": "PhiusRevive2024_Occupant_Eff_Day_Schedule",
+        "type": "ScheduleRuleset",
+        "schedule_type_limit": {
+            "upper_limit": 1.0,
+            "unit_type": "Dimensionless",
+            "type": "ScheduleTypeLimit",
+            "numeric_type": "Continuous",
+            "identifier": "Fractional",
+            "lower_limit": 0.0
+        },
+        "day_schedules": [
+            {
+                "values": [
+                    0.0
+                ],
+                "type": "ScheduleDay",
+                "times": [
+                    [
+                        0,
+                        0
+                    ]
+                ],
+                "identifier": "PhiusRevive2024_Occupant_Eff_Day_Schedule",
+                "interpolate": false
+            }
+        ],
+        "properties": {}
+    },
+    {
+        "identifier": "PhiusRevive2024_Occupant_Clothing",
+        "display_name": "PhiusRevive2024_Occupant_Clothing",
+        "default_day_schedule": "WINTER_Day_Schedule",
+        "type": "ScheduleRuleset",
+        "summer_designday_schedule": "PhiusRevive2024_Occupant_Clothing_Schedule_SmrDsn",
+        "schedule_type_limit": {
+            "numeric_type": "Continuous",
+            "identifier": "Fractional",
+            "type": "ScheduleTypeLimit",
+            "unit_type": "Dimensionless",
+            "upper_limit": 1.0,
+            "lower_limit": 0.0
+        },
+        "day_schedules": [
+            {
+                "identifier": "WINTER_Day_Schedule",
+                "times": [
+                    [
+                        0,
+                        0
+                    ]
+                ],
+                "interpolate": false,
+                "type": "ScheduleDay",
+                "values": [
+                    1.0
+                ]
+            },
+            {
+                "identifier": "PhiusRevive2024_Occupant_Clothing_Schedule_SmrDsn",
+                "times": [
+                    [
+                        0,
+                        0
+                    ]
+                ],
+                "interpolate": false,
+                "type": "ScheduleDay",
+                "values": [
+                    0.29999999999999999
+                ]
+            },
+            {
+                "identifier": "PhiusRevive2024_Occupant_Clothing_Schedule_WntrDsn",
+                "times": [
+                    [
+                        0,
+                        0
+                    ]
+                ],
+                "interpolate": false,
+                "type": "ScheduleDay",
+                "values": [
+                    1.0
+                ]
+            },
+            {
+                "identifier": "WINTER_Day_Schedule",
+                "times": [
+                    [
+                        0,
+                        0
+                    ]
+                ],
+                "interpolate": false,
+                "type": "ScheduleDay",
+                "values": [
+                    1.0
+                ]
+            },
+            {
+                "identifier": "SUMMER_Day_Schedule",
+                "times": [
+                    [
+                        0,
+                        0
+                    ]
+                ],
+                "interpolate": false,
+                "type": "ScheduleDay",
+                "values": [
+                    0.29999999999999999
+                ]
+            },
+            {
+                "identifier": "WINTER_Day_Schedule",
+                "times": [
+                    [
+                        0,
+                        0
+                    ]
+                ],
+                "interpolate": false,
+                "type": "ScheduleDay",
+                "values": [
+                    1.0
+                ]
+            }
+        ],
+        "winter_designday_schedule": "PhiusRevive2024_Occupant_Clothing_Schedule_WntrDsn",
+        "schedule_rules": [
+            {
+                "apply_monday": true,
+                "apply_friday": true,
+                "apply_sunday": true,
+                "apply_thursday": true,
+                "apply_wednesday": true,
+                "start_date": [
+                    9,
+                    1
+                ],
+                "type": "ScheduleRuleAbridged",
+                "apply_tuesday": true,
+                "apply_saturday": true,
+                "end_date": [
+                    12,
+                    31
+                ],
+                "schedule_day": "WINTER_Day_Schedule"
+            },
+            {
+                "apply_monday": true,
+                "apply_friday": true,
+                "apply_sunday": true,
+                "apply_thursday": true,
+                "apply_wednesday": true,
+                "start_date": [
+                    5,
+                    1
+                ],
+                "type": "ScheduleRuleAbridged",
+                "apply_tuesday": true,
+                "apply_saturday": true,
+                "end_date": [
+                    9,
+                    30
+                ],
+                "schedule_day": "SUMMER_Day_Schedule"
+            },
+            {
+                "apply_monday": true,
+                "apply_friday": true,
+                "apply_sunday": true,
+                "apply_thursday": true,
+                "apply_wednesday": true,
+                "start_date": [
+                    1,
+                    1
+                ],
+                "type": "ScheduleRuleAbridged",
+                "apply_tuesday": true,
+                "apply_saturday": true,
+                "end_date": [
+                    4,
+                    30
+                ],
+                "schedule_day": "WINTER_Day_Schedule"
+            }
+        ],
+        "properties": {}
+    },
+    {
+        "default_day_schedule": "PhiusRevive2024_Occupant_Presence_Day_Schedule",
+        "identifier": "PhiusRevive2024_Occupant_Presence",
+        "display_name": "PhiusRevive2024_Occupant_Presence",
+        "type": "ScheduleRuleset",
+        "schedule_type_limit": {
+            "numeric_type": "Continuous",
+            "identifier": "Fractional",
+            "type": "ScheduleTypeLimit",
+            "unit_type": "Dimensionless",
+            "upper_limit": 1.0,
+            "lower_limit": 0.0
+        },
+        "day_schedules": [
+            {
+                "identifier": "PhiusRevive2024_Occupant_Presence_Day_Schedule",
+                "times": [
+                    [
+                        0,
+                        0
+                    ]
+                ],
+                "interpolate": false,
+                "type": "ScheduleDay",
+                "values": [
+                    1.0
+                ]
+            }
+        ],
+        "properties": {}
+    }
+]

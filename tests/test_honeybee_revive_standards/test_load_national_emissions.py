@@ -62,7 +62,7 @@ def test_load_national_emissions_from_json_file_invalid_path():
 
 
 def test_sample_file_from_standards_library():
-    filepath = Path("honeybee_revive_standards/national_emission_factors/phius_revive_2024_national_emissions.json")
+    filepath = Path("honeybee_revive_standards/national_emission_factors/rv2024_national_emissions.json")
     results = load_national_emissions_from_json_file(str(filepath))
 
     assert isinstance(results, dict)

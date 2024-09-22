@@ -7,8 +7,8 @@ from honeybee_energy.load.process import Process
 
 
 def test_load_sample_file_from_abridged_standards_library():
-    appliance_filepath = Path("honeybee_revive_standards/appliances/phius_revive_2024_appliances_abridged.json")
-    schedule_filepath = Path("honeybee_revive_standards/schedules/phius_revive_2024_schedules.json")
+    appliance_filepath = Path("honeybee_revive_standards/appliances/rv2024_appliances_abridged.json")
+    schedule_filepath = Path("honeybee_revive_standards/schedules/rv2024_appliance_schedules.json")
     results = load_abridged_appliances_from_json_file(str(appliance_filepath), str(schedule_filepath))
 
     assert isinstance(results, dict)

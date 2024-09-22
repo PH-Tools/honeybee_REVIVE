@@ -1,0 +1,62 @@
+[
+    {
+        "type": "ProgramTypeAbridged",
+        "identifier": "rv2024_Residence",
+        "display_name": "rv2024_Residence",
+        "lighting": {
+            "display_name": "rv2024_Residence_Lighting",
+            "return_air_fraction": 0.0,
+            "radiant_fraction": 0.59999999999999998,
+            "visible_fraction": 0.20000000000000001,
+            "properties": {},
+            "watts_per_area": 10.0,
+            "type": "LightingAbridged",
+            "identifier": "rv2024_Residence_Lighting",
+            "schedule": "PhiusRevive2024_Lighting"
+        },
+        "service_hot_water": {
+            "latent_fraction": 0.050000000000000003,
+            "display_name": "rv2024_Residence_ServiceHotWater",
+            "sensible_fraction": 0.20000000000000001,
+            "flow_per_area": 1.0,
+            "target_temperature": 60.0,
+            "properties": {},
+            "type": "ServiceHotWaterAbridged",
+            "identifier": "rv2024_Residence_ServiceHotWater",
+            "schedule": "PhiusRevive2024_Combined_HotWater"
+        },
+        "setpoint": {
+            "heating_schedule": "PhiusRevive2024_Heating_Setpoint",
+            "cooling_schedule": "PhiusRevive2024_Cooling_Setpoint",
+            "display_name": "rv2024_Residence_SetPoint",
+            "dehumidifying_schedule": "rv2024_Residence_SetPoint_DeHumidSetp",
+            "type": "SetpointAbridged",
+            "identifier": "rv2024_Residence_SetPoint",
+            "humidifying_schedule": "HumidNoLimit"
+        },
+        "electric_equipment": {
+            "latent_fraction": 0.0,
+            "display_name": "rv2024_Residence_ElectricEquipment",
+            "radiant_fraction": 0.0,
+            "properties": {},
+            "watts_per_area": 10.0,
+            "type": "ElectricEquipmentAbridged",
+            "identifier": "rv2024_Residence_ElectricEquipment",
+            "schedule": "PhiusRevive2024_MEL",
+            "lost_fraction": 0.0
+        },
+        "people": {
+            "activity_schedule": "PhiusRevive2024_Occupant_Activity",
+            "latent_fraction": {
+                "type": "Autocalculate"
+            },
+            "people_per_area": 1.0,
+            "display_name": "rv2024_Residence_People",
+            "radiant_fraction": 0.29999999999999999,
+            "properties": {},
+            "occupancy_schedule": "PhiusRevive2024_Occupant_Presence",
+            "type": "PeopleAbridged",
+            "identifier": "rv2024_Residence_People"
+        }
+    }
+]
