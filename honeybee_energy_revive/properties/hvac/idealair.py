@@ -16,7 +16,7 @@ except ImportError as e:
     raise ImportError("\nFailed to import honeybee_energy:\n\t{}".format(e))
 
 try:
-    from honeybee_energy_revive.hvac.equipment import PhiusReviveHVACEquipmentCollection
+    from honeybee_energy_revive.hvac.equipment import PhiusReviveHVACEquipmentCollection, PhiusReviveHVACEquipment
 except ImportError as e:
     raise ImportError("\nFailed to import honeybee_energy_revive:\n\t{}".format(e))
 
@@ -44,6 +44,16 @@ class IdealAirSystemReviveProperties(object):
     def host_name(self):
         # type: () -> str
         return self.host.display_name if self.host else "No Host"
+
+    def add_equipment(self, equipment):
+        # type: (PhiusReviveHVACEquipment) -> None
+        """Add equipment to the equipment collection.
+
+        Arguments:
+        ----------
+            * equipment (PhiusReviveHVACEquipment): The equipment to add.
+        """
+        self.equipment_collection.add_equipment(equipment)
 
     def duplicate(self, new_host=None):
         # type: (IdealAirSystem | None) -> IdealAirSystemReviveProperties

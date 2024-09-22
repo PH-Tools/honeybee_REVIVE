@@ -84,6 +84,7 @@ class PhiusReviveHVACEquipmentCollection(object):
 
     def __init__(self):
         self._equipment = {}  # type: dict[str, PhiusReviveHVACEquipment]
+        self._iter = iter(self.equipment)
 
     @property
     def equipment(self):
@@ -110,7 +111,7 @@ class PhiusReviveHVACEquipmentCollection(object):
         else:
             d["type"] = "PhiusReviveHVACEquipmentCollection"
         d["equipment"] = [equip.to_dict(abridged) for equip in self.equipment]
-        return {"revive": d}
+        return d
 
     @classmethod
     def from_dict(cls, _input_dict):
@@ -135,8 +136,13 @@ class PhiusReviveHVACEquipmentCollection(object):
         return len(self._equipment)
 
     def __iter__(self):
-        # type: () -> Iterable[PhiusReviveHVACEquipment]
-        return iter(self._equipment.values())
+        # type: () -> PhiusReviveHVACEquipmentCollection
+        self._iter = iter(self.equipment)
+        return self
+
+    def __next__(self):
+        # type: () -> PhiusReviveHVACEquipment
+        return next(self._iter)
 
     def __str__(self):
         # type: () -> str
