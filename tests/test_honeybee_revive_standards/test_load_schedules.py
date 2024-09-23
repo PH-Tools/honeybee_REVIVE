@@ -34,6 +34,16 @@ def test_load_hot_water_schedules_from_standards_library():
         assert isinstance(schedule_, ScheduleRuleset)
 
 
+def test_load_infiltration_schedules_from_standards_library():
+    filepath = Path("honeybee_revive_standards/schedules/rv2024_infiltration_schedules.json")
+    results = load_schedules_from_json_file(str(filepath))
+
+    assert isinstance(results, dict)
+    assert len(results) > 0
+    for schedule_ in results.values():
+        assert isinstance(schedule_, ScheduleRuleset)
+
+
 def test_load_lighting_schedules_from_standards_library():
     filepath = Path("honeybee_revive_standards/schedules/rv2024_lighting_schedules.json")
     results = load_schedules_from_json_file(str(filepath))
