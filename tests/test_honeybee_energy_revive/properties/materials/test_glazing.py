@@ -1,9 +1,10 @@
 from ph_units.unit_type import Unit
 from pytest import raises
+
 from honeybee_energy_revive.properties.materials.glazing import (
     EnergyWindowMaterialGlazingReviveProperties,
-    EnergyWindowMaterialSimpleGlazSysReviveProperties,
     EnergyWindowMaterialGlazingReviveProperties_FromDictError,
+    EnergyWindowMaterialSimpleGlazSysReviveProperties,
 )
 
 # -- EnergyWindowMaterialGlazingReviveProperties --

@@ -1,15 +1,14 @@
 from honeybee.model import Model
-
-from honeybee_energy.hvac.doas.vrf import VRFwithDOAS
 from honeybee_energy.hvac.allair.furnace import ForcedAirFurnace
+from honeybee_energy.hvac.doas.vrf import VRFwithDOAS
 from honeybee_energy.hvac.heatcool.vrf import VRF
 from honeybee_energy.hvac.idealair import IdealAirSystem
 
 from honeybee_energy_revive.hvac.equipment import PhiusReviveHVACEquipment
-from honeybee_energy_revive.properties.hvac.heatcool import HeatCoolSystemReviveProperties
-from honeybee_energy_revive.properties.hvac.idealair import IdealAirSystemReviveProperties
 from honeybee_energy_revive.properties.hvac.allair import AllAirSystemReviveProperties
 from honeybee_energy_revive.properties.hvac.doas import DOASSystemReviveProperties
+from honeybee_energy_revive.properties.hvac.heatcool import HeatCoolSystemReviveProperties
+from honeybee_energy_revive.properties.hvac.idealair import IdealAirSystemReviveProperties
 
 
 def test_doas_hvac_with_no_equipment_dict_roundtrip(test_hb_model: Model):

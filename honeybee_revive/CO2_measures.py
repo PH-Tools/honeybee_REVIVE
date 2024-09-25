@@ -8,22 +8,6 @@ try:
 except ImportError:
     pass  # Python 2.7
 
-try:
-    from honeybee_ph_utils.enumerables import CustomEnum
-except ImportError as e:
-    raise ImportError("\nFailed to import honeybee_ph_utils:\n\t{}".format(e))
-
-
-class CO2ReductionMeasureType(CustomEnum):
-    allowed = [
-        "PERFORMANCE",
-        "NON_PERFORMANCE",
-    ]
-
-    def __init__(self, _value=1):
-        # type: (str | int) -> None
-        super(CO2ReductionMeasureType, self).__init__(_value, _index_offset=-1)
-
 
 class CO2ReductionMeasure(object):
     def __init__(
@@ -37,7 +21,7 @@ class CO2ReductionMeasure(object):
         labor_fraction=0.4,
     ):
         self.name = name
-        self.measure_type = CO2ReductionMeasureType(measure_type)
+        self._measure_type = measure_type
         self.year = year
         self.cost = cost
         self.kg_CO2 = kg_CO2
@@ -47,15 +31,26 @@ class CO2ReductionMeasure(object):
     @property
     def unique_id(self):
         # type: () -> str
-        return "{}-{}-{}-{}-{}".format(
-            self.name, self.measure_type.number, self.year, int(self.cost), self.labor_fraction
-        )
+        return "{}-{}-{}-{}-{}".format(self.name, self.measure_type, self.year, int(self.cost), self.labor_fraction)
+
+    @property
+    def measure_type(self):
+        # type: () -> str
+        return self._measure_type
+
+    @measure_type.setter
+    def measure_type(self, _input):
+        # type: (str) -> None
+        _input = str(_input).upper().strip()
+        if _input not in ["PERFORMANCE", "NON_PERFORMANCE"]:
+            raise ValueError("Measure type must be either 'PERFORMANCE' or 'COST'.")
+        self._measure_type = _input
 
     def to_dict(self):
         # type: () -> dict
         d = {}
         d["type"] = "CO2ReductionMeasure"
-        d["measure_type"] = self.measure_type.value
+        d["measure_type"] = self.measure_type
         d["name"] = self.name
         d["year"] = self.year
         d["cost"] = self.cost
@@ -71,7 +66,7 @@ class CO2ReductionMeasure(object):
             raise ValueError("The supplied dict is not a CO2ReductionMeasure? Got: {}".format(_dict["type"]))
 
         measure = cls()
-        measure.measure_type = CO2ReductionMeasureType(_dict["measure_type"])
+        measure.measure_type = _dict["measure_type"]
         measure.name = _dict["name"]
         measure.year = _dict["year"]
         measure.cost = _dict["cost"]

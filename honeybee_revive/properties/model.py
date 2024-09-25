@@ -26,9 +26,9 @@ except ImportError as e:
     raise ImportError("\nFailed to import honeybee:\n\t{}".format(e))
 
 try:
+    from honeybee_revive.CO2_measures import CO2ReductionMeasureCollection
     from honeybee_revive.grid_region import GridRegion
     from honeybee_revive.national_emissions import NationalEmissionsFactors
-    from honeybee_revive.CO2_measures import CO2ReductionMeasureCollection
 
     if TYPE_CHECKING:
         from honeybee_revive.properties.aperture import ApertureReviveProperties

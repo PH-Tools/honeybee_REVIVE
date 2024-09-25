@@ -1,10 +1,11 @@
 from ph_units.unit_type import Unit
 from pytest import raises
+
 from honeybee_energy_revive.properties.materials.gas import (
-    EnergyWindowMaterialGasReviveProperties_FromDictError,
-    EnergyWindowMaterialGasReviveProperties,
-    EnergyWindowMaterialGasMixtureReviveProperties,
     EnergyWindowMaterialGasCustomReviveProperties,
+    EnergyWindowMaterialGasMixtureReviveProperties,
+    EnergyWindowMaterialGasReviveProperties,
+    EnergyWindowMaterialGasReviveProperties_FromDictError,
 )
 
 # --  EnergyWindowMaterialGasReviveProperties --

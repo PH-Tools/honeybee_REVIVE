@@ -1,10 +1,11 @@
 from ph_units.unit_type import Unit
 from pytest import raises
+
 from honeybee_energy_revive.properties.materials.opaque import (
-    EnergyMaterialReviveProperties,
     EnergyMaterialNoMassReviveProperties,
-    EnergyMaterialVegetationReviveProperties,
+    EnergyMaterialReviveProperties,
     EnergyMaterialReviveProperties_FromDictError,
+    EnergyMaterialVegetationReviveProperties,
 )
 
 # -- EnergyMaterialReviveProperties --

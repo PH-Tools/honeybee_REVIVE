@@ -1,8 +1,7 @@
 import pytest
-
+from honeybee.face import Face, Face3D
 from honeybee.model import Model
 from honeybee.room import Room
-from honeybee.face import Face, Face3D
 from ladybug_geometry.geometry3d import Point3D
 
 # --- Create the actual model

@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import Mock
+
+import pytest
 
 from honeybee_energy_revive.properties.ruleset import (
     ScheduleRulesetReviveProperties,

@@ -1,13 +1,4 @@
-honeybee-core>=1.58.48
-honeybee-energy>=1.109.0
-honeybee-ph>=1.28.15
-honeybee-schema>=1.58.4
-honeybee-standards>=2.0.6
-ladybug-core>=0.43.5
-ladybug-geometry>=1.33.1
-ladybug-rhino>=1.42.15
-PH-units>=1.5.12
-PHX>=1.47.6
+honeybee-energy>=1.109.1
+PH-units>=1.5.13
 pydantic>=1.10.18
 rich>=13.8.1
-xlwings>=0.32.2

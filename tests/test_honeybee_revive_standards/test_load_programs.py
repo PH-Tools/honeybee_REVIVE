@@ -1,7 +1,9 @@
 from pathlib import Path
+
+from honeybee_energy.programtype import ProgramType
+
 from honeybee_revive_standards.programtypes._load_programs import load_programs_from_json_file
 from honeybee_revive_standards.schedules._load_schedules import load_schedules_from_json_file
-from honeybee_energy.programtype import ProgramType
 
 
 def test_load_appliance_schedules_from_standards_library():

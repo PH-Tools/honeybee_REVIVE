@@ -1,9 +1,11 @@
-import pytest
-import tempfile
 import json
+import tempfile
 from pathlib import Path
-from honeybee_revive_standards.CO2_measures._load_CO2_measures import load_CO2_measures_from_json_file
+
+import pytest
+
 from honeybee_revive.CO2_measures import CO2ReductionMeasure
+from honeybee_revive_standards.CO2_measures._load_CO2_measures import load_CO2_measures_from_json_file
 
 
 def test_CO2_measure_json_round_trip():

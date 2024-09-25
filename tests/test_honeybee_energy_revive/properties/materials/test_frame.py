@@ -1,8 +1,9 @@
 from ph_units.unit_type import Unit
 from pytest import raises
+
 from honeybee_energy_revive.properties.materials.frame import (
-    EnergyWindowFrameReviveProperties_FromDictError,
     EnergyWindowFrameReviveProperties,
+    EnergyWindowFrameReviveProperties_FromDictError,
 )
 
 # --  EnergyWindowFrameReviveProperties --

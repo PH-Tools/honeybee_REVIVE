@@ -11,7 +11,7 @@ except ImportError:
 
 try:
     if TYPE_CHECKING:
-        from honeybee_energy.material.shade import EnergyWindowMaterialShade, EnergyWindowMaterialBlind
+        from honeybee_energy.material.shade import EnergyWindowMaterialBlind, EnergyWindowMaterialShade
 except ImportError as e:
     raise ImportError("Failed to import honeybee_energy_ph: {}".format(e))
 

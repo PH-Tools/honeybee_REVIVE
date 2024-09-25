@@ -16,7 +16,7 @@ except ImportError as e:
     raise ImportError("\nFailed to import honeybee_energy:\n\t{}".format(e))
 
 try:
-    from honeybee_energy_revive.hvac.equipment import PhiusReviveHVACEquipmentCollection, PhiusReviveHVACEquipment
+    from honeybee_energy_revive.hvac.equipment import PhiusReviveHVACEquipment, PhiusReviveHVACEquipmentCollection
 except ImportError as e:
     raise ImportError("\nFailed to import honeybee_energy_revive:\n\t{}".format(e))
 

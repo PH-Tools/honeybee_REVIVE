@@ -1,10 +1,8 @@
-import pytest
 from unittest.mock import Mock
 
-from honeybee_energy_revive.properties.load.people import (
-    PeopleReviveProperties,
-    PeopleReviveProperties_FromDictError,
-)
+import pytest
+
+from honeybee_energy_revive.properties.load.people import PeopleReviveProperties, PeopleReviveProperties_FromDictError
 
 
 @pytest.fixture

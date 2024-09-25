@@ -1,9 +1,11 @@
-import pytest
 from unittest.mock import Mock
-from honeybee_revive.properties.model import ModelReviveProperties
+
+import pytest
+
+from honeybee_revive.CO2_measures import CO2ReductionMeasureCollection
 from honeybee_revive.grid_region import GridRegion
 from honeybee_revive.national_emissions import NationalEmissionsFactors
-from honeybee_revive.CO2_measures import CO2ReductionMeasureCollection
+from honeybee_revive.properties.model import ModelReviveProperties
 
 
 @pytest.fixture

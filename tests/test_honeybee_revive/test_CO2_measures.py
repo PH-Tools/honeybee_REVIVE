@@ -1,4 +1,5 @@
 import pytest
+
 from honeybee_revive.CO2_measures import CO2ReductionMeasure, CO2ReductionMeasureCollection
 
 
@@ -13,7 +14,7 @@ def test_CO2ReductionMeasure_initialization():
         labor_fraction=0.5,
     )
     assert measure.name == "Test Measure"
-    assert measure.measure_type.value == "PERFORMANCE"
+    assert measure.measure_type == "PERFORMANCE"
     assert measure.year == 2022
     assert measure.cost == 10000.0
     assert measure.kg_CO2 == 500.0
@@ -61,7 +62,7 @@ def test_CO2ReductionMeasure_from_dict():
     }
     measure = CO2ReductionMeasure.from_dict(measure_dict)
     assert measure.name == "Test Measure"
-    assert measure.measure_type.value == "PERFORMANCE"
+    assert measure.measure_type == "PERFORMANCE"
     assert measure.year == 2022
     assert measure.cost == 10000.0
     assert measure.kg_CO2 == 500.0
@@ -95,7 +96,7 @@ def test_CO2ReductionMeasureCollection_to_dict():
 
 def test_CO2ReductionMeasureCollection_from_dict():
     collection_dict = {
-        "Measure 1-1-60-8500-0.4": {
+        "Measure 1-PERFORMANCE-60-8500-0.4": {
             "type": "CO2ReductionMeasure",
             "name": "Measure 1",
             "measure_type": "PERFORMANCE",
@@ -105,7 +106,7 @@ def test_CO2ReductionMeasureCollection_from_dict():
             "country_name": "USA",
             "labor_fraction": 0.4,
         },
-        "Measure 2-2-60-8500-0.4": {
+        "Measure 2-NON_PERFORMANCE-60-8500-0.4": {
             "type": "CO2ReductionMeasure",
             "name": "Measure 2",
             "measure_type": "NON_PERFORMANCE",
@@ -118,8 +119,8 @@ def test_CO2ReductionMeasureCollection_from_dict():
     }
     collection = CO2ReductionMeasureCollection.from_dict(collection_dict)
     assert len(collection) == 2
-    assert "Measure 1-1-60-8500-0.4" in collection
-    assert "Measure 2-2-60-8500-0.4" in collection
+    assert "Measure 1-PERFORMANCE-60-8500-0.4" in collection
+    assert "Measure 2-NON_PERFORMANCE-60-8500-0.4" in collection
 
 
 def test_non_CO2Measure_dict_from_dict_raises_error():

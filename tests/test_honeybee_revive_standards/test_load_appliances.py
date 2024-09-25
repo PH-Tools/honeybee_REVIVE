@@ -1,9 +1,9 @@
-import pytest
 from pathlib import Path
-from honeybee_revive_standards.appliances._load_appliances import (
-    load_abridged_appliances_from_json_file,
-)
+
+import pytest
 from honeybee_energy.load.process import Process
+
+from honeybee_revive_standards.appliances._load_appliances import load_abridged_appliances_from_json_file
 
 
 def test_load_sample_file_from_abridged_standards_library():

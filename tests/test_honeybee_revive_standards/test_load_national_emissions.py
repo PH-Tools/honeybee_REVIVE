@@ -1,11 +1,13 @@
 import json
-import pytest
 import tempfile
 from pathlib import Path
+
+import pytest
+
+from honeybee_revive.national_emissions import NationalEmissionsFactors
 from honeybee_revive_standards.national_emission_factors._load_national_emissions import (
     load_national_emissions_from_json_file,
 )
-from honeybee_revive.national_emissions import NationalEmissionsFactors
 
 
 def test_load_national_emissions_from_json_file_valid():

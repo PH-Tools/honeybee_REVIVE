@@ -1,5 +1,7 @@
-import pytest
 from unittest.mock import Mock
+
+import pytest
+
 from honeybee_revive.properties.aperture import ApertureReviveProperties
 
 

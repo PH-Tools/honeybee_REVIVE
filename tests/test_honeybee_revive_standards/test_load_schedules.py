@@ -1,7 +1,9 @@
-import pytest
 from pathlib import Path
-from honeybee_revive_standards.schedules._load_schedules import load_schedules_from_json_file
+
+import pytest
 from honeybee_energy.schedule.ruleset import ScheduleRuleset
+
+from honeybee_revive_standards.schedules._load_schedules import load_schedules_from_json_file
 
 
 def test_load_appliance_schedules_from_standards_library():

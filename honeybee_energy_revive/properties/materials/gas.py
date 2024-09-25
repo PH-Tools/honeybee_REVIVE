@@ -13,8 +13,8 @@ try:
     if TYPE_CHECKING:
         from honeybee_energy.material.gas import (
             EnergyWindowMaterialGas,
-            EnergyWindowMaterialGasMixture,
             EnergyWindowMaterialGasCustom,
+            EnergyWindowMaterialGasMixture,
         )
 except ImportError as e:
     raise ImportError("Failed to import honeybee_energy_ph: {}".format(e))

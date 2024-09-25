@@ -13,44 +13,79 @@
 
 import honeybee_energy
 
+# -- Import the Honeybee-Energy Program and HVAC Items
+# -- Import the Honeybee-Energy Materials
 # -- Import the Honeybee-Energy Constructions
 from honeybee_energy.properties.extension import (
-    OpaqueConstructionProperties,
-    WindowConstructionProperties,
-    WindowConstructionShadeProperties,
-    ShadeConstructionProperties,
-)
-
-# -- Import the Honeybee-Energy Materials
-from honeybee_energy.properties.extension import (
+    AllAirSystemProperties,
+    DOASSystemProperties,
+    ElectricEquipmentProperties,
     EnergyMaterialNoMassProperties,
     EnergyMaterialProperties,
     EnergyMaterialVegetationProperties,
-    EnergyWindowMaterialGlazingsProperties,
-    EnergyWindowMaterialSimpleGlazSysProperties,
-    EnergyWindowMaterialShadeProperties,
-    EnergyWindowMaterialBlindProperties,
     EnergyWindowFrameProperties,
-    EnergyWindowMaterialGasProperties,
+    EnergyWindowMaterialBlindProperties,
     EnergyWindowMaterialGasCustomProperties,
     EnergyWindowMaterialGasMixtureProperties,
-)
-
-# -- Import the Honeybee-Energy Program and HVAC Items
-from honeybee_energy.properties.extension import (
-    ElectricEquipmentProperties,
-    LightingProperties,
-    PeopleProperties,
-    ServiceHotWaterProperties,
-    ProcessProperties,
-    PVPropertiesProperties,
-    AllAirSystemProperties,
-    DOASSystemProperties,
+    EnergyWindowMaterialGasProperties,
+    EnergyWindowMaterialGlazingsProperties,
+    EnergyWindowMaterialShadeProperties,
+    EnergyWindowMaterialSimpleGlazSysProperties,
     HeatCoolSystemProperties,
     IdealAirSystemProperties,
+    LightingProperties,
+    OpaqueConstructionProperties,
+    PeopleProperties,
+    ProcessProperties,
+    PVPropertiesProperties,
+    ServiceHotWaterProperties,
+    ShadeConstructionProperties,
+    WindowConstructionProperties,
+    WindowConstructionShadeProperties,
 )
 from honeybee_energy.schedule.ruleset import ScheduleRulesetProperties
 
+# -- Constructions
+from honeybee_energy_revive.properties.construction.opaque import OpaqueConstructionReviveProperties
+from honeybee_energy_revive.properties.construction.shade import ShadeConstructionReviveProperties
+from honeybee_energy_revive.properties.construction.window import WindowConstructionReviveProperties
+from honeybee_energy_revive.properties.construction.windowshade import WindowConstructionShadeReviveProperties
+from honeybee_energy_revive.properties.generator.pv import PVPropertiesReviveProperties
+from honeybee_energy_revive.properties.hot_water.hw_program import ServiceHotWaterReviveProperties
+
+# -- HVAC
+from honeybee_energy_revive.properties.hvac.allair import AllAirSystemReviveProperties
+from honeybee_energy_revive.properties.hvac.doas import DOASSystemReviveProperties
+from honeybee_energy_revive.properties.hvac.heatcool import HeatCoolSystemReviveProperties
+from honeybee_energy_revive.properties.hvac.idealair import IdealAirSystemReviveProperties
+from honeybee_energy_revive.properties.load.equipment import ElectricEquipmentReviveProperties
+from honeybee_energy_revive.properties.load.lighting import LightingReviveProperties
+from honeybee_energy_revive.properties.load.people import PeopleReviveProperties
+from honeybee_energy_revive.properties.load.process import ProcessReviveProperties
+from honeybee_energy_revive.properties.materials.frame import EnergyWindowFrameReviveProperties
+from honeybee_energy_revive.properties.materials.gas import (
+    EnergyWindowMaterialGasCustomReviveProperties,
+    EnergyWindowMaterialGasMixtureReviveProperties,
+    EnergyWindowMaterialGasReviveProperties,
+)
+from honeybee_energy_revive.properties.materials.glazing import (
+    EnergyWindowMaterialGlazingReviveProperties,
+    EnergyWindowMaterialSimpleGlazSysReviveProperties,
+)
+
+# -- Materials
+from honeybee_energy_revive.properties.materials.opaque import (
+    EnergyMaterialNoMassReviveProperties,
+    EnergyMaterialReviveProperties,
+    EnergyMaterialVegetationReviveProperties,
+)
+from honeybee_energy_revive.properties.materials.shade import (
+    EnergyWindowMaterialBlindReviveProperties,
+    EnergyWindowMaterialShadeReviveProperties,
+)
+
+# -- Program / Load
+from honeybee_energy_revive.properties.ruleset import ScheduleRulesetReviveProperties
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
@@ -59,47 +94,6 @@ from honeybee_energy.schedule.ruleset import ScheduleRulesetProperties
 # -----------------------------------------------------------------------------
 # -- Now that Honeybee-Energy is imported, import the relevant HB-REVIVE classes
 
-# -- Constructions
-from honeybee_energy_revive.properties.construction.opaque import OpaqueConstructionReviveProperties
-from honeybee_energy_revive.properties.construction.window import WindowConstructionReviveProperties
-from honeybee_energy_revive.properties.construction.windowshade import WindowConstructionShadeReviveProperties
-
-# -- Materials
-from honeybee_energy_revive.properties.materials.opaque import (
-    EnergyMaterialNoMassReviveProperties,
-    EnergyMaterialReviveProperties,
-    EnergyMaterialVegetationReviveProperties,
-)
-from honeybee_energy_revive.properties.materials.glazing import (
-    EnergyWindowMaterialGlazingReviveProperties,
-    EnergyWindowMaterialSimpleGlazSysReviveProperties,
-)
-from honeybee_energy_revive.properties.materials.shade import (
-    EnergyWindowMaterialShadeReviveProperties,
-    EnergyWindowMaterialBlindReviveProperties,
-)
-from honeybee_energy_revive.properties.materials.frame import EnergyWindowFrameReviveProperties
-from honeybee_energy_revive.properties.materials.gas import (
-    EnergyWindowMaterialGasCustomReviveProperties,
-    EnergyWindowMaterialGasReviveProperties,
-    EnergyWindowMaterialGasMixtureReviveProperties,
-)
-
-# -- Program / Load
-from honeybee_energy_revive.properties.ruleset import ScheduleRulesetReviveProperties
-from honeybee_energy_revive.properties.hot_water.hw_program import ServiceHotWaterReviveProperties
-from honeybee_energy_revive.properties.load.equipment import ElectricEquipmentReviveProperties
-from honeybee_energy_revive.properties.load.lighting import LightingReviveProperties
-from honeybee_energy_revive.properties.load.people import PeopleReviveProperties
-from honeybee_energy_revive.properties.construction.shade import ShadeConstructionReviveProperties
-from honeybee_energy_revive.properties.load.process import ProcessReviveProperties
-from honeybee_energy_revive.properties.generator.pv import PVPropertiesReviveProperties
-
-# -- HVAC
-from honeybee_energy_revive.properties.hvac.allair import AllAirSystemReviveProperties
-from honeybee_energy_revive.properties.hvac.doas import DOASSystemReviveProperties
-from honeybee_energy_revive.properties.hvac.heatcool import HeatCoolSystemReviveProperties
-from honeybee_energy_revive.properties.hvac.idealair import IdealAirSystemReviveProperties
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
