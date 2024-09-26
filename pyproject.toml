@@ -1,6 +1,6 @@
 [project]
 name = "honeybee-REVIVE"
-version = "0.0.2"
+version = "0.0.3"
 description = "A short description of your package"
 readme = "README.md"
 requires-python = ">=3.10"
