@@ -1,6 +1,0 @@
-black
-coverage
-isort
-pytest
-Grasshopper-stubs
-Rhino-stubs

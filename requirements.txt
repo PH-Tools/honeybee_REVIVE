@@ -1,4 +1,0 @@
-honeybee-energy>=1.109.1
-PH-units>=1.5.13
-pydantic>=1.10.18
-rich>=13.8.1

@@ -1,0 +1,18 @@
+recursive-include ph_adorb *
+recursive-exclude tests *
+recursive-exclude _coverage_html *
+recursive-exclude _reference *
+recursive-exclude .github *
+recursive-exclude .pytest_cache *
+recursive-exclude .venv *
+recursive-exclude .vscode *
+exclude .gitignore
+exclude .gitattributes
+exclude .coverage
+exclude MANIFEST.in
+include LICENSE
+include README.md
+include pyproject.toml
+global-exclude __pycache__
+global-exclude *.py[co]
+global-exclude .DS_Store

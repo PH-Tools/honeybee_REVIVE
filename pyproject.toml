@@ -1,25 +1,61 @@
 [project]
-name = "your-package-name"
-version = "0.1.0"
+name = "honeybee-REVIVE"
+version = "0.0.1"
 description = "A short description of your package"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
-authors = [{ name = "Your Name", email = "your.email@example.com" }]
-maintainers = [{ name = "Your Name", email = "your.email@example.com" }]
+license = { text = "GNU" }
+authors = [{ name = "Ed May", email = "phtools@bldgtyp.com" }]
+maintainers = [{ name = "Ed May", email = "phtools@bldgtyp.com" }]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: GNU License",
     "Operating System :: OS Independent",
 ]
-keywords = ["some", "keywords", "for", "your", "package"]
-dependencies = ["pandas>=1.0", "numpy>=1.18"]
+keywords = [
+    "Honeybee",
+    "Honeybee-Energy",
+    "Passive House",
+    "Building Retrofit",
+    "Architecture",
+    "Energy Modeling",
+    "PHIUS",
+    "ADORB",
+    "Carbon Emissions",
+    "Embodied Carbon",
+    "Embodied CO2",
+]
+dependencies = [
+    "honeybee-energy>=1.109.1",
+    "ph-units>=1.5.13",
+    "pydantic<=1.10.18",
+    "rich>=13.8.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "isort",
+    "pytest",
+    "coverage",
+    "Grasshopper-stubs",
+    "Rhino-stubs",
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = [
+    "honeybee_energy_revive",
+    "honeybee_revive",
+    "honeybee_revive_standards",
+]
 
 [project.urls]
-homepage = "https://example.com"
-repository = "https://github.com/yourusername/your-repo"
-documentation = "https://example.com/docs"
-changelog = "https://example.com/changelog"
+homepage = "https://www.passivehousetools.com/"
+repository = "https://github.com/PH-Tools/honeybee_REVIVE/tree/main"
 
 [tool.coverage.run]
 command_line = "-m pytest tests"
@@ -36,7 +72,6 @@ omit = [
     "*.venv_mbair/*",
     "honeybee_revive_standards/cambium_factors/_generate_json_files.py",
 ]
-
 
 [tool.coverage.report]
 show_missing = true
