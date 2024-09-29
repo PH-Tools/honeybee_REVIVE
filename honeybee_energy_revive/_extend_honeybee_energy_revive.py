@@ -37,12 +37,20 @@ from honeybee_energy.properties.extension import (
     OpaqueConstructionProperties,
     PeopleProperties,
     ProcessProperties,
-    PVPropertiesProperties,
     ServiceHotWaterProperties,
     ShadeConstructionProperties,
     WindowConstructionProperties,
     WindowConstructionShadeProperties,
 )
+
+try:
+    from honeybee_energy.properties.extension import PVPropertiesProperties
+except ImportError:
+    # -- Until Chris merges the PR, we need to use the MockPVPropertiesProperties
+    # -- https://github.com/ladybug-tools/honeybee-energy
+    from honeybee_energy_revive.properties.generator.pv import MockPVPropertiesProperties as PVPropertiesProperties
+
+
 from honeybee_energy.schedule.ruleset import ScheduleRulesetProperties
 
 # -- Constructions

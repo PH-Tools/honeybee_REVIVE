@@ -128,3 +128,9 @@ class PVPropertiesReviveProperties(object):
 
     def ToString(self):
         return str(self)
+
+
+class MockPVPropertiesProperties(object):
+
+    def __init__(self):
+        pass
