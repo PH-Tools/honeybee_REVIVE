@@ -26,7 +26,7 @@ This package is [hosted on PyPi](https://pypi.org/project/honeybee-REVIVE/). To 
 # Development:
 
 ### Development [Local]:
-PH-ADORB is free and open-source. We welcome any and all thoughts, opinions, and contributions! To get setup for local development:
+Honeybee-REVIVE is free and open-source. We welcome any and all thoughts, opinions, and contributions! To get setup for local development:
 1. **Fork** this GitHub repository to your own GitHub account.
 1. **Clone** the repository-fork onto your computer.
 1. Setup a **virtual environment**.
