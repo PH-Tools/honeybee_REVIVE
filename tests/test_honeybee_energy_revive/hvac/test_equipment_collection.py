@@ -66,3 +66,31 @@ def test_Collection_with_multiple_equipment_duplicate():
     assert len(equip_col) == len(equip_col_2)
     assert all(equip in equip_col_2 for equip in equip_col)
     assert all(equip in equip_col for equip in equip_col_2)
+
+
+def test_Collection_str():
+    equip_col = PhiusReviveHVACEquipmentCollection()
+
+    assert str(equip_col) == "PhiusReviveHVACEquipmentCollection(0 items)"
+    assert repr(equip_col) == "PhiusReviveHVACEquipmentCollection(0 items)"
+    assert equip_col.ToString() == "PhiusReviveHVACEquipmentCollection(0 items)"
+
+    # -- Add some equipment
+    equip_1 = PhiusReviveHVACEquipment()
+    equip_col.add_equipment(equip_1)
+    assert str(equip_col) == "PhiusReviveHVACEquipmentCollection(1 items)"
+    assert repr(equip_col) == "PhiusReviveHVACEquipmentCollection(1 items)"
+    assert equip_col.ToString() == "PhiusReviveHVACEquipmentCollection(1 items)"
+
+    # -- Adding the same equipment twice should ignore it
+    equip_col.add_equipment(equip_1)
+    assert str(equip_col) == "PhiusReviveHVACEquipmentCollection(1 items)"
+    assert repr(equip_col) == "PhiusReviveHVACEquipmentCollection(1 items)"
+    assert equip_col.ToString() == "PhiusReviveHVACEquipmentCollection(1 items)"
+
+    # -- Add new equipment
+    equip_2 = PhiusReviveHVACEquipment()
+    equip_col.add_equipment(equip_2)
+    assert str(equip_col) == "PhiusReviveHVACEquipmentCollection(2 items)"
+    assert repr(equip_col) == "PhiusReviveHVACEquipmentCollection(2 items)"
+    assert equip_col.ToString() == "PhiusReviveHVACEquipmentCollection(2 items)"

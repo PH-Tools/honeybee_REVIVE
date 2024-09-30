@@ -50,7 +50,6 @@ except ImportError:
     # -- https://github.com/ladybug-tools/honeybee-energy
     from honeybee_energy_revive.properties.generator.pv import MockPVPropertiesProperties as PVPropertiesProperties
 
-
 from honeybee_energy.schedule.ruleset import ScheduleRulesetProperties
 
 # -- Constructions

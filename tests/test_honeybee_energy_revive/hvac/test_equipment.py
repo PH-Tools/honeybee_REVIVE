@@ -38,3 +38,11 @@ def test_PhiusReviveHVACEquipment_duplicate():
     assert equip_1 is not equip_2
     assert equip_1.identifier == equip_2.identifier
     assert equip_1.display_name == equip_2.display_name
+
+
+def test_PhiusReviveHVACEquipment_str():
+    equip_1 = PhiusReviveHVACEquipment("A Test Name")
+
+    assert str(equip_1) == "Phius Revive HVAC Equipment: [A Test Name]"
+    assert repr(equip_1) == "Phius Revive HVAC Equipment: [A Test Name]"
+    assert equip_1.ToString() == "Phius Revive HVAC Equipment: [A Test Name]"
