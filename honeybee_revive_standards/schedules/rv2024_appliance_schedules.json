@@ -8,11 +8,11 @@
             "upper_limit": 1.0,
             "lower_limit": 0.0
         },
-        "default_day_schedule": "PhiusRevive2024_Refrigerator_Day Schedule",
-        "identifier": "PhiusRevive2024_Refrigerator",
+        "default_day_schedule": "rv2024_Refrigerator_Day Schedule",
+        "identifier": "rv2024_Refrigerator",
         "day_schedules": [
             {
-                "identifier": "PhiusRevive2024_Refrigerator_Day Schedule",
+                "identifier": "rv2024_Refrigerator_Day Schedule",
                 "times": [
                     [
                         0,
@@ -26,12 +26,12 @@
                 ]
             }
         ],
-        "display_name": "PhiusRevive2024_Refrigerator",
+        "display_name": "rv2024_Refrigerator",
         "properties": {},
         "type": "ScheduleRuleset"
     },
     {
-        "default_day_schedule": "PhiusRevive2024_Dishwasher_Day Schedule",
+        "default_day_schedule": "rv2024_Dishwasher_Day Schedule",
         "type": "ScheduleRuleset",
         "schedule_type_limit": {
             "upper_limit": 1.0,
@@ -158,16 +158,16 @@
                         0
                     ]
                 ],
-                "identifier": "PhiusRevive2024_Dishwasher_Day Schedule",
+                "identifier": "rv2024_Dishwasher_Day Schedule",
                 "interpolate": false
             }
         ],
-        "identifier": "PhiusRevive2024_Dishwasher",
-        "display_name": "PhiusRevive2024_Dishwasher",
+        "identifier": "rv2024_Dishwasher",
+        "display_name": "rv2024_Dishwasher",
         "properties": {}
     },
     {
-        "default_day_schedule": "PhiusRevive2024_Clotheswasher_Day Schedule",
+        "default_day_schedule": "rv2024_Clotheswasher_Day Schedule",
         "type": "ScheduleRuleset",
         "schedule_type_limit": {
             "upper_limit": 1.0,
@@ -284,16 +284,16 @@
                         0
                     ]
                 ],
-                "identifier": "PhiusRevive2024_Clotheswasher_Day Schedule",
+                "identifier": "rv2024_Clotheswasher_Day Schedule",
                 "interpolate": false
             }
         ],
-        "identifier": "PhiusRevive2024_Clotheswasher",
-        "display_name": "PhiusRevive2024_Clotheswasher",
+        "identifier": "rv2024_Clotheswasher",
+        "display_name": "rv2024_Clotheswasher",
         "properties": {}
     },
     {
-        "default_day_schedule": "PhiusRevive2024_Clothesdryer_Day Schedule",
+        "default_day_schedule": "rv2024_Clothesdryer_Day Schedule",
         "type": "ScheduleRuleset",
         "schedule_type_limit": {
             "upper_limit": 1.0,
@@ -425,16 +425,16 @@
                         0
                     ]
                 ],
-                "identifier": "PhiusRevive2024_Clothesdryer_Day Schedule",
+                "identifier": "rv2024_Clothesdryer_Day Schedule",
                 "interpolate": false
             }
         ],
-        "identifier": "PhiusRevive2024_Clothesdryer",
-        "display_name": "PhiusRevive2024_Clothesdryer",
+        "identifier": "rv2024_Clothesdryer",
+        "display_name": "rv2024_Clothesdryer",
         "properties": {}
     },
     {
-        "default_day_schedule": "PhiusRevive2024_Cooktop_Day Schedule",
+        "default_day_schedule": "rv2024_Cooktop_Day Schedule",
         "type": "ScheduleRuleset",
         "schedule_type_limit": {
             "upper_limit": 1.0,
@@ -561,12 +561,12 @@
                         0
                     ]
                 ],
-                "identifier": "PhiusRevive2024_Cooktop_Day Schedule",
+                "identifier": "rv2024_Cooktop_Day Schedule",
                 "interpolate": false
             }
         ],
-        "identifier": "PhiusRevive2024_Cooktop",
-        "display_name": "PhiusRevive2024_Cooktop",
+        "identifier": "rv2024_Cooktop",
+        "display_name": "rv2024_Cooktop",
         "properties": {}
     }
 ]

@@ -1,6 +1,6 @@
 [
     {
-        "default_day_schedule": "PhiusRevive2024_Combined_HotWater_Day_Schedule",
+        "default_day_schedule": "rv2024_Combined_HotWater_Day_Schedule",
         "type": "ScheduleRuleset",
         "schedule_type_limit": {
             "upper_limit": 1.0,
@@ -127,12 +127,12 @@
                         0
                     ]
                 ],
-                "identifier": "PhiusRevive2024_Combined_HotWater_Day_Schedule",
+                "identifier": "rv2024_Combined_HotWater_Day_Schedule",
                 "interpolate": false
             }
         ],
-        "identifier": "PhiusRevive2024_Combined_HotWater",
-        "display_name": "PhiusRevive2024_Combined_HotWater",
+        "identifier": "rv2024_Combined_HotWater",
+        "display_name": "rv2024_Combined_HotWater",
         "properties": {}
     }
 ]

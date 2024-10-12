@@ -1,7 +1,14 @@
 [
     {
+        "identifier": "rv2024_Occupant_Activity",
+        "default_day_schedule": "rv2024_Occupant_Activity_Day_Schedule",
+        "display_name": "rv2024_Occupant_Activity",
+        "type": "ScheduleRuleset",
         "day_schedules": [
             {
+                "identifier": "rv2024_Occupant_Activity_Day_Schedule",
+                "interpolate": false,
+                "type": "ScheduleDay",
                 "times": [
                     [
                         0,
@@ -9,33 +16,26 @@
                     ]
                 ],
                 "values": [
-                    1.0
-                ],
-                "type": "ScheduleDay",
-                "identifier": "PhiusRevive2024_Occupant_Activity_Day Schedule",
-                "interpolate": false
+                    120.0
+                ]
             }
         ],
-        "display_name": "PhiusRevive2024_Occupant_Activity",
-        "default_day_schedule": "PhiusRevive2024_Occupant_Activity_Day Schedule",
-        "properties": {},
         "schedule_type_limit": {
             "upper_limit": {
                 "type": "NoLimit"
             },
-            "numeric_type": "Continuous",
-            "type": "ScheduleTypeLimit",
-            "identifier": "Activity Level",
+            "lower_limit": 0.0,
             "unit_type": "ActivityLevel",
-            "lower_limit": 0.0
+            "type": "ScheduleTypeLimit",
+            "numeric_type": "Continuous",
+            "identifier": "Activity Level"
         },
-        "identifier": "PhiusRevive2024_Occupant_Activity",
-        "type": "ScheduleRuleset"
+        "properties": {}
     },
     {
-        "identifier": "PhiusRevive2024_Occupant_Eff",
-        "display_name": "PhiusRevive2024_Occupant_Eff",
-        "default_day_schedule": "PhiusRevive2024_Occupant_Eff_Day_Schedule",
+        "identifier": "rv2024_Occupant_Eff",
+        "display_name": "rv2024_Occupant_Eff",
+        "default_day_schedule": "rv2024_Occupant_Eff_Day_Schedule",
         "type": "ScheduleRuleset",
         "schedule_type_limit": {
             "upper_limit": 1.0,
@@ -57,18 +57,18 @@
                         0
                     ]
                 ],
-                "identifier": "PhiusRevive2024_Occupant_Eff_Day_Schedule",
+                "identifier": "rv2024_Occupant_Eff_Day_Schedule",
                 "interpolate": false
             }
         ],
         "properties": {}
     },
     {
-        "identifier": "PhiusRevive2024_Occupant_Clothing",
-        "display_name": "PhiusRevive2024_Occupant_Clothing",
+        "identifier": "rv2024_Occupant_Clothing",
+        "display_name": "rv2024_Occupant_Clothing",
         "default_day_schedule": "WINTER_Day_Schedule",
         "type": "ScheduleRuleset",
-        "summer_designday_schedule": "PhiusRevive2024_Occupant_Clothing_Schedule_SmrDsn",
+        "summer_designday_schedule": "rv2024_Occupant_Clothing_Schedule_SmrDsn",
         "schedule_type_limit": {
             "numeric_type": "Continuous",
             "identifier": "Fractional",
@@ -93,7 +93,7 @@
                 ]
             },
             {
-                "identifier": "PhiusRevive2024_Occupant_Clothing_Schedule_SmrDsn",
+                "identifier": "rv2024_Occupant_Clothing_Schedule_SmrDsn",
                 "times": [
                     [
                         0,
@@ -103,11 +103,11 @@
                 "interpolate": false,
                 "type": "ScheduleDay",
                 "values": [
-                    0.29999999999999999
+                    0.3
                 ]
             },
             {
-                "identifier": "PhiusRevive2024_Occupant_Clothing_Schedule_WntrDsn",
+                "identifier": "rv2024_Occupant_Clothing_Schedule_WntrDsn",
                 "times": [
                     [
                         0,
@@ -145,7 +145,7 @@
                 "interpolate": false,
                 "type": "ScheduleDay",
                 "values": [
-                    0.29999999999999999
+                    0.3
                 ]
             },
             {
@@ -163,7 +163,7 @@
                 ]
             }
         ],
-        "winter_designday_schedule": "PhiusRevive2024_Occupant_Clothing_Schedule_WntrDsn",
+        "winter_designday_schedule": "rv2024_Occupant_Clothing_Schedule_WntrDsn",
         "schedule_rules": [
             {
                 "apply_monday": true,
@@ -226,29 +226,90 @@
         "properties": {}
     },
     {
-        "default_day_schedule": "PhiusRevive2024_Occupant_Presence_Day_Schedule",
-        "identifier": "PhiusRevive2024_Occupant_Presence",
-        "display_name": "PhiusRevive2024_Occupant_Presence",
+        "identifier": "rv2024_Occupant_Presence",
+        "display_name": "rv2024_Occupant_Presence",
+        "default_day_schedule": "rv2024_Occupant_Presence_Day_Schedule",
         "type": "ScheduleRuleset",
         "schedule_type_limit": {
-            "numeric_type": "Continuous",
-            "identifier": "Fractional",
-            "type": "ScheduleTypeLimit",
             "unit_type": "Dimensionless",
+            "lower_limit": 0.0,
+            "type": "ScheduleTypeLimit",
+            "identifier": "Fractional",
             "upper_limit": 1.0,
-            "lower_limit": 0.0
+            "numeric_type": "Continuous"
         },
         "day_schedules": [
             {
-                "identifier": "PhiusRevive2024_Occupant_Presence_Day_Schedule",
+                "type": "ScheduleDay",
+                "identifier": "rv2024_Occupant_Presence_Day_Schedule",
+                "interpolate": false,
+                "values": [
+                    1.0,
+                    0.9,
+                    0.4,
+                    0.25,
+                    0.55,
+                    0.9,
+                    1.0
+                ],
+                "times": [
+                    [
+                        0,
+                        0
+                    ],
+                    [
+                        8,
+                        0
+                    ],
+                    [
+                        9,
+                        0
+                    ],
+                    [
+                        10,
+                        0
+                    ],
+                    [
+                        17,
+                        0
+                    ],
+                    [
+                        18,
+                        0
+                    ],
+                    [
+                        21,
+                        0
+                    ]
+                ]
+            }
+        ],
+        "properties": {}
+    },
+    {
+        "identifier": "rv2024_Constant_Occupant_Presence",
+        "display_name": "rv2024_Constant_Occupant_Presence",
+        "default_day_schedule": "rv2024_Constant_Occupant_Presence_Day Schedule",
+        "type": "ScheduleRuleset",
+        "schedule_type_limit": {
+            "type": "ScheduleTypeLimit",
+            "lower_limit": 0.0,
+            "numeric_type": "Continuous",
+            "identifier": "Fractional",
+            "upper_limit": 1.0,
+            "unit_type": "Dimensionless"
+        },
+        "day_schedules": [
+            {
                 "times": [
                     [
                         0,
                         0
                     ]
                 ],
-                "interpolate": false,
                 "type": "ScheduleDay",
+                "interpolate": false,
+                "identifier": "rv2024_Constant_Occupant_Presence_Day Schedule",
                 "values": [
                     1.0
                 ]

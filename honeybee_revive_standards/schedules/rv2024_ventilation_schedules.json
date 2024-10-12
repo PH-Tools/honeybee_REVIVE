@@ -8,11 +8,11 @@
             "upper_limit": 1.0,
             "lower_limit": 0.0
         },
-        "default_day_schedule": "PhiusRevive2024_Ventilation_Day Schedule",
-        "identifier": "PhiusRevive2024_Ventilation",
+        "default_day_schedule": "rv2024_Ventilation_Day Schedule",
+        "identifier": "rv2024_Ventilation",
         "day_schedules": [
             {
-                "identifier": "PhiusRevive2024_Ventilation_Day Schedule",
+                "identifier": "rv2024_Ventilation_Day Schedule",
                 "times": [
                     [
                         0,
@@ -26,7 +26,7 @@
                 ]
             }
         ],
-        "display_name": "PhiusRevive2024_Ventilation",
+        "display_name": "rv2024_Ventilation",
         "properties": {},
         "type": "ScheduleRuleset"
     }

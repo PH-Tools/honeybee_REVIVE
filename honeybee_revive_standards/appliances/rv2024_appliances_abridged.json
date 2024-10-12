@@ -17,7 +17,7 @@
                 "labor_fraction": 0.15
             }
         },
-        "schedule": "PhiusRevive2024_Refrigerator"
+        "schedule": "rv2024_Refrigerator"
     },
     {
         "type": "ProcessAbridged",
@@ -37,7 +37,7 @@
                 "labor_fraction": 0.15
             }
         },
-        "schedule": "PhiusRevive2024_Refrigerator"
+        "schedule": "rv2024_Refrigerator"
     },
     {
         "type": "ProcessAbridged",
@@ -57,7 +57,7 @@
                 "labor_fraction": 0.3
             }
         },
-        "schedule": "PhiusRevive2024_Dishwasher"
+        "schedule": "rv2024_Dishwasher"
     },
     {
         "type": "ProcessAbridged",
@@ -77,7 +77,7 @@
                 "labor_fraction": 0.3
             }
         },
-        "schedule": "PhiusRevive2024_Dishwasher"
+        "schedule": "rv2024_Dishwasher"
     },
     {
         "type": "ProcessAbridged",
@@ -97,7 +97,7 @@
                 "labor_fraction": 0.14
             }
         },
-        "schedule": "PhiusRevive2024_Clotheswasher"
+        "schedule": "rv2024_Clotheswasher"
     },
     {
         "type": "ProcessAbridged",
@@ -117,7 +117,7 @@
                 "labor_fraction": 0.15
             }
         },
-        "schedule": "PhiusRevive2024_Clotheswasher"
+        "schedule": "rv2024_Clotheswasher"
     },
     {
         "type": "ProcessAbridged",
@@ -137,7 +137,7 @@
                 "labor_fraction": 0.15
             }
         },
-        "schedule": "PhiusRevive2024_Clothesdryer"
+        "schedule": "rv2024_Clothesdryer"
     },
     {
         "type": "ProcessAbridged",
@@ -157,7 +157,7 @@
                 "labor_fraction": 0.15
             }
         },
-        "schedule": "PhiusRevive2024_Clothesdryer"
+        "schedule": "rv2024_Clothesdryer"
     },
     {
         "type": "ProcessAbridged",
@@ -177,6 +177,6 @@
                 "labor_fraction": 0.1
             }
         },
-        "schedule": "PhiusRevive2024_Cooktop"
+        "schedule": "rv2024_Cooktop"
     }
 ]
