@@ -69,7 +69,7 @@
             "schedule": "rv2024_Infiltration",
             "identifier": "rv2024_Residence_Infiltration",
             "display_name": "rv2024_Residence_Infiltration",
-            "flow_per_exterior_area": 0.0003048
+            "flow_per_exterior_area": 0.000114
         }
     },
     {
@@ -102,8 +102,8 @@
             "type": "SetpointAbridged",
             "display_name": "rv2024_Residence_Resilience_SetPoint",
             "identifier": "rv2024_Residence_Resilience_SetPoint",
-            "heating_schedule": "rv2024_HeatingOff",
-            "cooling_schedule": "rv2024_CoolingOff",
+            "heating_schedule": "rv2024_Heating_Setpoint",
+            "cooling_schedule": "rv2024_Cooling_Setpoint",
             "humidifying_schedule": "rv2024_HumidificationOff",
             "dehumidifying_schedule": "rv2024_DehumidificationOff"
         },
@@ -142,7 +142,7 @@
             "schedule": "rv2024_Infiltration",
             "identifier": "rv2024_Residence_Resilience_Infiltration",
             "display_name": "rv2024_Residence_Resilience_Infiltration",
-            "flow_per_exterior_area": 0.0003048
+            "flow_per_exterior_area": 0.000114
         }
     }
 ]
