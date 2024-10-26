@@ -41,10 +41,10 @@ def test_shade_construction_revive_properties_to_dict(mock_host):
     props = WindowConstructionShadeReviveProperties(mock_host)
     props.id_num = 5
 
-    expected_dict = {"revive": {"type": " WindowConstructionShadeReviveProperties", "id_num": 5}}
+    expected_dict = {"revive": {"type": "WindowConstructionShadeReviveProperties", "id_num": 5}}
     assert props.to_dict() == expected_dict
 
-    expected_abridged_dict = {"revive": {"type": " WindowConstructionShadeRevivePropertiesAbridged", "id_num": 5}}
+    expected_abridged_dict = {"revive": {"type": "WindowConstructionShadeRevivePropertiesAbridged", "id_num": 5}}
     assert props.to_dict(abridged=True) == expected_abridged_dict
 
 
@@ -57,6 +57,16 @@ def test_shade_construction_revive_properties_from_dict(mock_host):
     with pytest.raises(WindowConstructionShadeReviveProperties_FromDictError):
         invalid_dict = {"type": "InvalidType", "id_num": 5}
         WindowConstructionShadeReviveProperties.from_dict(invalid_dict, mock_host)
+
+
+def test_shade_construction_revive_dict_round_trip(mock_host):
+    props = WindowConstructionShadeReviveProperties(mock_host)
+    props.id_num = 5
+
+    props_dict = props.to_dict()
+    new_props = WindowConstructionShadeReviveProperties.from_dict(props_dict["revive"], mock_host)
+    assert new_props.host == mock_host
+    assert new_props.id_num == 5
 
 
 def test_shade_construction_revive_properties_str_repr(mock_host):

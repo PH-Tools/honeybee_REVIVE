@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -*- Python Version: 3.10 -*-
 
-"""A script to generate the Winter Resiliency Graphs.
+"""A script to generate the Summer Resiliency Graphs.
 
 This script is called from the command line with the following arguments:
     * [0] (str): The path to the Python script (this file).
@@ -105,12 +105,12 @@ if __name__ == "__main__":
 
     # Combine all time series data into a single DataFrame
     combined_data = outdoor_air_drybulb + zone_temps
-    df = pd.DataFrame(combined_data)
+    df1 = pd.DataFrame(combined_data)
 
     # Create the figure
     fig1 = go.Figure()
-    for zone_name in df["Zone"].unique():
-        zone_data = df[df["Zone"] == zone_name]
+    for zone_name in df1["Zone"].unique():
+        zone_data = df1[df1["Zone"] == zone_name]
         fig1.add_trace(go.Scatter(x=zone_data["Date"], y=zone_data["Value"], mode="lines", name=zone_name))
     fig1.update_layout(title="Dry-Bulb Air Temperature.")
 
@@ -122,12 +122,12 @@ if __name__ == "__main__":
 
     # Combine all time series data into a single DataFrame
     combined_data = outdoor_air_rh + zone_rh
-    df = pd.DataFrame(combined_data)
+    df2 = pd.DataFrame(combined_data)
 
     # Create the figure
     fig2 = go.Figure()
-    for zone_name in df["Zone"].unique():
-        zone_data = df[df["Zone"] == zone_name]
+    for zone_name in df2["Zone"].unique():
+        zone_data = df2[df2["Zone"] == zone_name]
         fig2.add_trace(go.Scatter(x=zone_data["Date"], y=zone_data["Value"], mode="lines", name=zone_name))
     fig2.update_layout(title="Air Relative Humidity")
 
@@ -135,27 +135,77 @@ if __name__ == "__main__":
     # -------------------------------------------------------------------------
     # SET Comfort Temperature
     set_temps = get_time_series_data(file_paths.sql, "Zone Thermal Comfort Pierce Model Standard Effective Temperature")
-    df = pd.DataFrame(set_temps)
+    df3 = pd.DataFrame(set_temps)
 
     # Create the figure
     fig3 = go.Figure()
-    for zone_name in df["Zone"].unique():
-        zone_data = df[df["Zone"] == zone_name]
+    for zone_name in df3["Zone"].unique():
+        zone_data = df3[df3["Zone"] == zone_name]
         fig3.add_trace(go.Scatter(x=zone_data["Date"], y=zone_data["Value"], mode="lines", name=zone_name))
     fig3.add_shape(
         type="line",
-        x0=df["Date"].min(),  # Start of the line (minimum date)
-        x1=df["Date"].max(),  # End of the line (maximum date)
+        x0=df3["Date"].min(),  # Start of the line (minimum date)
+        x1=df3["Date"].max(),  # End of the line (maximum date)
         y0=12.222,  # Y-coordinate of the line
         y1=12.222,  # Y-coordinate of the line
         line=dict(color="Red", width=2, dash="dash"),  # Line style
     )
-    fig3.update_layout(title="Zone Thermal Comfort Over Time - Plot 1")
+    fig3.update_layout(title="Zone Thermal Comfort Over Time")
+
+    # -------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
+    # Zone Heat Index
+    heat_index = get_time_series_data(file_paths.sql, "Zone Heat Index")
+    df4 = pd.DataFrame(heat_index)
+
+    # Create the figure
+    fig4 = go.Figure()
+    for zone_name in df4["Zone"].unique():
+        zone_data = df4[df4["Zone"] == zone_name]
+        fig4.add_trace(go.Scatter(x=zone_data["Date"], y=zone_data["Value"], mode="lines", name=zone_name))
+    # -- Caution Zone (> 26.7 deg C [80 deg F])
+    fig4.add_shape(
+        type="line",
+        x0=df4["Date"].min(),  # Start of the line (minimum date)
+        x1=df4["Date"].max(),  # End of the line (maximum date)
+        y0=26.7,  # Y-coordinate of the line
+        y1=26.7,  # Y-coordinate of the line
+        line=dict(color="Green", width=2, dash="dash"),  # Line style
+    )
+    # -- Warning Zone (> 32.2 deg C [90 deg F])
+    fig4.add_shape(
+        type="line",
+        x0=df4["Date"].min(),  # Start of the line (minimum date)
+        x1=df4["Date"].max(),  # End of the line (maximum date)
+        y0=32.2,  # Y-coordinate of the line
+        y1=32.2,  # Y-coordinate of the line
+        line=dict(color="Orange", width=2, dash="dash"),  # Line style
+    )
+    # -- Danger Zone (>39.4 deg-C [103 deg-F])
+    fig4.add_shape(
+        type="line",
+        x0=df4["Date"].min(),  # Start of the line (minimum date)
+        x1=df4["Date"].max(),  # End of the line (maximum date)
+        y0=39.4,  # Y-coordinate of the line
+        y1=39.4,  # Y-coordinate of the line
+        line=dict(color="Red", width=2, dash="dash"),  # Line style
+    )
+    # -- Extreme Danger Zone (>51.7 deg-C [125 deg-F])
+    fig4.add_shape(
+        type="line",
+        x0=df4["Date"].min(),  # Start of the line (minimum date)
+        x1=df4["Date"].max(),  # End of the line (maximum date)
+        y0=51.7,  # Y-coordinate of the line
+        y1=51.7,  # Y-coordinate of the line
+        line=dict(color="Black", width=2, dash="dash"),  # Line style
+    )
+    fig4.update_layout(title="Zone Heat Index")
 
     # -------------------------------------------------------------------------
     # -------------------------------------------------------------------------
     # Write all the figures to a single HTML file
-    with open(file_paths.graphs / "winter_resilience.html", "w") as f:
+    with open(file_paths.graphs / "summer_resilience.html", "w") as f:
         f.write(pio.to_html(fig1, full_html=False, include_plotlyjs="cdn"))
         f.write(pio.to_html(fig2, full_html=False, include_plotlyjs=False))
         f.write(pio.to_html(fig3, full_html=False, include_plotlyjs=False))
+        f.write(pio.to_html(fig4, full_html=False, include_plotlyjs=False))

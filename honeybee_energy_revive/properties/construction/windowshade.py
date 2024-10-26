@@ -18,7 +18,9 @@ except ImportError as e:
 
 class WindowConstructionShadeReviveProperties_FromDictError(Exception):
     def __init__(self, _expected_types, _input_type):
-        self.msg = 'Error: Expected type of "{}". Got: {}'.format(_expected_types, _input_type)
+        self.msg = "Error: Expected type: '{}'. Got: '{}' [type={}]".format(
+            _expected_types, _input_type, type(_input_type)
+        )
         super(WindowConstructionShadeReviveProperties_FromDictError, self).__init__(self.msg)
 
 
@@ -77,9 +79,9 @@ class WindowConstructionShadeReviveProperties(object):
 
         d = {}
         if abridged:
-            d["type"] = " WindowConstructionShadeRevivePropertiesAbridged"
+            d["type"] = "WindowConstructionShadeRevivePropertiesAbridged"
         else:
-            d["type"] = " WindowConstructionShadeReviveProperties"
+            d["type"] = "WindowConstructionShadeReviveProperties"
         d["id_num"] = self.id_num
         return {"revive": d}
 
