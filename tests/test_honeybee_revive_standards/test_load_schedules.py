@@ -76,6 +76,16 @@ def test_load_setpoint_schedules_from_standards_library():
         assert isinstance(schedule_, ScheduleRuleset)
 
 
+def test_load_fan_schedules_from_standards_library():
+    filepath = Path("honeybee_revive_standards/schedules/rv2024_fan_schedules.json")
+    results = load_schedules_from_json_file(str(filepath))
+
+    assert isinstance(results, dict)
+    assert len(results) > 0
+    for schedule_ in results.values():
+        assert isinstance(schedule_, ScheduleRuleset)
+
+
 def test_load_raises_ValueError_with_bad_file_path():
     with pytest.raises(ValueError):
         load_schedules_from_json_file("fake_file_path.json")

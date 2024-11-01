@@ -68,6 +68,7 @@ def get_time_series_data(source_file_path: Path, output_variable: str) -> list[R
         c.execute(
             "SELECT KeyValue, Month, Day, Hour, Value FROM 'ReportVariableWithTime' "
             "WHERE Name=? "
+            "AND DayType NOT IN ('WinterDesignDay', 'SummerDesignDay') "
             "ORDER BY Month, Day, Hour",
             (output_variable,),
         )

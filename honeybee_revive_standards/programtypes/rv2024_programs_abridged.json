@@ -19,9 +19,9 @@
             "identifier": "rv2024_Residence_ServiceHotWater",
             "display_name": "rv2024_Residence_ServiceHotWater",
             "schedule": "rv2024_Combined_HotWater",
-            "flow_per_area": 0.0,
+            "flow_per_area": 0.000002807564,
             "sensible_fraction": 0.2,
-            "target_temperature": 60.0,
+            "target_temperature": 50.0,
             "latent_fraction": 0.05,
             "properties": {}
         },
@@ -69,7 +69,7 @@
             "schedule": "rv2024_Infiltration",
             "identifier": "rv2024_Residence_Infiltration",
             "display_name": "rv2024_Residence_Infiltration",
-            "flow_per_exterior_area": 0.000114
+            "flow_per_exterior_area": 0.0003
         }
     },
     {
@@ -92,10 +92,10 @@
             "identifier": "rv2024_Residence_Resilience_ServiceHotWater",
             "display_name": "rv2024_Residence_Resilience_ServiceHotWater",
             "schedule": "rv2024_Combined_HotWater",
-            "flow_per_area": 0.0,
-            "sensible_fraction": 0.0,
-            "target_temperature": 0.0,
-            "latent_fraction": 0.00,
+            "flow_per_area": 0.000002807564,
+            "sensible_fraction": 0.2,
+            "target_temperature": 50.0,
+            "latent_fraction": 0.05,
             "properties": {}
         },
         "setpoint": {
@@ -114,7 +114,7 @@
             "schedule": "rv2024_MEL",
             "latent_fraction": 0.0,
             "watts_per_area": 0.0,
-            "radiant_fraction": 0.0,
+            "radiant_fraction": 1.0,
             "lost_fraction": 0.0,
             "properties": {}
         },
@@ -142,7 +142,7 @@
             "schedule": "rv2024_Infiltration",
             "identifier": "rv2024_Residence_Resilience_Infiltration",
             "display_name": "rv2024_Residence_Resilience_Infiltration",
-            "flow_per_exterior_area": 0.000114
+            "flow_per_exterior_area": 0.0003
         }
     }
 ]

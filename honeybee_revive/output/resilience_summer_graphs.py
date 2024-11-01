@@ -68,6 +68,7 @@ def get_time_series_data(source_file_path: Path, output_variable: str) -> list[R
         c.execute(
             "SELECT KeyValue, Month, Day, Hour, Value FROM 'ReportVariableWithTime' "
             "WHERE Name=? "
+            "AND DayType NOT IN ('WinterDesignDay', 'SummerDesignDay') "
             "ORDER BY Month, Day, Hour",
             (output_variable,),
         )
@@ -241,7 +242,7 @@ if __name__ == "__main__":
     # vent_fig2 = create_line_plot_figure(df_in_m3hr(vent_zone_m3s), "Zone Ventilation [m3/hr]")
     # vent_fig3 = create_line_plot_figure(df_in_m3hr(vent_mech_m3s), "Zone Mechanical Ventilation [m3/hr]")
 
-    vent_fig1 = create_line_plot_figure(pd.DataFrame(vent_infiltration_ach), "Zone Envelope Infiltration [ACH]")
+    vent_fig1 = create_line_plot_figure(pd.DataFrame(vent_infiltration_ach), "Zone Infiltration [ACH]")
     vent_fig2 = create_line_plot_figure(pd.DataFrame(vent_zone_ach), "Zone Ventilation [ACH]")
     vent_fig3 = create_line_plot_figure(pd.DataFrame(vent_mech_ach), "Zone Mechanical Ventilation [ACH]")
 

@@ -1,7 +1,9 @@
 [
     {
-        "default_day_schedule": "rv2024_MEL_Day Schedule",
         "type": "ScheduleRuleset",
+        "identifier": "rv2024_MEL",
+        "display_name": "rv2024_MEL",
+        "default_day_schedule": "rv2024_MEL_Day Schedule",
         "schedule_type_limit": {
             "upper_limit": 1.0,
             "unit_type": "Dimensionless",
@@ -106,8 +108,6 @@
                 "interpolate": false
             }
         ],
-        "identifier": "rv2024_MEL",
-        "display_name": "rv2024_MEL",
         "properties": {}
     }
 ]
