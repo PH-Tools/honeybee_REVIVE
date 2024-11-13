@@ -1,4 +1,6 @@
 from honeybee.model import Model
+import honeybee_energy
+import honeybee_energy._extend_honeybee
 from honeybee_energy.hvac.allair.furnace import ForcedAirFurnace
 from honeybee_energy.hvac.doas.vrf import VRFwithDOAS
 from honeybee_energy.hvac.heatcool.vrf import VRF
