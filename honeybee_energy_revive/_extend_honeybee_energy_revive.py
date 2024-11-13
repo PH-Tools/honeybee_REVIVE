@@ -41,15 +41,8 @@ from honeybee_energy.properties.extension import (
     ShadeConstructionProperties,
     WindowConstructionProperties,
     WindowConstructionShadeProperties,
+    PVPropertiesProperties,
 )
-
-try:
-    from honeybee_energy.properties.extension import PVPropertiesProperties
-except ImportError:
-    # -- Until Chris merges the PR, we need to use the MockPVPropertiesProperties
-    # -- https://github.com/ladybug-tools/honeybee-energy
-    from honeybee_energy_revive.properties.generator.pv import MockPVPropertiesProperties as PVPropertiesProperties
-
 from honeybee_energy.schedule.ruleset import ScheduleRulesetProperties
 
 # -- Constructions
@@ -93,6 +86,7 @@ from honeybee_energy_revive.properties.materials.shade import (
 
 # -- Program / Load
 from honeybee_energy_revive.properties.ruleset import ScheduleRulesetReviveProperties
+from honeybee_energy_revive.boundarycondition import Foundation
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
@@ -139,6 +133,14 @@ setattr(AllAirSystemProperties, "_revive", None)
 setattr(DOASSystemProperties, "_revive", None)
 setattr(HeatCoolSystemProperties, "_revive", None)
 setattr(IdealAirSystemProperties, "_revive", None)
+
+# TODO:
+# Extend boundary conditions
+# import honeybee.boundarycondition as hbc
+# setattr(hbc, "Foundation", Foundation)
+# hbc._BoundaryConditions._foundation = Foundation(None)
+# hbc._BoundaryConditions.foundation = property(lambda self: self._foundation)
+
 
 # -----------------------------------------------------------------------------
 

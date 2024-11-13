@@ -3,15 +3,9 @@
 
 """Honeybee-Energy-REVIVE properties for Honeybee-Energy-PVProperties Objects"""
 
-try:
-    from typing import TYPE_CHECKING
-except ImportError:
-    TYPE_CHECKING = False
-    pass  # Python 2.7
 
 try:
-    if TYPE_CHECKING:
-        from honeybee_energy.generator.pv import PVProperties
+    from honeybee_energy.generator.pv import PVProperties
 except ImportError as e:
     raise ImportError("\nFailed to import honeybee_energy:\n\t{}".format(e))
 
@@ -128,9 +122,3 @@ class PVPropertiesReviveProperties(object):
 
     def ToString(self):
         return str(self)
-
-
-class MockPVPropertiesProperties(object):
-
-    def __init__(self):
-        pass

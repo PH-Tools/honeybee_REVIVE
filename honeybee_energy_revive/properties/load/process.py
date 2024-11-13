@@ -4,14 +4,7 @@
 """Honeybee-Energy-REVIVE Properties Extension for Electric Equipment Load objects."""
 
 try:
-    from typing import TYPE_CHECKING
-except ImportError:
-    TYPE_CHECKING = False
-    pass  # Python 2.7
-
-try:
-    if TYPE_CHECKING:
-        from honeybee_energy.load.process import Process
+    from honeybee_energy.load.process import Process
 except ImportError as e:
     raise ImportError("Failed to import honeybee_energy_ph: {}".format(e))
 

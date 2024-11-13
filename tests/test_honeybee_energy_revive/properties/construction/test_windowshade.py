@@ -2,6 +2,11 @@ from unittest.mock import Mock
 
 import pytest
 
+from honeybee_energy.material.glazing import EnergyWindowMaterialSimpleGlazSys
+from honeybee_energy.material.shade import EnergyWindowMaterialBlind
+from honeybee_energy.construction.window import WindowConstruction
+from honeybee_energy.construction.windowshade import WindowConstructionShade
+
 from honeybee_energy_revive.properties.construction.windowshade import (
     WindowConstructionShadeReviveProperties,
     WindowConstructionShadeReviveProperties_FromDictError,
@@ -34,6 +39,30 @@ def test_shade_construction_revive_properties_duplicate(mock_host):
     new_host = Mock(display_name="New Test Shade")
     new_props = props.duplicate(new_host)
     assert new_props.host == new_host
+    assert new_props.id_num == 5
+
+
+def test_shade_construction_revive_properties_duplicate_as_part_of_hb_construction(mock_host):
+    # Create a new HB-Window Construction Shade object
+    test_window_construction_shade = WindowConstructionShade(
+        "host",
+        window_construction=WindowConstruction(
+            identifier="test_window_construction",
+            materials=[EnergyWindowMaterialSimpleGlazSys("test_window_material", 0.1, 0.1)],
+        ),
+        shade_material=EnergyWindowMaterialBlind("test_shade_material"),
+    )
+
+    props: WindowConstructionShadeReviveProperties = getattr(test_window_construction_shade, "properties").revive
+    assert props is not None
+    assert props.id_num == 0
+
+    props.id_num = 5
+
+    # -- Duplicate the HB Construction Shade object, make sure the REVIVE props stuck
+    new_window_construction = test_window_construction_shade.duplicate()
+    new_props: WindowConstructionShadeReviveProperties = getattr(new_window_construction, "properties").revive
+    assert new_props is not None
     assert new_props.id_num == 5
 
 
