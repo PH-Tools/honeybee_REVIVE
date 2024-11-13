@@ -133,14 +133,6 @@ setattr(DOASSystemProperties, "_revive", None)
 setattr(HeatCoolSystemProperties, "_revive", None)
 setattr(IdealAirSystemProperties, "_revive", None)
 
-# TODO:
-# Extend boundary conditions
-# import honeybee.boundarycondition as hbc
-# setattr(hbc, "Foundation", Foundation)
-# hbc._BoundaryConditions._foundation = Foundation(None)
-# hbc._BoundaryConditions.foundation = property(lambda self: self._foundation)
-
-
 # -----------------------------------------------------------------------------
 
 # Step 2)
