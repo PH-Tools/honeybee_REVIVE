@@ -87,8 +87,7 @@ from honeybee_energy_revive.properties.materials.shade import (
 # -- Program / Load
 from honeybee_energy_revive.properties.ruleset import ScheduleRulesetReviveProperties
 
-# TODO: for BC
-# from honeybee_energy_revive.boundarycondition import Foundation
+from honeybee_energy_revive.boundarycondition import Foundation
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
