@@ -1,6 +1,6 @@
 [project]
 name = "honeybee-REVIVE"
-version = "0.0.10"
+version = "0.0.11"
 description = "A Honeybee Extension for Phius REVIVE Modeling."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -54,6 +54,7 @@ packages = [
     "honeybee_revive",
     "honeybee_revive_standards",
     "honeybee_revive_measures",
+    "ladybug_revive",
 ]
 
 [project.urls]
