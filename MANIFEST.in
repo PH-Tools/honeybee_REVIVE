@@ -1,6 +1,8 @@
 recursive-include honeybee_energy_revive *
 recursive-include honeybee_revive *
 recursive-include honeybee_revive_standards *
+recursive-include honeybee_revive_measures *
+recursive-include ladybug_revive *
 recursive-exclude tests *
 recursive-exclude _coverage_html *
 recursive-exclude _reference *
