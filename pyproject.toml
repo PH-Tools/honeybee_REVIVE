@@ -68,6 +68,7 @@ source = [
     "honeybee_revive",
     "honeybee_revive_standards",
     "honeybee_revive_measures",
+    "ladybug_revive",
 ]
 branch = true
 cover_pylib = false
