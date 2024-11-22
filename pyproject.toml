@@ -1,6 +1,6 @@
 [project]
 name = "honeybee-REVIVE"
-version = "0.0.14"
+version = "0.0.15"
 description = "A Honeybee Extension for Phius REVIVE Modeling."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -28,7 +28,7 @@ keywords = [
 dependencies = [
     "honeybee-energy>=1.109.17",
     "pandas>=2.2.3",
-    "ph-units>=1.5.15",
+    "ph-units>=1.5.16",
     "plotly>=5.24.1",
     "pydantic<=1.10.18",
     "rich>=13.8.1",

@@ -133,6 +133,14 @@ def df_in_kWh(_data: list[Record]) -> pd.DataFrame:
     return df
 
 
+def html_file(_filename: Path) -> Path:
+    """Create an HTML file, but remove it if it already exists."""
+
+    if os.path.exists(_filename):
+        os.remove(_filename)
+    return _filename
+
+
 if __name__ == "__main__":
     # ------------------------------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------------------------------
@@ -187,7 +195,7 @@ if __name__ == "__main__":
     env_fig3 = create_line_plot_figure(pd.DataFrame(env_wind_speed_m3s), "Outdoor Wind Speed [m/s]")
     env_fig4 = create_line_plot_figure(pd.DataFrame(env_air_pressure_Pa), "Outdoor Air Pressure [Pa]")
 
-    with open(file_paths.graphs / "summer_outdoor_environment.html", "w") as f:
+    with open(html_file(file_paths.graphs / "summer_outdoor_environment.html"), "w") as f:
         f.write(pio.to_html(env_fig1, full_html=False, include_plotlyjs="cdn"))
         f.write(pio.to_html(env_fig2, full_html=False, include_plotlyjs=False))
         f.write(pio.to_html(env_fig3, full_html=False, include_plotlyjs=False))
@@ -230,7 +238,7 @@ if __name__ == "__main__":
     hi_fig2 = create_line_plot_figure(pd.DataFrame(env_drybulb_C + drybulb_C), "Zone Dry-Bulb Air Temp. [C]")
     hi_fig3 = create_line_plot_figure(pd.DataFrame(env_RH + zone_RH), "Zone Air Relative Humidity [%]")
 
-    with open(file_paths.graphs / "summer_heat_index.html", "w") as f:
+    with open(html_file(file_paths.graphs / "summer_heat_index.html"), "w") as f:
         f.write(pio.to_html(hi_fig1, full_html=False, include_plotlyjs="cdn"))
         f.write(pio.to_html(hi_fig2, full_html=False, include_plotlyjs=False))
         f.write(pio.to_html(hi_fig3, full_html=False, include_plotlyjs=False))
@@ -246,7 +254,7 @@ if __name__ == "__main__":
     vent_fig2 = create_line_plot_figure(pd.DataFrame(vent_zone_ach), "Zone Ventilation [ACH]")
     vent_fig3 = create_line_plot_figure(pd.DataFrame(vent_mech_ach), "Zone Mechanical Ventilation [ACH]")
 
-    with open(file_paths.graphs / "summer_ventilation.html", "w") as f:
+    with open(html_file(file_paths.graphs / "summer_ventilation.html"), "w") as f:
         f.write(pio.to_html(vent_fig1, full_html=False, include_plotlyjs="cdn"))
         f.write(pio.to_html(vent_fig2, full_html=False, include_plotlyjs=False))
         f.write(pio.to_html(vent_fig3, full_html=False, include_plotlyjs=False))
@@ -279,7 +287,7 @@ if __name__ == "__main__":
         vent_gain_df["Value"] = vent_gain_df["Value"] - vent_loss_df["Value"]
     energy_fig7 = create_line_plot_figure(vent_gain_df, "Total Ventilation Heat Gain [kWh]")
 
-    with open(file_paths.graphs / "summer_energy_flow.html", "w") as f:
+    with open(html_file(file_paths.graphs / "summer_energy_flow.html"), "w") as f:
         f.write(pio.to_html(energy_fig1, full_html=False, include_plotlyjs="cdn"))
         f.write(pio.to_html(energy_fig2, full_html=False, include_plotlyjs=False))
         f.write(pio.to_html(energy_fig3, full_html=False, include_plotlyjs=False))
