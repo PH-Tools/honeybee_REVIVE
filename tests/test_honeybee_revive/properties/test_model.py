@@ -3,6 +3,7 @@ from unittest.mock import Mock
 import pytest
 
 from honeybee_revive.CO2_measures import CO2ReductionMeasureCollection
+from honeybee_revive.fuels import FuelCollection
 from honeybee_revive.grid_region import GridRegion
 from honeybee_revive.national_emissions import NationalEmissionsFactors
 from honeybee_revive.properties.model import ModelReviveProperties
@@ -28,6 +29,7 @@ def test_initialization(sample_properties, sample_model):
     assert sample_properties.analysis_duration == 50
     assert sample_properties.envelope_labor_cost_fraction == 0.4
     assert isinstance(sample_properties.co2_measures, CO2ReductionMeasureCollection)
+    assert isinstance(sample_properties.fuels, FuelCollection)
 
 
 def test_duplicate(sample_properties):
@@ -39,6 +41,7 @@ def test_duplicate(sample_properties):
     assert duplicate_properties.analysis_duration == sample_properties.analysis_duration
     assert duplicate_properties.envelope_labor_cost_fraction == sample_properties.envelope_labor_cost_fraction
     assert duplicate_properties.co2_measures != sample_properties.co2_measures
+    assert duplicate_properties.fuels != sample_properties.fuels
 
 
 def test_to_dict(sample_properties):
@@ -53,6 +56,7 @@ def test_to_dict(sample_properties):
     assert properties_dict["revive"]["analysis_duration"] == sample_properties.analysis_duration
     assert properties_dict["revive"]["envelope_labor_cost_fraction"] == sample_properties.envelope_labor_cost_fraction
     assert properties_dict["revive"]["co2_measures"] == sample_properties.co2_measures.to_dict()
+    assert properties_dict["revive"]["fuels"] == sample_properties.fuels.to_dict()
 
 
 def test_from_dict(sample_model):
@@ -64,6 +68,7 @@ def test_from_dict(sample_model):
         "analysis_duration": 60,
         "envelope_labor_cost_fraction": 0.5,
         "co2_measures": CO2ReductionMeasureCollection().to_dict(),
+        "fuels": FuelCollection.with_default_fuels().to_dict(),
     }
     properties = ModelReviveProperties.from_dict(properties_dict, sample_model)
     assert properties.id_num == 1
@@ -85,6 +90,7 @@ def test_model_load_properties_from_dict(sample_properties: ModelRevivePropertie
                 "analysis_duration": 60,
                 "envelope_labor_cost_fraction": 0.5,
                 "co2_measures": sample_measures_collection.to_dict(),
+                "fuels": FuelCollection.with_default_fuels().to_dict(),
             },
             "another_key": {},
         }
