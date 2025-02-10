@@ -1,7 +1,7 @@
 import pytest
-
-from honeybee_energy.schedule.ruleset import ScheduleRuleset
 from honeybee_energy.load.process import Process
+from honeybee_energy.schedule.ruleset import ScheduleRuleset
+
 from honeybee_energy_revive.properties.load.process import (
     ProcessReviveProperties,
     ProcessReviveProperties_FromDictError,

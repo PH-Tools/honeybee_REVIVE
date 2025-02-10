@@ -37,11 +37,11 @@ from honeybee_energy.properties.extension import (
     OpaqueConstructionProperties,
     PeopleProperties,
     ProcessProperties,
+    PVPropertiesProperties,
     ServiceHotWaterProperties,
     ShadeConstructionProperties,
     WindowConstructionProperties,
     WindowConstructionShadeProperties,
-    PVPropertiesProperties,
 )
 from honeybee_energy.schedule.ruleset import ScheduleRulesetProperties
 

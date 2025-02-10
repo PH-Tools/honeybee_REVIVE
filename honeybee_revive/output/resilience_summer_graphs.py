@@ -9,14 +9,15 @@ This script is called from the command line with the following arguments:
     * [2] (str): The path to the output folder for the graphs.
 """
 
-from collections import namedtuple
 import os
-import pandas as pd
+import sqlite3
+import sys
+from collections import namedtuple
 from pathlib import Path
+
+import pandas as pd
 import plotly.graph_objects as go
 import plotly.io as pio
-import sys
-import sqlite3
 
 
 class InputFileError(Exception):

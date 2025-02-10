@@ -9,14 +9,16 @@ This script is called from the command line with the following arguments:
     * [2] (str): The path to the output folder for the graphs.
 """
 
-from collections import namedtuple
 import os
-import pandas as pd
+import sqlite3
+import sys
+from collections import namedtuple
 from pathlib import Path
+from typing import Iterable
+
+import pandas as pd
 import plotly.graph_objects as go
 import plotly.io as pio
-import sys
-import sqlite3
 
 
 class InputFileError(Exception):
@@ -27,6 +29,11 @@ class InputFileError(Exception):
 
 Filepaths = namedtuple("Filepaths", ["sql", "graphs"])
 Record = namedtuple("Record", ["Date", "Value", "Zone"])
+Surface = namedtuple(
+    "Surface",
+    ["Name", "Class", "Area", "GrossArea", "Tilt", "ZoneIndex", "SurfaceIndex", "ExtBoundCond", "ConstructionIndex"],
+)
+Construction = namedtuple("Construction", ["ConstructionIndex", "Name", "UValue"])
 
 
 def resolve_paths(_args: list[str]) -> Filepaths:
@@ -59,6 +66,24 @@ def resolve_paths(_args: list[str]) -> Filepaths:
     return Filepaths(results_sql_file, target_graphs_dir)
 
 
+def get_constructions(source_file_path: Path) -> dict[int, Construction]:
+    conn = sqlite3.connect(source_file_path)
+    data_ = {}
+    try:
+        c = conn.cursor()
+        c.execute("SELECT ConstructionIndex, Name, UValue FROM 'Constructions'")
+        for row in c.fetchall():
+            c = Construction(*row)
+            data_[c.ConstructionIndex] = c
+    except Exception as e:
+        conn.close()
+        raise Exception(str(e))
+    finally:
+        conn.close()
+
+    return data_
+
+
 def get_time_series_data(source_file_path: Path, output_variable: str) -> list[Record]:
     """Get Time-Series data from the SQL File."""
     conn = sqlite3.connect(source_file_path)
@@ -84,10 +109,30 @@ def get_time_series_data(source_file_path: Path, output_variable: str) -> list[R
     return data_
 
 
+def get_surface_data(source_file_path: Path) -> list[Surface]:
+    conn = sqlite3.connect(source_file_path)
+    data_ = []  # defaultdict(list)
+    try:
+        c = conn.cursor()
+        c.execute(
+            "SELECT SurfaceName, ClassName, Area, GrossArea, Tilt, ZoneIndex, SurfaceIndex, ExtBoundCond, ConstructionIndex FROM 'Surfaces' "
+        )
+        for row in c.fetchall():
+            data_.append(Surface(*row))
+    except Exception as e:
+        conn.close()
+        raise Exception(str(e))
+    finally:
+        conn.close()
+
+    return data_
+
+
 def create_line_plot_figure(
     _df: pd.DataFrame,
     _title: str,
     _horizontal_lines: list[float] | None = None,
+    _stack: bool = False,
 ) -> go.Figure:
     """Create a line plot figure from the DataFrame."""
 
@@ -99,7 +144,12 @@ def create_line_plot_figure(
 
     for zone_name in _df["Zone"].unique():
         zone_data = _df[_df["Zone"] == zone_name]
-        fig.add_trace(go.Scatter(x=zone_data["Date"], y=zone_data["Value"], mode="lines", name=zone_name))
+        if _stack:
+            fig.add_trace(
+                go.Scatter(x=zone_data["Date"], y=zone_data["Value"], mode="lines", stackgroup="one", name=zone_name)
+            )
+        else:
+            fig.add_trace(go.Scatter(x=zone_data["Date"], y=zone_data["Value"], mode="lines", name=zone_name))
 
     if _horizontal_lines:
         for line in _horizontal_lines:
@@ -124,7 +174,7 @@ def df_in_m3hr(_data: list[Record]) -> pd.DataFrame:
     return df
 
 
-def df_in_kWh(_data: list[Record]) -> pd.DataFrame:
+def df_in_kWh(_data: Iterable[Record]) -> pd.DataFrame:
     """Convert the data from J to kWh."""
 
     df = pd.DataFrame(_data)
@@ -139,6 +189,57 @@ def html_file(_filename: Path) -> Path:
     if os.path.exists(_filename):
         os.remove(_filename)
     return _filename
+
+
+def surface_df_by_construction(
+    _records: list[Record],
+    _constructions: dict[int, Construction],
+    _surfaces_df: pd.DataFrame,
+) -> pd.DataFrame:
+    """Get the surface data as a DataFrame, merged by the construction type."""
+
+    ext_surfaces = (r for r in _records if r.Zone in exterior_surface_names)
+    surface_conductance_df = df_in_kWh(ext_surfaces)
+    """
+    Date                   Value        Zone
+    0 2021-01-01 00:00:00  0.000000     0_LOWER_C99DFGH..FACE1
+    1 2021-01-01 00:00:00  0.000000     0_LOWER_C99DFGH..FACE2
+    2 2021-01-01 00:00:00  0.000000     0_LOWER_C99DFGH..FACE3
+    ....
+    """
+
+    """
+    print(_surface_df)
+    Name    Class   Area    GrossArea   Tilt    ZoneIndex   SurfaceIndex    ExtBoundCond    ConstructionIndex
+    0_LOWER_C99DFGH..FACE1 Wall    0.000000    0.000000    90.000000   0   0   0   0
+    0_LOWER_C99DFGH..FACE2 Wall    0.000000    0.000000    90.000000   0   1   0   0
+    0_LOWER_C99DFGH..FACE3 Wall    0.000000    0.000000    90.000000   0   2   0   0
+    ....
+    """
+
+    # Add the ConstructionIndex to each record in the surface_conductance_df
+    surface_conductance_df["ConstructionIndex"] = surface_conductance_df["Zone"].apply(
+        lambda x: _surfaces_df.loc[_surfaces_df["Name"] == x, "ConstructionIndex"].values[0]
+    )
+    """
+    Date                   Value        Zone                    ConstructionIndex
+    0 2021-01-01 00:00:00  0.000000     0_LOWER_C99DFGH..FACE1  0
+    1 2021-01-01 00:00:00  0.000000     0_LOWER_C99DFGH..FACE2  0
+    2 2021-01-01 00:00:00  0.000000     0_LOWER_C99DFGH..FACE3  0
+    ....
+    """
+
+    # Merge the 'Value's for each Record, by 'Date' and by the 'ConstructionIndex'
+    surface_conductance_df = surface_conductance_df.groupby(["Date", "ConstructionIndex"])["Value"].sum().reset_index()
+
+    # re-set the ConstructionIndex (int) to the Construction Name
+    surface_conductance_df["ConstructionIndex"] = surface_conductance_df["ConstructionIndex"].apply(
+        lambda x: _constructions[x].Name
+    )
+
+    # re-name 'ConstructionIndex' to 'Zone' for plotting
+    surface_conductance_df.rename(columns={"ConstructionIndex": "Zone"}, inplace=True)
+    return surface_conductance_df
 
 
 if __name__ == "__main__":
@@ -157,7 +258,15 @@ if __name__ == "__main__":
 
     # ------------------------------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------------------------------
-    # Get all the data from the SQL File
+    # -- Get the Surface level data from the SQL file
+    constructions = get_constructions(file_paths.sql)
+    surfaces = get_surface_data(file_paths.sql)
+    surfaces_df = pd.DataFrame(surfaces)
+    exterior_surface_names = {s.Name for s in surfaces if s.ExtBoundCond == 0}
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------------------------------------
+    # -- Get all the time-series data from the SQL File
     env_drybulb_C = get_time_series_data(file_paths.sql, "Site Outdoor Air Drybulb Temperature")
     env_RH = get_time_series_data(file_paths.sql, "Site Outdoor Air Relative Humidity")
     env_wind_speed_m3s = get_time_series_data(file_paths.sql, "Site Wind Speed")
@@ -185,8 +294,17 @@ if __name__ == "__main__":
     total_J_win_loss = get_time_series_data(file_paths.sql, "Zone Windows Total Heat Loss Energy")
     total_J_infiltration_gain = get_time_series_data(file_paths.sql, "Zone Infiltration Total Heat Gain Energy")
     total_J_infiltration_loss = get_time_series_data(file_paths.sql, "Zone Infiltration Total Heat Loss Energy")
-    total_J_vent_gain = get_time_series_data(file_paths.sql, "Zone Ventilation Total Heat Loss Energy")
-    total_J_vent_loss = get_time_series_data(file_paths.sql, "Zone Ventilation Total Heat Gain Energy")
+    total_J_vent_gain = get_time_series_data(file_paths.sql, "Zone Ventilation Total Heat Gain Energy")
+    total_J_vent_loss = get_time_series_data(file_paths.sql, "Zone Ventilation Total Heat Loss Energy")
+    srfc_avg_face_conductance = get_time_series_data(
+        file_paths.sql, "Surface Average Face Conduction Heat Transfer Energy"
+    )
+    srfc_win_heat_transfer = get_time_series_data(file_paths.sql, "Surface Window Net Heat Transfer Energy")
+    srfc_win_heat_gain = get_time_series_data(file_paths.sql, "Surface Window Heat Gain Energy")
+    srfc_win_heat_loss = get_time_series_data(file_paths.sql, "Surface Window Heat Loss Energy")
+    srfc_heat_storage = get_time_series_data(file_paths.sql, "Surface Heat Storage Energy")
+    srfc_shading_device_on = get_time_series_data(file_paths.sql, "Surface Shading Device Is On Time Fraction")
+    srfc_inside_face_temp = get_time_series_data(file_paths.sql, "Surface Inside Face Temperature")
 
     # ------------------------------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------------------------------
@@ -194,6 +312,7 @@ if __name__ == "__main__":
     env_fig1 = create_line_plot_figure(pd.DataFrame(env_drybulb_C), "Outdoor Air Dry-Bulb Temp. [C]")
     env_fig2 = create_line_plot_figure(pd.DataFrame(env_RH), "Outdoor Air Relative Humidity [%]")
     env_fig3 = create_line_plot_figure(pd.DataFrame(env_wind_speed_m3s), "Outdoor Wind Speed [m/s]")
+    env_fig4 = create_line_plot_figure(pd.DataFrame(env_air_pressure_Pa), "Outdoor Air Pressure [Pa]")
     env_fig4 = create_line_plot_figure(pd.DataFrame(env_air_pressure_Pa), "Outdoor Air Pressure [Pa]")
 
     with open(html_file(file_paths.graphs / "winter_outdoor_environment.html"), "w+") as f:
@@ -217,10 +336,6 @@ if __name__ == "__main__":
     # ------------------------------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------------------------------
     # -- Ventilation Plots
-    # vent_fig1 = create_line_plot_figure(df_in_m3hr(vent_infiltration_m3s), "Zone Envelope Infiltration [m3/hr]")
-    # vent_fig2 = create_line_plot_figure(df_in_m3hr(vent_zone_m3s), "Zone Ventilation [m3/hr]")
-    # vent_fig3 = create_line_plot_figure(df_in_m3hr(vent_mech_m3s), "Zone Mechanical Ventilation [m3/hr]")
-
     vent_fig1 = create_line_plot_figure(pd.DataFrame(vent_infiltration_ach), "Zone Envelope Infiltration [ACH]")
     vent_fig2 = create_line_plot_figure(pd.DataFrame(vent_zone_ach), "Zone Ventilation [ACH]")
     vent_fig3 = create_line_plot_figure(pd.DataFrame(vent_mech_ach), "Zone Mechanical Ventilation [ACH]")
@@ -266,3 +381,43 @@ if __name__ == "__main__":
         f.write(pio.to_html(energy_fig5, full_html=False, include_plotlyjs=False))
         f.write(pio.to_html(energy_fig6, full_html=False, include_plotlyjs=False))
         f.write(pio.to_html(energy_fig7, full_html=False, include_plotlyjs=False))
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------------------------------------
+    # -- Envelope Detail Plots
+    envelope_fig1 = create_line_plot_figure(
+        surface_df_by_construction(srfc_avg_face_conductance, constructions, surfaces_df),
+        "Surface Average Face Conduction Heat Transfer Energy [kWh]",
+        _stack=True,
+    )
+    envelope_fig2 = create_line_plot_figure(
+        surface_df_by_construction(srfc_win_heat_transfer, constructions, surfaces_df),
+        "Window Net Heat Transfer Energy [kWh]",
+        _stack=True,
+    )
+    envelope_fig3 = create_line_plot_figure(
+        surface_df_by_construction(srfc_win_heat_gain, constructions, surfaces_df),
+        "Window Heat Gain Energy [kWh]",
+        _stack=True,
+    )
+    envelope_fig4 = create_line_plot_figure(
+        surface_df_by_construction(srfc_win_heat_loss, constructions, surfaces_df),
+        "Window Heat Loss Energy [kWh]",
+        _stack=True,
+    )
+    envelope_fig5 = create_line_plot_figure(
+        surface_df_by_construction(srfc_heat_storage, constructions, surfaces_df),
+        "Heat Storage Energy [kWh]",
+        _stack=True,
+    )
+    envelope_fig6 = create_line_plot_figure(pd.DataFrame(srfc_shading_device_on), "Surface Shading Device On")
+    envelope_fig7 = create_line_plot_figure(pd.DataFrame(srfc_inside_face_temp), "Surface Inside Face Temp. [C]")
+
+    with open(html_file(file_paths.graphs / "winter_envelope_details.html"), "w") as f:
+        f.write(pio.to_html(envelope_fig1, full_html=False, include_plotlyjs="cdn"))
+        f.write(pio.to_html(envelope_fig2, full_html=False, include_plotlyjs=False))
+        f.write(pio.to_html(envelope_fig3, full_html=False, include_plotlyjs=False))
+        f.write(pio.to_html(envelope_fig4, full_html=False, include_plotlyjs=False))
+        f.write(pio.to_html(envelope_fig5, full_html=False, include_plotlyjs=False))
+        f.write(pio.to_html(envelope_fig6, full_html=False, include_plotlyjs=False))
+        f.write(pio.to_html(envelope_fig7, full_html=False, include_plotlyjs=False))

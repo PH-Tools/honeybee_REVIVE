@@ -15,16 +15,16 @@ except ImportError:
     pass  # Using Python 3.x
 
 try:
-    from ladybug.epw import EPW
-    from ladybug.stat import STAT
-    from ladybug.dt import DateTime
     from ladybug.analysisperiod import AnalysisPeriod
     from ladybug.datacollection import HourlyContinuousCollection, HourlyDiscontinuousCollection
+    from ladybug.dt import DateTime
+    from ladybug.epw import EPW
+    from ladybug.stat import STAT
 except ImportError as e:
     raise ImportError("\nFailed to import ladybug:\n\t{}".format(e))
 
 try:
-    from ladybug_revive.adjustment_factors import calculate_winter_morphing_factors, calculate_summer_morphing_factors
+    from ladybug_revive.adjustment_factors import calculate_summer_morphing_factors, calculate_winter_morphing_factors
 except ImportError as e:
     raise ImportError("\nFailed to import calculate_winter_morphing_factors:\n\t{}".format(e))
 

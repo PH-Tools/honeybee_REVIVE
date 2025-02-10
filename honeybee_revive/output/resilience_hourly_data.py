@@ -10,12 +10,13 @@ This script is called from the command line with the following arguments:
     * [3] (str): The output variable name to read from the SQL file.
 """
 
-from collections import namedtuple
 import os
-import pandas as pd
-from pathlib import Path
-import sys
 import sqlite3
+import sys
+from collections import namedtuple
+from pathlib import Path
+
+import pandas as pd
 
 
 class InputFileError(Exception):

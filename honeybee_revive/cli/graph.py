@@ -3,9 +3,10 @@
 
 """Honeybee-REVIVE result parsing commands."""
 
-import click
-import sys
 import logging
+import sys
+
+import click
 
 
 @click.group(help="Commands for Graphing Results.")

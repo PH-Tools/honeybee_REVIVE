@@ -1,8 +1,8 @@
 """honeybee-REVIVE commands which will be added to Honeybee command line interface."""
 
 import click
-
 from honeybee.cli import main
+
 from honeybee_revive.cli.graph import graph
 
 

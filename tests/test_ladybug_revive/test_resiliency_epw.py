@@ -1,11 +1,10 @@
 from pathlib import Path
 
-from pytest import approx
 import pandas as pd
-
+from ladybug.datacollection import HourlyContinuousCollection
 from ladybug.epw import EPW
 from ladybug.stat import STAT
-from ladybug.datacollection import HourlyContinuousCollection
+from pytest import approx
 
 from ladybug_revive import resiliency_epw
 

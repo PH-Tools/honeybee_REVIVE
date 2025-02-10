@@ -1,6 +1,6 @@
 from pathlib import Path
-import pandas as pd
 
+import pandas as pd
 from ladybug.epw import EPW
 from ladybug.stat import STAT
 

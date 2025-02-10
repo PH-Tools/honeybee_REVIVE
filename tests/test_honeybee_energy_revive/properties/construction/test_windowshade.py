@@ -1,11 +1,10 @@
 from unittest.mock import Mock
 
 import pytest
-
-from honeybee_energy.material.glazing import EnergyWindowMaterialSimpleGlazSys
-from honeybee_energy.material.shade import EnergyWindowMaterialBlind
 from honeybee_energy.construction.window import WindowConstruction
 from honeybee_energy.construction.windowshade import WindowConstructionShade
+from honeybee_energy.material.glazing import EnergyWindowMaterialSimpleGlazSys
+from honeybee_energy.material.shade import EnergyWindowMaterialBlind
 
 from honeybee_energy_revive.properties.construction.windowshade import (
     WindowConstructionShadeReviveProperties,

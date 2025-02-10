@@ -1,9 +1,8 @@
 import pytest
-from ph_units.unit_type import Unit
-from pytest import approx
-
 from honeybee_energy.construction.opaque import OpaqueConstruction
 from honeybee_energy.material.opaque import EnergyMaterial, EnergyMaterialNoMass, EnergyMaterialVegetation
+from ph_units.unit_type import Unit
+from pytest import approx
 
 from honeybee_energy_revive.properties.construction.opaque import (
     OpaqueConstructionReviveProperties,
