@@ -93,14 +93,20 @@ def create_line_plot_figure(
     """Create a line plot figure from the DataFrame."""
 
     fig = go.Figure()
-    fig.update_layout(title=_title)
+    fig.update_layout(
+        title=_title,
+        paper_bgcolor='rgba(0,0,0,0)',  # Transparent background for the entire figure
+        #plot_bgcolor='rgba(0,0,0,0)'   # Transparent background for the plotting area
+    )
 
     if _df.empty:
         return fig
 
     for zone_name in _df["Zone"].unique():
         zone_data = _df[_df["Zone"] == zone_name]
-        fig.add_trace(go.Scatter(x=zone_data["Date"], y=zone_data["Value"], mode="lines", name=zone_name))
+        fig.add_trace(
+            go.Scatter(x=zone_data["Date"], y=zone_data["Value"], mode="lines", name=zone_name)
+        )
 
     if _horizontal_lines:
         for line in _horizontal_lines:
@@ -197,16 +203,16 @@ if __name__ == "__main__":
     env_fig4 = create_line_plot_figure(pd.DataFrame(env_air_pressure_Pa), "Outdoor Air Pressure [Pa]")
 
     with open(html_file(file_paths.graphs / "summer_outdoor_environment.html"), "w") as f:
-        f.write(pio.to_html(env_fig1, full_html=False, include_plotlyjs="cdn"))
-        f.write(pio.to_html(env_fig2, full_html=False, include_plotlyjs=False))
-        f.write(pio.to_html(env_fig3, full_html=False, include_plotlyjs=False))
-        f.write(pio.to_html(env_fig4, full_html=False, include_plotlyjs=False))
+        f.write(pio.to_html(env_fig1, full_html=False, include_plotlyjs="cdn", div_id="env_fig1"))
+        f.write(pio.to_html(env_fig2, full_html=False, include_plotlyjs=False, div_id="env_fig2"))
+        f.write(pio.to_html(env_fig3, full_html=False, include_plotlyjs=False, div_id="env_fig3"))
+        f.write(pio.to_html(env_fig4, full_html=False, include_plotlyjs=False, div_id="env_fig4"))
 
     # ------------------------------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------------------------------
     # Heat Index Plots
     hi_df = pd.DataFrame(heat_index)
-    hi_fig1 = create_line_plot_figure(hi_df, "Zone Heat Index", [26.7, 32.2, 39.4, 51.7])
+    hi_fig1 = create_line_plot_figure(hi_df, "Zone Heat Index [C]", [26.7, 32.2, 39.4, 51.7])
     hi_fig1.add_annotation(
         x=hi_df["Date"].min(),
         y=26.7 + 2,
@@ -236,13 +242,13 @@ if __name__ == "__main__":
         xanchor="left",
     )
 
-    hi_fig2 = create_line_plot_figure(pd.DataFrame(env_drybulb_C + drybulb_C), "Zone Dry-Bulb Air Temp. [C]")
-    hi_fig3 = create_line_plot_figure(pd.DataFrame(env_RH + zone_RH), "Zone Air Relative Humidity [%]")
+    hi_fig2 = create_line_plot_figure(pd.DataFrame(drybulb_C + env_drybulb_C), "Zone Dry-Bulb Air Temp. [C]")
+    hi_fig3 = create_line_plot_figure(pd.DataFrame(zone_RH + env_RH), "Zone Air Relative Humidity [%]")
 
     with open(html_file(file_paths.graphs / "summer_heat_index.html"), "w") as f:
-        f.write(pio.to_html(hi_fig1, full_html=False, include_plotlyjs="cdn"))
-        f.write(pio.to_html(hi_fig2, full_html=False, include_plotlyjs=False))
-        f.write(pio.to_html(hi_fig3, full_html=False, include_plotlyjs=False))
+        f.write(pio.to_html(hi_fig1, full_html=False, include_plotlyjs="cdn", div_id="hi_fig1"))
+        f.write(pio.to_html(hi_fig2, full_html=False, include_plotlyjs=False, div_id="hi_fig2"))
+        f.write(pio.to_html(hi_fig3, full_html=False, include_plotlyjs=False, div_id="hi_fig3"))
 
     # ------------------------------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------------------------------
@@ -256,9 +262,9 @@ if __name__ == "__main__":
     vent_fig3 = create_line_plot_figure(pd.DataFrame(vent_mech_ach), "Zone Mechanical Ventilation [ACH]")
 
     with open(html_file(file_paths.graphs / "summer_ventilation.html"), "w") as f:
-        f.write(pio.to_html(vent_fig1, full_html=False, include_plotlyjs="cdn"))
-        f.write(pio.to_html(vent_fig2, full_html=False, include_plotlyjs=False))
-        f.write(pio.to_html(vent_fig3, full_html=False, include_plotlyjs=False))
+        f.write(pio.to_html(vent_fig1, full_html=False, include_plotlyjs="cdn", div_id="vent_fig1"), )
+        f.write(pio.to_html(vent_fig2, full_html=False, include_plotlyjs=False, div_id="vent_fig2"), )
+        f.write(pio.to_html(vent_fig3, full_html=False, include_plotlyjs=False, div_id="vent_fig3"), )
 
     # ------------------------------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------------------------------
@@ -289,10 +295,10 @@ if __name__ == "__main__":
     energy_fig7 = create_line_plot_figure(vent_gain_df, "Total Ventilation Heat Gain [kWh]")
 
     with open(html_file(file_paths.graphs / "summer_energy_flow.html"), "w") as f:
-        f.write(pio.to_html(energy_fig1, full_html=False, include_plotlyjs="cdn"))
-        f.write(pio.to_html(energy_fig2, full_html=False, include_plotlyjs=False))
-        f.write(pio.to_html(energy_fig3, full_html=False, include_plotlyjs=False))
-        f.write(pio.to_html(energy_fig4, full_html=False, include_plotlyjs=False))
-        f.write(pio.to_html(energy_fig5, full_html=False, include_plotlyjs=False))
-        f.write(pio.to_html(energy_fig6, full_html=False, include_plotlyjs=False))
-        f.write(pio.to_html(energy_fig7, full_html=False, include_plotlyjs=False))
+        f.write(pio.to_html(energy_fig1, full_html=False, include_plotlyjs="cdn", div_id="energy_fig1"))
+        f.write(pio.to_html(energy_fig2, full_html=False, include_plotlyjs=False, div_id="energy_fig2"))
+        f.write(pio.to_html(energy_fig3, full_html=False, include_plotlyjs=False, div_id="energy_fig3"))
+        f.write(pio.to_html(energy_fig4, full_html=False, include_plotlyjs=False, div_id="energy_fig4"))
+        f.write(pio.to_html(energy_fig5, full_html=False, include_plotlyjs=False, div_id="energy_fig5"))
+        f.write(pio.to_html(energy_fig6, full_html=False, include_plotlyjs=False, div_id="energy_fig6"))
+        f.write(pio.to_html(energy_fig7, full_html=False, include_plotlyjs=False, div_id="energy_fig7"))
