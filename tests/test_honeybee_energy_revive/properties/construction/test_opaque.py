@@ -1,6 +1,6 @@
 import pytest
 from honeybee_energy.construction.opaque import OpaqueConstruction
-from honeybee_energy.material.opaque import EnergyMaterial, EnergyMaterialNoMass, EnergyMaterialVegetation
+from honeybee_energy.material.opaque import EnergyMaterial
 from ph_units.unit_type import Unit
 from pytest import approx
 
@@ -8,11 +8,7 @@ from honeybee_energy_revive.properties.construction.opaque import (
     OpaqueConstructionReviveProperties,
     OpaqueConstructionReviveProperties_FromDictError,
 )
-from honeybee_energy_revive.properties.materials.opaque import (
-    EnergyMaterialNoMassReviveProperties,
-    EnergyMaterialReviveProperties,
-    EnergyMaterialVegetationReviveProperties,
-)
+from honeybee_energy_revive.properties.materials.opaque import EnergyMaterialReviveProperties
 
 
 @pytest.fixture

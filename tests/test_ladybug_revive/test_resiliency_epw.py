@@ -1,7 +1,5 @@
 from pathlib import Path
 
-import pandas as pd
-from ladybug.datacollection import HourlyContinuousCollection
 from ladybug.epw import EPW
 from ladybug.stat import STAT
 from pytest import approx

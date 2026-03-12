@@ -95,7 +95,7 @@ if __name__ == "__main__":
     print("- " * 100)
     print(f"\t>> Using Python: {sys.version}")
     print(f"\t>> Running the script: '{__file__.split('/')[-1]}'")
-    print(f"\t>> With the arguments:")
+    print("\t>> With the arguments:")
     print("\n".join([f"\t\t{i} | {a}" for i, a in enumerate(sys.argv)]))
 
     # -------------------------------------------------------------------------

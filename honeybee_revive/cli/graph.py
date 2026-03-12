@@ -3,7 +3,6 @@
 
 """Honeybee-REVIVE result parsing commands."""
 
-import logging
 import sys
 
 import click

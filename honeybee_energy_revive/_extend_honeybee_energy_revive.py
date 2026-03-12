@@ -11,8 +11,6 @@
 ## https://discourse.pollination.cloud/t/honeybee-ph-causing-error/
 #
 
-import honeybee_energy
-
 # -- Import the Honeybee-Energy Program and HVAC Items
 # -- Import the Honeybee-Energy Materials
 # -- Import the Honeybee-Energy Constructions

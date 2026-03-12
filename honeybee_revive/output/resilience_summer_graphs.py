@@ -74,7 +74,7 @@ def get_time_series_data(source_file_path: Path, output_variable: str) -> list[R
             (output_variable,),
         )
         for row in c.fetchall():
-            date = pd.to_datetime(f"2021-{row[1]}-{row[2]} {row[3]-1}:00:00")
+            date = pd.to_datetime(f"2021-{row[1]}-{row[2]} {row[3] - 1}:00:00")
             data_.append(Record(date, row[4], row[0]))
     except Exception as e:
         conn.close()
@@ -95,8 +95,8 @@ def create_line_plot_figure(
     fig = go.Figure()
     fig.update_layout(
         title=_title,
-        paper_bgcolor='rgba(0,0,0,0)',  # Transparent background for the entire figure
-        #plot_bgcolor='rgba(0,0,0,0)'   # Transparent background for the plotting area
+        paper_bgcolor="rgba(0,0,0,0)",  # Transparent background for the entire figure
+        # plot_bgcolor='rgba(0,0,0,0)'   # Transparent background for the plotting area
     )
 
     if _df.empty:
@@ -104,9 +104,7 @@ def create_line_plot_figure(
 
     for zone_name in _df["Zone"].unique():
         zone_data = _df[_df["Zone"] == zone_name]
-        fig.add_trace(
-            go.Scatter(x=zone_data["Date"], y=zone_data["Value"], mode="lines", name=zone_name)
-        )
+        fig.add_trace(go.Scatter(x=zone_data["Date"], y=zone_data["Value"], mode="lines", name=zone_name))
 
     if _horizontal_lines:
         for line in _horizontal_lines:
@@ -154,7 +152,7 @@ if __name__ == "__main__":
     print("- " * 50)
     print(f"\t>> Using Python: {sys.version}")
     print(f"\t>> Running the script: '{__file__.split('/')[-1]}'")
-    print(f"\t>> With the arguments:")
+    print("\t>> With the arguments:")
     print("\n".join([f"\t\t{i} | {a}" for i, a in enumerate(sys.argv)]))
     print("\t>> Resolving file paths...")
     file_paths = resolve_paths(sys.argv)
@@ -171,24 +169,32 @@ if __name__ == "__main__":
     drybulb_C = get_time_series_data(file_paths.sql, "Zone Mean Air Temperature")
     zone_RH = get_time_series_data(file_paths.sql, "Zone Air Relative Humidity")
     heat_index = get_time_series_data(file_paths.sql, "Zone Heat Index")
-    vent_infiltration_m3s = get_time_series_data(file_paths.sql, "Zone Infiltration Current Density Volume Flow Rate")
-    vent_mech_m3s = get_time_series_data(file_paths.sql, "Zone Mechanical Ventilation Current Density Volume Flow Rate")
-    vent_zone_m3s = get_time_series_data(file_paths.sql, "Zone Ventilation Current Density Volume Flow Rate")
-    vent_infiltration_ach = get_time_series_data(file_paths.sql, "Zone Infiltration Air Change Rate")
+    vent_infiltration_m3s = get_time_series_data(file_paths.sql, "Zone Infiltration Standard Density Volume Flow Rate")
+    vent_mech_m3s = get_time_series_data(
+        file_paths.sql, "Zone Mechanical Ventilation Standard Density Volume Flow Rate"
+    )
+    vent_zone_m3s = get_time_series_data(file_paths.sql, "Zone Ventilation Standard Density Volume Flow Rate")
+    vent_infiltration_ach = get_time_series_data(file_paths.sql, "Zone Infiltration Standard Density Air Change Rate")
     vent_mech_ach = get_time_series_data(file_paths.sql, "Zone Mechanical Ventilation Air Changes per Hour")
-    vent_zone_ach = get_time_series_data(file_paths.sql, "Zone Ventilation Air Change Rate")
+    vent_zone_ach = get_time_series_data(file_paths.sql, "Zone Ventilation Standard Density Air Change Rate")
     total_J_people = get_time_series_data(file_paths.sql, "Zone People Total Heating Energy")
     total_J_lights = get_time_series_data(file_paths.sql, "Zone Lights Total Heating Energy")
     total_J_elec_equip = get_time_series_data(file_paths.sql, "Zone Electric Equipment Total Heating Energy")
-    total_J_win_gain = get_time_series_data(file_paths.sql, "Zone Windows Total Heat Gain Energy")
-    total_J_solar_gain = get_time_series_data(file_paths.sql, "Zone Windows Total Transmitted Solar Radiation Energy")
+    # -- Windows / Solar Gain
+    total_J_solar_gain = get_time_series_data(
+        file_paths.sql, "Enclosure Windows Total Transmitted Solar Radiation Energy"
+    )
     total_J_solar_direct_gain = get_time_series_data(
-        file_paths.sql, "Zone Exterior Windows Total Transmitted Beam Solar Radiation Energy"
+        file_paths.sql,
+        "Enclosure Exterior Windows Total Transmitted Beam Solar Radiation Energy",
     )
     total_J_solar_diffuse_gain = get_time_series_data(
-        file_paths.sql, "Zone Exterior Windows Total Transmitted Diffuse Solar Radiation Energy"
+        file_paths.sql,
+        "Enclosure Exterior Windows Total Transmitted Diffuse Solar Radiation Energy",
     )
+    total_J_win_gain = get_time_series_data(file_paths.sql, "Zone Windows Total Heat Gain Energy")
     total_J_win_loss = get_time_series_data(file_paths.sql, "Zone Windows Total Heat Loss Energy")
+    # -- Airflow
     total_J_infiltration_gain = get_time_series_data(file_paths.sql, "Zone Infiltration Total Heat Gain Energy")
     total_J_infiltration_loss = get_time_series_data(file_paths.sql, "Zone Infiltration Total Heat Loss Energy")
     total_J_vent_gain = get_time_series_data(file_paths.sql, "Zone Ventilation Total Heat Loss Energy")
@@ -262,9 +268,15 @@ if __name__ == "__main__":
     vent_fig3 = create_line_plot_figure(pd.DataFrame(vent_mech_ach), "Zone Mechanical Ventilation [ACH]")
 
     with open(html_file(file_paths.graphs / "summer_ventilation.html"), "w") as f:
-        f.write(pio.to_html(vent_fig1, full_html=False, include_plotlyjs="cdn", div_id="vent_fig1"), )
-        f.write(pio.to_html(vent_fig2, full_html=False, include_plotlyjs=False, div_id="vent_fig2"), )
-        f.write(pio.to_html(vent_fig3, full_html=False, include_plotlyjs=False, div_id="vent_fig3"), )
+        f.write(
+            pio.to_html(vent_fig1, full_html=False, include_plotlyjs="cdn", div_id="vent_fig1"),
+        )
+        f.write(
+            pio.to_html(vent_fig2, full_html=False, include_plotlyjs=False, div_id="vent_fig2"),
+        )
+        f.write(
+            pio.to_html(vent_fig3, full_html=False, include_plotlyjs=False, div_id="vent_fig3"),
+        )
 
     # ------------------------------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------------------------------
@@ -295,10 +307,59 @@ if __name__ == "__main__":
     energy_fig7 = create_line_plot_figure(vent_gain_df, "Total Ventilation Heat Gain [kWh]")
 
     with open(html_file(file_paths.graphs / "summer_energy_flow.html"), "w") as f:
-        f.write(pio.to_html(energy_fig1, full_html=False, include_plotlyjs="cdn", div_id="energy_fig1"))
-        f.write(pio.to_html(energy_fig2, full_html=False, include_plotlyjs=False, div_id="energy_fig2"))
-        f.write(pio.to_html(energy_fig3, full_html=False, include_plotlyjs=False, div_id="energy_fig3"))
-        f.write(pio.to_html(energy_fig4, full_html=False, include_plotlyjs=False, div_id="energy_fig4"))
-        f.write(pio.to_html(energy_fig5, full_html=False, include_plotlyjs=False, div_id="energy_fig5"))
-        f.write(pio.to_html(energy_fig6, full_html=False, include_plotlyjs=False, div_id="energy_fig6"))
-        f.write(pio.to_html(energy_fig7, full_html=False, include_plotlyjs=False, div_id="energy_fig7"))
+        f.write(
+            pio.to_html(
+                energy_fig1,
+                full_html=False,
+                include_plotlyjs="cdn",
+                div_id="energy_fig1",
+            )
+        )
+        f.write(
+            pio.to_html(
+                energy_fig2,
+                full_html=False,
+                include_plotlyjs=False,
+                div_id="energy_fig2",
+            )
+        )
+        f.write(
+            pio.to_html(
+                energy_fig3,
+                full_html=False,
+                include_plotlyjs=False,
+                div_id="energy_fig3",
+            )
+        )
+        f.write(
+            pio.to_html(
+                energy_fig4,
+                full_html=False,
+                include_plotlyjs=False,
+                div_id="energy_fig4",
+            )
+        )
+        f.write(
+            pio.to_html(
+                energy_fig5,
+                full_html=False,
+                include_plotlyjs=False,
+                div_id="energy_fig5",
+            )
+        )
+        f.write(
+            pio.to_html(
+                energy_fig6,
+                full_html=False,
+                include_plotlyjs=False,
+                div_id="energy_fig6",
+            )
+        )
+        f.write(
+            pio.to_html(
+                energy_fig7,
+                full_html=False,
+                include_plotlyjs=False,
+                div_id="energy_fig7",
+            )
+        )
