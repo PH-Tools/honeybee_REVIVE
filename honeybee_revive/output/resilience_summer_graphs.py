@@ -10,24 +10,21 @@ This script is called from the command line with the following arguments:
 """
 
 import os
-import sqlite3
 import sys
 from collections import namedtuple
 from pathlib import Path
 
 import pandas as pd
-import plotly.graph_objects as go
-import plotly.io as pio
 
-
-class InputFileError(Exception):
-    def __init__(self, path) -> None:
-        self.msg = f"\nCannot locate the specified file:'{path}'"
-        super().__init__(self.msg)
-
+from honeybee_revive.output._shared import (
+    InputFileError,
+    create_line_plot_figure,
+    df_in_kWh,
+    get_time_series_data,
+    write_figures_to_html,
+)
 
 Filepaths = namedtuple("Filepaths", ["sql", "graphs"])
-Record = namedtuple("Record", ["Date", "Value", "Zone"])
 
 
 def resolve_paths(_args: list[str]) -> Filepaths:
@@ -60,163 +57,42 @@ def resolve_paths(_args: list[str]) -> Filepaths:
     return Filepaths(results_sql_file, target_graphs_dir)
 
 
-def get_time_series_data(source_file_path: Path, output_variable: str) -> list[Record]:
-    """Get Time-Series data from the SQL File."""
-    conn = sqlite3.connect(source_file_path)
-    data_ = []  # defaultdict(list)
-    try:
-        c = conn.cursor()
-        c.execute(
-            "SELECT KeyValue, Month, Day, Hour, Value FROM 'ReportVariableWithTime' "
-            "WHERE Name=? "
-            "AND DayType NOT IN ('WinterDesignDay', 'SummerDesignDay') "
-            "ORDER BY Month, Day, Hour",
-            (output_variable,),
-        )
-        for row in c.fetchall():
-            date = pd.to_datetime(f"2021-{row[1]}-{row[2]} {row[3] - 1}:00:00")
-            data_.append(Record(date, row[4], row[0]))
-    except Exception as e:
-        conn.close()
-        raise Exception(str(e))
-    finally:
-        conn.close()
-
-    return data_
-
-
-def create_line_plot_figure(
-    _df: pd.DataFrame,
-    _title: str,
-    _horizontal_lines: list[float] | None = None,
-) -> go.Figure:
-    """Create a line plot figure from the DataFrame."""
-
-    fig = go.Figure()
-    fig.update_layout(
-        title=_title,
-        paper_bgcolor="rgba(0,0,0,0)",  # Transparent background for the entire figure
-        # plot_bgcolor='rgba(0,0,0,0)'   # Transparent background for the plotting area
-    )
-
-    if _df.empty:
-        return fig
-
-    for zone_name in _df["Zone"].unique():
-        zone_data = _df[_df["Zone"] == zone_name]
-        fig.add_trace(go.Scatter(x=zone_data["Date"], y=zone_data["Value"], mode="lines", name=zone_name))
-
-    if _horizontal_lines:
-        for line in _horizontal_lines:
-            fig.add_shape(
-                type="line",
-                x0=_df["Date"].min(),  # Start of the line (minimum date)
-                x1=_df["Date"].max(),  # End of the line (maximum date)
-                y0=line,  # Y-coordinate of the line
-                y1=line,  # Y-coordinate of the line
-                line=dict(color="Red", width=2, dash="dash"),  # Line style
-            )
-
-    return fig
-
-
-def df_in_m3hr(_data: list[Record]) -> pd.DataFrame:
-    """Convert the data from m3/s to m3/hr."""
-
-    df = pd.DataFrame(_data)
-    if not df.empty:
-        df["Value"] = df["Value"].apply(lambda _: _ * 3600)
-    return df
-
-
-def df_in_kWh(_data: list[Record]) -> pd.DataFrame:
-    """Convert the data from J to kWh."""
-
-    df = pd.DataFrame(_data)
-    if not df.empty:
-        df["Value"] = df["Value"].apply(lambda _: _ * 0.000000277778)
-    return df
-
-
-def html_file(_filename: Path) -> Path:
-    """Create an HTML file, but remove it if it already exists."""
-
-    if os.path.exists(_filename):
-        os.remove(_filename)
-    return _filename
-
-
-if __name__ == "__main__":
-    # ------------------------------------------------------------------------------------------------------------------
-    # ------------------------------------------------------------------------------------------------------------------
-    print("- " * 50)
-    print(f"\t>> Using Python: {sys.version}")
-    print(f"\t>> Running the script: '{__file__.split('/')[-1]}'")
-    print("\t>> With the arguments:")
-    print("\n".join([f"\t\t{i} | {a}" for i, a in enumerate(sys.argv)]))
-    print("\t>> Resolving file paths...")
-    file_paths = resolve_paths(sys.argv)
-    print(f"\t>> Source SQL File: '{file_paths.sql}'")
-    print(f"\t>> Target Output Folder: '{file_paths.graphs}'")
-
-    # ------------------------------------------------------------------------------------------------------------------
-    # ------------------------------------------------------------------------------------------------------------------
-    # Get all the data from the SQL File
+def write_outdoor_environment_plots(file_paths: Filepaths) -> None:
     env_drybulb_C = get_time_series_data(file_paths.sql, "Site Outdoor Air Drybulb Temperature")
     env_RH = get_time_series_data(file_paths.sql, "Site Outdoor Air Relative Humidity")
     env_wind_speed_m3s = get_time_series_data(file_paths.sql, "Site Wind Speed")
     env_air_pressure_Pa = get_time_series_data(file_paths.sql, "Site Outdoor Air Barometric Pressure")
+
+    write_figures_to_html(
+        file_paths.graphs / "summer_outdoor_environment.html",
+        [
+            (
+                create_line_plot_figure(pd.DataFrame(env_drybulb_C), "Outdoor Air Dry-Bulb Temp. [C]"),
+                "env_fig1",
+            ),
+            (
+                create_line_plot_figure(pd.DataFrame(env_RH), "Outdoor Air Relative Humidity [%]"),
+                "env_fig2",
+            ),
+            (
+                create_line_plot_figure(pd.DataFrame(env_wind_speed_m3s), "Outdoor Wind Speed [m/s]"),
+                "env_fig3",
+            ),
+            (
+                create_line_plot_figure(pd.DataFrame(env_air_pressure_Pa), "Outdoor Air Pressure [Pa]"),
+                "env_fig4",
+            ),
+        ],
+    )
+
+
+def write_heat_index_plots(file_paths: Filepaths) -> None:
+    heat_index = get_time_series_data(file_paths.sql, "Zone Heat Index")
     drybulb_C = get_time_series_data(file_paths.sql, "Zone Mean Air Temperature")
     zone_RH = get_time_series_data(file_paths.sql, "Zone Air Relative Humidity")
-    heat_index = get_time_series_data(file_paths.sql, "Zone Heat Index")
-    vent_infiltration_m3s = get_time_series_data(file_paths.sql, "Zone Infiltration Standard Density Volume Flow Rate")
-    vent_mech_m3s = get_time_series_data(
-        file_paths.sql, "Zone Mechanical Ventilation Standard Density Volume Flow Rate"
-    )
-    vent_zone_m3s = get_time_series_data(file_paths.sql, "Zone Ventilation Standard Density Volume Flow Rate")
-    vent_infiltration_ach = get_time_series_data(file_paths.sql, "Zone Infiltration Standard Density Air Change Rate")
-    vent_mech_ach = get_time_series_data(file_paths.sql, "Zone Mechanical Ventilation Air Changes per Hour")
-    vent_zone_ach = get_time_series_data(file_paths.sql, "Zone Ventilation Standard Density Air Change Rate")
-    total_J_people = get_time_series_data(file_paths.sql, "Zone People Total Heating Energy")
-    total_J_lights = get_time_series_data(file_paths.sql, "Zone Lights Total Heating Energy")
-    total_J_elec_equip = get_time_series_data(file_paths.sql, "Zone Electric Equipment Total Heating Energy")
-    # -- Windows / Solar Gain
-    total_J_solar_gain = get_time_series_data(
-        file_paths.sql, "Enclosure Windows Total Transmitted Solar Radiation Energy"
-    )
-    total_J_solar_direct_gain = get_time_series_data(
-        file_paths.sql,
-        "Enclosure Exterior Windows Total Transmitted Beam Solar Radiation Energy",
-    )
-    total_J_solar_diffuse_gain = get_time_series_data(
-        file_paths.sql,
-        "Enclosure Exterior Windows Total Transmitted Diffuse Solar Radiation Energy",
-    )
-    total_J_win_gain = get_time_series_data(file_paths.sql, "Zone Windows Total Heat Gain Energy")
-    total_J_win_loss = get_time_series_data(file_paths.sql, "Zone Windows Total Heat Loss Energy")
-    # -- Airflow
-    total_J_infiltration_gain = get_time_series_data(file_paths.sql, "Zone Infiltration Total Heat Gain Energy")
-    total_J_infiltration_loss = get_time_series_data(file_paths.sql, "Zone Infiltration Total Heat Loss Energy")
-    total_J_vent_gain = get_time_series_data(file_paths.sql, "Zone Ventilation Total Heat Loss Energy")
-    total_J_vent_loss = get_time_series_data(file_paths.sql, "Zone Ventilation Total Heat Gain Energy")
+    env_drybulb_C = get_time_series_data(file_paths.sql, "Site Outdoor Air Drybulb Temperature")
+    env_RH = get_time_series_data(file_paths.sql, "Site Outdoor Air Relative Humidity")
 
-    # ------------------------------------------------------------------------------------------------------------------
-    # ------------------------------------------------------------------------------------------------------------------
-    # -- Outdoor Environment Plots
-    env_fig1 = create_line_plot_figure(pd.DataFrame(env_drybulb_C), "Outdoor Air Dry-Bulb Temp. [C]")
-    env_fig2 = create_line_plot_figure(pd.DataFrame(env_RH), "Outdoor Air Relative Humidity [%]")
-    env_fig3 = create_line_plot_figure(pd.DataFrame(env_wind_speed_m3s), "Outdoor Wind Speed [m/s]")
-    env_fig4 = create_line_plot_figure(pd.DataFrame(env_air_pressure_Pa), "Outdoor Air Pressure [Pa]")
-
-    with open(html_file(file_paths.graphs / "summer_outdoor_environment.html"), "w") as f:
-        f.write(pio.to_html(env_fig1, full_html=False, include_plotlyjs="cdn", div_id="env_fig1"))
-        f.write(pio.to_html(env_fig2, full_html=False, include_plotlyjs=False, div_id="env_fig2"))
-        f.write(pio.to_html(env_fig3, full_html=False, include_plotlyjs=False, div_id="env_fig3"))
-        f.write(pio.to_html(env_fig4, full_html=False, include_plotlyjs=False, div_id="env_fig4"))
-
-    # ------------------------------------------------------------------------------------------------------------------
-    # ------------------------------------------------------------------------------------------------------------------
-    # Heat Index Plots
     hi_df = pd.DataFrame(heat_index)
     hi_fig1 = create_line_plot_figure(hi_df, "Zone Heat Index [C]", [26.7, 32.2, 39.4, 51.7])
     hi_fig1.add_annotation(
@@ -251,36 +127,59 @@ if __name__ == "__main__":
     hi_fig2 = create_line_plot_figure(pd.DataFrame(drybulb_C + env_drybulb_C), "Zone Dry-Bulb Air Temp. [C]")
     hi_fig3 = create_line_plot_figure(pd.DataFrame(zone_RH + env_RH), "Zone Air Relative Humidity [%]")
 
-    with open(html_file(file_paths.graphs / "summer_heat_index.html"), "w") as f:
-        f.write(pio.to_html(hi_fig1, full_html=False, include_plotlyjs="cdn", div_id="hi_fig1"))
-        f.write(pio.to_html(hi_fig2, full_html=False, include_plotlyjs=False, div_id="hi_fig2"))
-        f.write(pio.to_html(hi_fig3, full_html=False, include_plotlyjs=False, div_id="hi_fig3"))
+    write_figures_to_html(
+        file_paths.graphs / "summer_heat_index.html",
+        [
+            (hi_fig1, "hi_fig1"),
+            (hi_fig2, "hi_fig2"),
+            (hi_fig3, "hi_fig3"),
+        ],
+    )
 
-    # ------------------------------------------------------------------------------------------------------------------
-    # ------------------------------------------------------------------------------------------------------------------
-    # -- Ventilation Plots
-    # vent_fig1 = create_line_plot_figure(df_in_m3hr(vent_infiltration_m3s), "Zone Envelope Infiltration [m3/hr]")
-    # vent_fig2 = create_line_plot_figure(df_in_m3hr(vent_zone_m3s), "Zone Ventilation [m3/hr]")
-    # vent_fig3 = create_line_plot_figure(df_in_m3hr(vent_mech_m3s), "Zone Mechanical Ventilation [m3/hr]")
 
-    vent_fig1 = create_line_plot_figure(pd.DataFrame(vent_infiltration_ach), "Zone Infiltration [ACH]")
-    vent_fig2 = create_line_plot_figure(pd.DataFrame(vent_zone_ach), "Zone Ventilation [ACH]")
-    vent_fig3 = create_line_plot_figure(pd.DataFrame(vent_mech_ach), "Zone Mechanical Ventilation [ACH]")
+def write_ventilation_plots(file_paths: Filepaths) -> None:
+    vent_infiltration_ach = get_time_series_data(file_paths.sql, "Zone Infiltration Standard Density Air Change Rate")
+    vent_zone_ach = get_time_series_data(file_paths.sql, "Zone Ventilation Standard Density Air Change Rate")
+    vent_mech_ach = get_time_series_data(file_paths.sql, "Zone Mechanical Ventilation Air Changes per Hour")
 
-    with open(html_file(file_paths.graphs / "summer_ventilation.html"), "w") as f:
-        f.write(
-            pio.to_html(vent_fig1, full_html=False, include_plotlyjs="cdn", div_id="vent_fig1"),
-        )
-        f.write(
-            pio.to_html(vent_fig2, full_html=False, include_plotlyjs=False, div_id="vent_fig2"),
-        )
-        f.write(
-            pio.to_html(vent_fig3, full_html=False, include_plotlyjs=False, div_id="vent_fig3"),
-        )
+    write_figures_to_html(
+        file_paths.graphs / "summer_ventilation.html",
+        [
+            (
+                create_line_plot_figure(pd.DataFrame(vent_infiltration_ach), "Zone Infiltration [ACH]"),
+                "vent_fig1",
+            ),
+            (
+                create_line_plot_figure(pd.DataFrame(vent_zone_ach), "Zone Ventilation [ACH]"),
+                "vent_fig2",
+            ),
+            (
+                create_line_plot_figure(pd.DataFrame(vent_mech_ach), "Zone Mechanical Ventilation [ACH]"),
+                "vent_fig3",
+            ),
+        ],
+    )
 
-    # ------------------------------------------------------------------------------------------------------------------
-    # ------------------------------------------------------------------------------------------------------------------
-    # -- Energy Flow Plots
+
+def write_energy_flow_plots(file_paths: Filepaths) -> None:
+    total_J_people = get_time_series_data(file_paths.sql, "Zone People Total Heating Energy")
+    total_J_lights = get_time_series_data(file_paths.sql, "Zone Lights Total Heating Energy")
+    total_J_elec_equip = get_time_series_data(file_paths.sql, "Zone Electric Equipment Total Heating Energy")
+    total_J_solar_direct_gain = get_time_series_data(
+        file_paths.sql,
+        "Enclosure Exterior Windows Total Transmitted Beam Solar Radiation Energy",
+    )
+    total_J_solar_diffuse_gain = get_time_series_data(
+        file_paths.sql,
+        "Enclosure Exterior Windows Total Transmitted Diffuse Solar Radiation Energy",
+    )
+    total_J_win_gain = get_time_series_data(file_paths.sql, "Zone Windows Total Heat Gain Energy")
+    total_J_win_loss = get_time_series_data(file_paths.sql, "Zone Windows Total Heat Loss Energy")
+    total_J_infiltration_gain = get_time_series_data(file_paths.sql, "Zone Infiltration Total Heat Gain Energy")
+    total_J_infiltration_loss = get_time_series_data(file_paths.sql, "Zone Infiltration Total Heat Loss Energy")
+    total_J_vent_gain = get_time_series_data(file_paths.sql, "Zone Ventilation Total Heat Loss Energy")
+    total_J_vent_loss = get_time_series_data(file_paths.sql, "Zone Ventilation Total Heat Gain Energy")
+
     energy_fig1 = create_line_plot_figure(df_in_kWh(total_J_people), "Total People Energy [kWh]")
     energy_fig2 = create_line_plot_figure(df_in_kWh(total_J_lights), "Total Lighting Energy [kWh]")
     energy_fig3 = create_line_plot_figure(df_in_kWh(total_J_elec_equip), "Total Elec. Equipment Energy [kWh]")
@@ -306,60 +205,35 @@ if __name__ == "__main__":
         vent_gain_df["Value"] = vent_gain_df["Value"] - vent_loss_df["Value"]
     energy_fig7 = create_line_plot_figure(vent_gain_df, "Total Ventilation Heat Gain [kWh]")
 
-    with open(html_file(file_paths.graphs / "summer_energy_flow.html"), "w") as f:
-        f.write(
-            pio.to_html(
-                energy_fig1,
-                full_html=False,
-                include_plotlyjs="cdn",
-                div_id="energy_fig1",
-            )
-        )
-        f.write(
-            pio.to_html(
-                energy_fig2,
-                full_html=False,
-                include_plotlyjs=False,
-                div_id="energy_fig2",
-            )
-        )
-        f.write(
-            pio.to_html(
-                energy_fig3,
-                full_html=False,
-                include_plotlyjs=False,
-                div_id="energy_fig3",
-            )
-        )
-        f.write(
-            pio.to_html(
-                energy_fig4,
-                full_html=False,
-                include_plotlyjs=False,
-                div_id="energy_fig4",
-            )
-        )
-        f.write(
-            pio.to_html(
-                energy_fig5,
-                full_html=False,
-                include_plotlyjs=False,
-                div_id="energy_fig5",
-            )
-        )
-        f.write(
-            pio.to_html(
-                energy_fig6,
-                full_html=False,
-                include_plotlyjs=False,
-                div_id="energy_fig6",
-            )
-        )
-        f.write(
-            pio.to_html(
-                energy_fig7,
-                full_html=False,
-                include_plotlyjs=False,
-                div_id="energy_fig7",
-            )
-        )
+    write_figures_to_html(
+        file_paths.graphs / "summer_energy_flow.html",
+        [
+            (energy_fig1, "energy_fig1"),
+            (energy_fig2, "energy_fig2"),
+            (energy_fig3, "energy_fig3"),
+            (energy_fig4, "energy_fig4"),
+            (energy_fig5, "energy_fig5"),
+            (energy_fig6, "energy_fig6"),
+            (energy_fig7, "energy_fig7"),
+        ],
+    )
+
+
+if __name__ == "__main__":
+    # ------------------------------------------------------------------------------------------------------------------
+    print("- " * 50)
+    print(f"\t>> Using Python: {sys.version}")
+    print(f"\t>> Running the script: '{__file__.split('/')[-1]}'")
+    print("\t>> With the arguments:")
+    print("\n".join([f"\t\t{i} | {a}" for i, a in enumerate(sys.argv)]))
+    print("\t>> Resolving file paths...")
+    file_paths = resolve_paths(sys.argv)
+    print(f"\t>> Source SQL File: '{file_paths.sql}'")
+    print(f"\t>> Target Output Folder: '{file_paths.graphs}'")
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # -- Generate the Summer Resiliency Graphs
+    write_outdoor_environment_plots(file_paths)
+    write_heat_index_plots(file_paths)
+    write_ventilation_plots(file_paths)
+    write_energy_flow_plots(file_paths)

@@ -11,22 +11,15 @@ This script is called from the command line with the following arguments:
 """
 
 import os
-import sqlite3
 import sys
 from collections import namedtuple
 from pathlib import Path
 
 import pandas as pd
 
-
-class InputFileError(Exception):
-    def __init__(self, path) -> None:
-        self.msg = f"\nCannot locate the specified file:'{path}'"
-        super().__init__(self.msg)
-
+from honeybee_revive.output._shared import InputFileError, get_time_series_data
 
 Filepaths = namedtuple("Filepaths", ["sql", "json_filepath"])
-Record = namedtuple("Record", ["Date", "Value", "Zone"])
 
 
 def resolve_paths(_args: list[str]) -> Filepaths:
@@ -59,31 +52,6 @@ def resolve_paths(_args: list[str]) -> Filepaths:
     return Filepaths(results_sql_file, json_filepath)
 
 
-def get_time_series_data(source_file_path: Path, output_variable_name: str) -> list[Record]:
-    """Get Time-Series data from the SQL File."""
-    conn = sqlite3.connect(source_file_path)
-    data_ = []  # defaultdict(list)
-    try:
-        c = conn.cursor()
-        c.execute(
-            "SELECT KeyValue, Month, Day, Hour, Value FROM 'ReportVariableWithTime' "
-            "WHERE Name=? "
-            "AND DayType NOT IN ('WinterDesignDay', 'SummerDesignDay') "
-            "ORDER BY Month, Day, Hour",
-            (output_variable_name,),
-        )
-        for row in c.fetchall():
-            date = pd.to_datetime(f"2016-{row[1]}-{row[2]} {row[3]-1}:00:00", utc=True)
-            data_.append(Record(date, row[4], row[0]))
-    except Exception as e:
-        conn.close()
-        raise Exception(str(e))
-    finally:
-        conn.close()
-
-    return data_
-
-
 def pivot_df_by_zone_name(_df: pd.DataFrame) -> pd.DataFrame:
     """Pivot the DataFrame so the columns are the Zone names."""
     pivot_df = _df.pivot(index="Date", columns="Zone", values="Value")
@@ -108,7 +76,7 @@ if __name__ == "__main__":
 
     # -------------------------------------------------------------------------
     # -- Get the Hourly Data from the SQL File, output it to a JSON file.
-    set_temps = get_time_series_data(file_paths.sql, output_variable_name)
+    set_temps = get_time_series_data(file_paths.sql, output_variable_name, year=2016, utc=True)
     set_df = pd.DataFrame(set_temps)
     set_df.to_json(file_paths.json_filepath, orient="records")
     set_df = pivot_df_by_zone_name(set_df)
