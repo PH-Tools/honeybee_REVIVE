@@ -4,9 +4,6 @@ on:
   release:
     types: [published]
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 permissions:
   contents: read
 
@@ -58,7 +55,7 @@ jobs:
         run: python -m build
         
       - name: Upload distributions
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: release-dists
           path: dist/
@@ -73,7 +70,7 @@ jobs:
       url: https://pypi.org/project/honeybee-REVIVE/
     steps:
       - name: Retrieve release distributions
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: release-dists
           path: dist/
