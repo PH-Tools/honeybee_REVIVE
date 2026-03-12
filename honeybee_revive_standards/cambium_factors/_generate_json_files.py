@@ -76,4 +76,4 @@ for _ in list(regions.values()):
     )
     target_file = target_dir / f"{_.region_code}.json"
     with open(target_file, "w") as f:
-        f.write(_.json())
+        f.write(_.model_dump_json())

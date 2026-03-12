@@ -1,6 +1,6 @@
 [project]
 name = "honeybee-REVIVE"
-version = "0.1.1"
+version = "0.1.2"
 description = "A Honeybee Extension for Phius REVIVE Modeling."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -26,11 +26,11 @@ keywords = [
     "Embodied CO2",
 ]
 dependencies = [
-    "honeybee-energy>=1.116.17",
+    "honeybee-energy>=1.117.0",
     "pandas>=2.2.3",
-    "ph-units>=1.5.25",
+    "ph-units>=1.5.27",
     "plotly>=5.24.1",
-    "pydantic<=1.10.18",
+    "pydantic>=2.0",
     "rich>=13.8.1",
 ]
 
