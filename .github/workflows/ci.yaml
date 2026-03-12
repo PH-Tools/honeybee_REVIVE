@@ -33,7 +33,7 @@ jobs:
   build-dist:
     name: Build Python Distribution
     runs-on: ubuntu-latest
-    # needs: run-python-test
+    needs: run-python-test
 
     steps:
       - uses: actions/checkout@v4
@@ -47,6 +47,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install build
 
+      - name: Set version from release tag
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          if ! echo "${VERSION}" | grep -qE '^[0-9]+\.[0-9]+'; then
+            echo "ERROR: Could not extract a valid version from tag '${GITHUB_REF_NAME}'" >&2
+            exit 1
+          fi
+          sed -i "s/^version = \"[^\"]*\"/version = \"${VERSION}\"/" pyproject.toml
+          echo "Version set to: ${VERSION}"
+
       - name: install project dependencies
         run: |
           pip install .
@@ -55,7 +65,7 @@ jobs:
         run: python -m build
         
       - name: Upload distributions
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: release-dists
           path: dist/
@@ -70,7 +80,7 @@ jobs:
       url: https://pypi.org/project/honeybee-REVIVE/
     steps:
       - name: Retrieve release distributions
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@v4
         with:
           name: release-dists
           path: dist/
