@@ -60,6 +60,7 @@ exclude = ["tests*", "build*"]
 
 [tool.setuptools.package-data]
 "honeybee_revive_standards" = ["**/*.json"]
+"honeybee_revive_measures" = ["**/*.rb", "**/*.xml"]
 
 [project.urls]
 homepage = "https://www.passivehousetools.com/"
