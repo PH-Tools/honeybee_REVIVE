@@ -48,14 +48,18 @@ dev = [
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-packages = [
-    "honeybee_energy_revive",
-    "honeybee_revive",
-    "honeybee_revive_standards",
-    "honeybee_revive_measures",
-    "ladybug_revive",
+[tool.setuptools.packages.find]
+include = [
+    "honeybee_energy_revive*",
+    "honeybee_revive*",
+    "honeybee_revive_standards*",
+    "honeybee_revive_measures*",
+    "ladybug_revive*",
 ]
+exclude = ["tests*", "build*"]
+
+[tool.setuptools.package-data]
+"honeybee_revive_standards" = ["**/*.json"]
 
 [project.urls]
 homepage = "https://www.passivehousetools.com/"
