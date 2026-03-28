@@ -93,6 +93,19 @@ filterwarnings = [
     'ignore:function ham\(\) is deprecated:DeprecationWarning',
 ]
 
+# -- Bump My Version ---------------------------------------------------------------
+[tool.bumpversion]
+current_version = "0.1.2"
+commit = true
+tag = true
+tag_name = "v{new_version}"
+commit_message = "bump: version {current_version} -> {new_version} [skip ci]"
+
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
 [tool.black]
 line-length = 120
 
