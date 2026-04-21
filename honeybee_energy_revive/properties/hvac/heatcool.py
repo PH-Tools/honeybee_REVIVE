@@ -28,7 +28,12 @@ class HeatCoolSystemReviveProperties_FromDictError(Exception):
 
 
 class HeatCoolSystemReviveProperties(object):
-    """Honeybee-REVIVE Properties for storing REVIVE data."""
+    """REVIVE extension properties for a HeatCoolSystem HVAC object.
+
+    Attributes:
+        equipment_collection (PhiusReviveHVACEquipmentCollection): Collection of
+            REVIVE HVAC equipment items associated with this system.
+    """
 
     def __init__(self, _host=None):
         # type: (_HeatCoolBase | None) -> None
@@ -38,11 +43,13 @@ class HeatCoolSystemReviveProperties(object):
     @property
     def host(self):
         # type: () -> _HeatCoolBase | None
+        """The HeatCoolSystem host object for these REVIVE properties."""
         return self._host
 
     @property
     def host_name(self):
         # type: () -> str
+        """The display name of the host, or 'No Host'."""
         return self.host.display_name if self.host else "No Host"
 
     def add_equipment(self, equipment):

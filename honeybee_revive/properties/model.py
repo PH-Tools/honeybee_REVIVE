@@ -40,6 +40,24 @@ except ImportError as e:
 
 
 class ModelReviveProperties(object):
+    """Phius REVIVE properties attached to a Honeybee Model.
+
+    Stores project-level REVIVE analysis settings including grid region,
+    national emissions factors, analysis duration, CO2 reduction measures,
+    and fuel pricing data.
+
+    Attributes:
+        id_num (int): Numeric identifier. Default: 0.
+        grid_region (GridRegion): Cambium grid region for carbon accounting.
+        national_emissions_factors (NationalEmissionsFactors): Country-level
+            emissions factors for embodied carbon calculations.
+        analysis_duration (int): REVIVE analysis period in years. Default: 50.
+        envelope_labor_cost_fraction (float): Default labor fraction for
+            envelope components (0.0 to 1.0). Default: 0.4.
+        co2_measures (CO2ReductionMeasureCollection): Collection of CO2
+            reduction measures for this project.
+        fuels (FuelCollection): Collection of fuel types with pricing data.
+    """
 
     def __init__(self, _host):
         # type: (Model | None) -> None
@@ -55,16 +73,19 @@ class ModelReviveProperties(object):
     @property
     def host(self):
         # type: () -> Model | None
+        """The Honeybee Model this properties object is attached to."""
         return self._host
 
     @property
     def host_name(self):
         # type: () -> str
+        """The display name of the host Model, or 'No Host'."""
         return self.host.display_name if self.host else "No Host"
 
     @property
     def host_rooms(self):
         # type: () -> tuple[Room]
+        """All rooms in the host Model."""
         if self.host:
             return self.host.rooms
         return tuple()
@@ -178,11 +199,12 @@ class ModelReviveProperties(object):
 
         Arguments:
         ----------
-            data (dict[str, dict]): A dictionary representation of an entire honeybee-core Model.
+            * data (dict[str, dict]): A dictionary representation of an entire honeybee-core Model.
 
         Returns:
         --------
-            * None
+            * tuple: (GridRegion, NationalEmissionsFactors, int, float,
+                CO2ReductionMeasureCollection, FuelCollection).
         """
         assert "revive" in data["properties"], "HB-Model Dictionary possesses no ModelReviveProperties?"
 

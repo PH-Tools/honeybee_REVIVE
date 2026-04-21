@@ -17,7 +17,14 @@ class PVPropertiesReviveProperties_FromDictError(Exception):
 
 
 class PVPropertiesReviveProperties(object):
-    """Honeybee-REVIVE Properties for storing REVIVE data."""
+    """REVIVE extension properties for a PVProperties generator object.
+
+    Attributes:
+        id_num (int): Numeric identifier for this PV object. Default: 0.
+        cost (float): Installed cost in USD. Default: 0.0.
+        labor_fraction (float): Fraction of cost attributable to labor (0-1). Default: 0.0.
+        lifetime_years (int): Expected service life in years. Default: 0.
+    """
 
     def __init__(self, _host=None):
         # type: (PVProperties | None) -> None
@@ -30,11 +37,13 @@ class PVPropertiesReviveProperties(object):
     @property
     def host(self):
         # type: () -> PVProperties | None
+        """The PVProperties host object for these REVIVE properties."""
         return self._host
 
     @property
     def host_name(self):
         # type: () -> str
+        """The display name of the host, or 'No Host'."""
         return self.host.display_name if self.host else "No Host"
 
     def duplicate(self, new_host=None):

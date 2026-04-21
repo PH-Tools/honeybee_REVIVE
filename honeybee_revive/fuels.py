@@ -10,6 +10,20 @@ except ImportError:
 
 
 class Fuel(object):
+    """A fuel type with purchase, sale, and base pricing for REVIVE cost analysis.
+
+    Supported fuel types are "ELECTRICITY" and "NATURAL_GAS".
+
+    Attributes:
+        fuel_type (str): The fuel classification. Must be "ELECTRICITY"
+            or "NATURAL_GAS". Default: "ELECTRICITY".
+        purchase_price_per_kwh (float): Purchase price per kWh in USD.
+            Default: 0.0.
+        sale_price_per_kwh (float): Sale (export) price per kWh in USD.
+            Default: 0.0.
+        annual_base_price (float): Fixed annual base price in USD.
+            Default: 0.0.
+    """
 
     def __init__(
         self,
@@ -27,6 +41,7 @@ class Fuel(object):
     @property
     def unique_id(self):
         # type: () -> str
+        """Composite identifier derived from fuel type and pricing."""
         return "{}-{}-{}-{}".format(
             self.fuel_type, self.purchase_price_per_kwh, self.sale_price_per_kwh, self.annual_base_price
         )
@@ -34,6 +49,7 @@ class Fuel(object):
     @property
     def fuel_type(self):
         # type: () -> str
+        """The fuel classification: 'ELECTRICITY' or 'NATURAL_GAS'."""
         return self._fuel_type
 
     @fuel_type.setter
@@ -90,6 +106,12 @@ class Fuel(object):
 
 
 class FuelCollection(object):
+    """An ordered collection of Fuel objects, keyed by fuel_type.
+
+    Supports iteration, containment testing, and len(). Use
+    with_default_fuels() to create a collection pre-populated with
+    standard electricity and natural gas pricing.
+    """
 
     def __init__(self):
         # type: () -> None
@@ -97,22 +119,41 @@ class FuelCollection(object):
 
     def add_fuel(self, fuel):
         # type: (Fuel) -> None
+        """Add a Fuel to the collection, keyed by its fuel_type.
+
+        Arguments:
+        ----------
+            * fuel (Fuel): The fuel to add.
+        """
         self._storage[fuel.fuel_type] = fuel
 
     def get_fuel(self, fuel_type):
         # type: (str) -> Fuel
+        """Return a Fuel by its fuel_type key.
+
+        Arguments:
+        ----------
+            * fuel_type (str): The fuel type to look up (e.g. "ELECTRICITY").
+
+        Returns:
+        --------
+            * Fuel
+        """
         return self._storage[fuel_type]
 
     def fuels(self):
         # type: () -> list[Fuel]
+        """Return all fuels in the collection as a list."""
         return list(self._storage.values())
 
     def keys(self):
         # type: () -> list[str]
+        """Return all fuel_type keys, sorted alphabetically."""
         return sorted(self._storage.keys())
 
     def values(self):
         # type: () -> list[Fuel]
+        """Return all fuels, sorted by fuel_type."""
         return list(sorted(self._storage.values(), key=lambda f: f.fuel_type))
 
     def duplicate(self):
@@ -141,6 +182,12 @@ class FuelCollection(object):
     @classmethod
     def with_default_fuels(cls):
         # type: () -> FuelCollection
+        """Create a FuelCollection pre-populated with default electricity and natural gas pricing.
+
+        Returns:
+        --------
+            * FuelCollection
+        """
         collection = cls()
 
         electricity = Fuel(

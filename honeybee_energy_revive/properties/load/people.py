@@ -23,7 +23,11 @@ class PeopleReviveProperties_FromDictError(Exception):
 
 
 class PeopleReviveProperties(object):
-    """Honeybee-REVIVE Properties for storing REVIVE data."""
+    """REVIVE extension properties for a People load object.
+
+    Attributes:
+        id_num (int): Numeric identifier for this people object. Default: 0.
+    """
 
     def __init__(self, _host=None):
         # type: (People | None) -> None
@@ -33,11 +37,13 @@ class PeopleReviveProperties(object):
     @property
     def host(self):
         # type: () -> People | None
+        """The People host object for these REVIVE properties."""
         return self._host
 
     @property
     def host_name(self):
         # type: () -> str
+        """The display name of the host, or 'No Host'."""
         return self.host.display_name if self.host else "No Host"
 
     def duplicate(self, new_host=None):

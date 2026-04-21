@@ -17,6 +17,12 @@ except ImportError as e:
 
 
 class ShadeReviveProperties(object):
+    """Phius REVIVE properties attached to a Honeybee Shade.
+
+    Attributes:
+        id_num (int): Numeric identifier. Default: 0.
+    """
+
     # type: (Shade | None) -> None
     def __init__(self, _host):
         self._host = _host
@@ -25,11 +31,13 @@ class ShadeReviveProperties(object):
     @property
     def host(self):
         # type: () -> Shade | None
+        """The Honeybee Shade this properties object is attached to."""
         return self._host
 
     @property
     def host_name(self):
         # type: () -> str
+        """The display name of the host Shade, or 'No Host'."""
         return self.host.display_name if self.host else "No Host"
 
     def duplicate(self, new_host=None):

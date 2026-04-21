@@ -53,7 +53,16 @@ def resolve_paths(_args: list[str]) -> Filepaths:
 
 
 def pivot_df_by_zone_name(_df: pd.DataFrame) -> pd.DataFrame:
-    """Pivot the DataFrame so the columns are the Zone names."""
+    """Pivot the DataFrame so each Zone becomes a column, with Date as the index.
+
+    Arguments:
+    ----------
+        * _df (pd.DataFrame): DataFrame with 'Date', 'Value', and 'Zone' columns.
+
+    Returns:
+    --------
+        * pd.DataFrame: Pivoted DataFrame with Zone names as column headers.
+    """
     pivot_df = _df.pivot(index="Date", columns="Zone", values="Value")
     pivot_df.reset_index(inplace=True)
     return pivot_df

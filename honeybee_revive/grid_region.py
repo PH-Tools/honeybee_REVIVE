@@ -8,6 +8,18 @@ Note that this object does not store the action factors - just the lookup code a
 
 
 class GridRegion(object):
+    """A Cambium grid region for REVIVE carbon accounting.
+
+    Stores the region identifier and lookup code used to retrieve
+    hourly grid emissions factors from NREL Cambium data. Does not
+    store the factors themselves.
+
+    Attributes:
+        region_name (str): Human-readable name of the grid region.
+        region_code (str): Cambium lookup code for this region.
+        description (str): Additional description of the region.
+        filepath (str): Path to the Cambium data file for this region.
+    """
 
     def __init__(self, _region_name="", _region_code="", _description="", _filepath=""):
         self.region_name = _region_name
@@ -18,6 +30,7 @@ class GridRegion(object):
     @property
     def display_name(self):
         # type: () -> str
+        """The region_name, used for display purposes."""
         return self.region_name
 
     def to_dict(self):

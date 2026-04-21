@@ -23,7 +23,11 @@ class ElectricEquipmentReviveProperties_FromDictError(Exception):
 
 
 class ElectricEquipmentReviveProperties(object):
-    """Honeybee-REVIVE Properties for storing REVIVE data."""
+    """REVIVE extension properties for an ElectricEquipment load object.
+
+    Attributes:
+        id_num (int): Numeric identifier for this equipment object. Default: 0.
+    """
 
     def __init__(self, _host=None):
         # type: (ElectricEquipment | None) -> None
@@ -33,11 +37,13 @@ class ElectricEquipmentReviveProperties(object):
     @property
     def host(self):
         # type: () -> ElectricEquipment | None
+        """The ElectricEquipment host object for these REVIVE properties."""
         return self._host
 
     @property
     def host_name(self):
         # type: () -> str
+        """The display name of the host, or 'No Host'."""
         return self.host.display_name if self.host else "No Host"
 
     def duplicate(self, new_host=None):

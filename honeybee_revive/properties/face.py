@@ -17,6 +17,12 @@ except ImportError as e:
 
 
 class FaceReviveProperties(object):
+    """Phius REVIVE properties attached to a Honeybee Face.
+
+    Attributes:
+        id_num (int): Numeric identifier. Default: 0.
+    """
+
     def __init__(self, _host):
         # type: (Face | None) -> None
         self._host = _host
@@ -25,11 +31,13 @@ class FaceReviveProperties(object):
     @property
     def host(self):
         # type: () -> Face | None
+        """The Honeybee Face this properties object is attached to."""
         return self._host
 
     @property
     def host_name(self):
         # type: () -> str
+        """The display name of the host Face, or 'No Host'."""
         return self.host.display_name if self.host else "No Host"
 
     def duplicate(self, new_host=None):

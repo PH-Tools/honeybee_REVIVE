@@ -21,31 +21,28 @@ except ImportError:
 
 def calculate_adjustment_factor(_target_return, _original_week, _extreme_func, _relaxation_factor=0.1, _tolerance=0.01):
     # type: (float, list[float], Callable, float, float) -> tuple[int, float]
-    """
-    Calculate the delta value for drybulb and dewpoint temps to apply to the original EPW values.
+    """Calculate the delta value for drybulb and dewpoint temps to apply to the original EPW values.
+
+    Iteratively solves for the temperature offset (delta) that, when applied as a
+    sinusoidal morph to the original week, produces the target return-period extreme.
+
     Adapted from https://github.com/Phius-ResearchComittee/REVIVE/blob/main/REVIVE2024/weatherMorph.py
 
-    See also Section 6.1.2.1 'Resilience Extreme Week Morphing Algorithm' Phius Revive 2024 Retrofit Standard for Buildings v24.1.1:
-        > Iteration to determine Delta_dry and Delta_dew:
-        > Delta_init = T_return - avg(T_x_week)
-        > T_return are the n-year return extreme values of DB and dewpoint, converted from DB and Wet bulb, from ASHRAE Climatic Design Conditions data.
-        > For winter, use the 10-year return values.
-        > For summer, use the 20-year return values.
-        > Delta = Delta_init
-        > Repeat
-        > K is a relaxation factor = 0.1
-        > X = [ max(T_x_week2) for hot week, min(T_x_week2) for cold week ]
-        > Delta_next = Delta + K * (T_return_X)
-        > Delta = Delta_next
-        > Until abs(T_return_X) < tolerance ~ 0.01 F
+    See also Section 6.1.2.1 'Resilience Extreme Week Morphing Algorithm'
+    Phius Revive 2024 Retrofit Standard for Buildings v24.1.1.
 
-    Args:
-        target_return: n-year return extreme values of dry-bulb or dewpoint
-        original_week: original hourly db or dewpoint values from outage week
-        extreme_func: function to apply to morphed week: max() for summer and min() for winter
+    Arguments:
+    ----------
+        * _target_return (float): n-year return extreme value of dry-bulb or dewpoint (deg C).
+        * _original_week (list[float]): Original hourly temps from the outage week.
+        * _extreme_func (Callable): Function to apply to morphed week: max() for
+            summer, min() for winter.
+        * _relaxation_factor (float): Iteration relaxation factor. Default: 0.1.
+        * _tolerance (float): Convergence tolerance in degrees. Default: 0.01.
 
     Returns:
-        tuple: iteration count and delta value to apply to original week to get the desired return value
+    --------
+        * tuple[int, float]: Iteration count and the delta value to apply.
     """
     phase_adjustment = [math.sin(math.pi * hr / len(_original_week)) for hr in range(len(_original_week))]
 
@@ -72,9 +69,22 @@ def calculate_period_morphing_factors(
     _extreme_dry_bulb_C, _hourly_dry_bulb_deg_C, _extreme_dew_point_C, _hourly_dew_point_deg_C, func
 ):
     # type: (float, list[float], float, list[float], Callable) -> tuple[float, float]
-    """Calculate the Phius2024 REVIVE Weather-Morphing Factors for a specific period (winter/summer).
+    """Calculate the Phius2024 REVIVE weather-morphing factors for a specific period.
 
-    Adapted from https://github.com/Phius-ResearchComittee/REVIVE/blob/main/REVIVE2024/weatherMorph.py
+    Computes both the dry-bulb and dew-point adjustment deltas for the given
+    extreme week using the specified extreme function (min for winter, max for summer).
+
+    Arguments:
+    ----------
+        * _extreme_dry_bulb_C (float): Target return-period dry-bulb temperature (deg C).
+        * _hourly_dry_bulb_deg_C (list[float]): Original hourly dry-bulb temps from outage week.
+        * _extreme_dew_point_C (float): Target return-period dew-point temperature (deg C).
+        * _hourly_dew_point_deg_C (list[float]): Original hourly dew-point temps from outage week.
+        * func (Callable): Extreme function: min for winter, max for summer.
+
+    Returns:
+    --------
+        * tuple[float, float]: The (dry-bulb delta, dew-point delta) morphing factors.
     """
     print("Using the function: {}".format(func.__name__))
 
@@ -94,7 +104,21 @@ def calculate_winter_morphing_factors(
     _hourly_dew_point_deg_C,
 ):
     # type: (float, list[float], float, list[float]) -> tuple[float, float]
-    """Calculate the Phius2024 REVIVE Weather-Morphing Factors for the Winter period."""
+    """Calculate the Phius2024 REVIVE weather-morphing factors for the winter period.
+
+    Uses 10-year return values and min() as the extreme function.
+
+    Arguments:
+    ----------
+        * _extreme_dry_bulb_C (float): 10-year return dry-bulb temperature (deg C).
+        * _hourly_dry_bulb_deg_C (list[float]): Original hourly dry-bulb temps from cold week.
+        * _extreme_dew_point_C (float): 10-year return dew-point temperature (deg C).
+        * _hourly_dew_point_deg_C (list[float]): Original hourly dew-point temps from cold week.
+
+    Returns:
+    --------
+        * tuple[float, float]: The (dry-bulb delta, dew-point delta) morphing factors.
+    """
     return calculate_period_morphing_factors(
         _extreme_dry_bulb_C, _hourly_dry_bulb_deg_C, _extreme_dew_point_C, _hourly_dew_point_deg_C, min
     )
@@ -107,7 +131,21 @@ def calculate_summer_morphing_factors(
     _hourly_dew_point_deg_C,
 ):
     # type: (float, list[float], float, list[float]) -> tuple[float, float]
-    """Calculate the Phius2024 REVIVE Weather-Morphing Factors for the Summer period."""
+    """Calculate the Phius2024 REVIVE weather-morphing factors for the summer period.
+
+    Uses 20-year return values and max() as the extreme function.
+
+    Arguments:
+    ----------
+        * _extreme_dry_bulb_C (float): 20-year return dry-bulb temperature (deg C).
+        * _hourly_dry_bulb_deg_C (list[float]): Original hourly dry-bulb temps from hot week.
+        * _extreme_dew_point_C (float): 20-year return dew-point temperature (deg C).
+        * _hourly_dew_point_deg_C (list[float]): Original hourly dew-point temps from hot week.
+
+    Returns:
+    --------
+        * tuple[float, float]: The (dry-bulb delta, dew-point delta) morphing factors.
+    """
     return calculate_period_morphing_factors(
         _extreme_dry_bulb_C, _hourly_dry_bulb_deg_C, _extreme_dew_point_C, _hourly_dew_point_deg_C, max
     )

@@ -29,7 +29,15 @@ class EnergyWindowFrameReviveProperties_FromDictError(Exception):
 
 
 class EnergyWindowFrameReviveProperties(object):
-    """Honeybee-REVIVE Properties for storing REVIVE data."""
+    """REVIVE properties extension for an EnergyWindowFrame.
+
+    Attributes:
+        id_num (int): Numeric identifier for this material. Default: 0.
+        kg_CO2_per_m2 (Unit): Embodied carbon per unit area. Default: 0.0 KG/M2.
+        cost_per_m2 (Unit): Installed cost per unit area. Default: 0.0 COST/M2.
+        labor_fraction (float): Fraction of cost attributed to labor. Default: 0.4.
+        lifetime_years (int): Expected service life in years. Default: 25.
+    """
 
     def __init__(self, _host=None):
         # type: (EnergyWindowFrame | None) -> None
@@ -43,11 +51,13 @@ class EnergyWindowFrameReviveProperties(object):
     @property
     def host(self):
         # type: () -> EnergyWindowFrame | None
+        """The EnergyWindowFrame this properties object is attached to."""
         return self._host
 
     @property
     def host_name(self):
         # type: () -> str
+        """The display name of the host EnergyWindowFrame, or 'No Host'."""
         return self.host.display_name if self.host else "No Host"
 
     def duplicate(self, _host=None):

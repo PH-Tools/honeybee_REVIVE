@@ -33,7 +33,15 @@ class EnergyWindowMaterialGasReviveProperties_FromDictError(Exception):
 
 
 class EnergyWindowMaterialGasReviveProperties(object):
-    """Honeybee-REVIVE Properties for storing REVIVE data."""
+    """REVIVE properties extension for an EnergyWindowMaterialGas layer.
+
+    Attributes:
+        id_num (int): Numeric identifier for this material. Default: 0.
+        kg_CO2_per_m2 (Unit): Embodied carbon per unit area. Default: 0.0 KG/M2.
+        cost_per_m2 (Unit): Installed cost per unit area. Default: 0.0 COST/M2.
+        labor_fraction (float): Fraction of cost attributed to labor. Default: 0.4.
+        lifetime_years (int): Expected service life in years. Default: 25.
+    """
 
     def __init__(self, _host=None):
         # type: (EnergyWindowMaterialGas | None) -> None
@@ -47,11 +55,13 @@ class EnergyWindowMaterialGasReviveProperties(object):
     @property
     def host(self):
         # type: () -> EnergyWindowMaterialGas | None
+        """The EnergyWindowMaterialGas this properties object is attached to."""
         return self._host
 
     @property
     def host_name(self):
         # type: () -> str
+        """The display name of the host EnergyWindowMaterialGas, or 'No Host'."""
         return self.host.display_name if self.host else "No Host"
 
     def duplicate(self, _host=None):
@@ -146,7 +156,15 @@ class EnergyWindowMaterialGasReviveProperties(object):
 
 
 class EnergyWindowMaterialGasMixtureReviveProperties(object):
-    """Honeybee-REVIVE Properties for storing REVIVE data."""
+    """REVIVE properties extension for an EnergyWindowMaterialGasMixture layer.
+
+    Attributes:
+        id_num (int): Numeric identifier for this material. Default: 0.
+        kg_CO2_per_m2 (Unit): Embodied carbon per unit area. Default: 0.0 KG/M2.
+        cost_per_m2 (Unit): Installed cost per unit area. Default: 0.0 COST/M2.
+        labor_fraction (float): Fraction of cost attributed to labor. Default: 0.4.
+        lifetime_years (int): Expected service life in years. Default: 25.
+    """
 
     def __init__(self, _host=None):
         # type: (EnergyWindowMaterialGasMixture | None) -> None
@@ -160,11 +178,13 @@ class EnergyWindowMaterialGasMixtureReviveProperties(object):
     @property
     def host(self):
         # type: () -> EnergyWindowMaterialGasMixture | None
+        """The EnergyWindowMaterialGasMixture this properties object is attached to."""
         return self._host
 
     @property
     def host_name(self):
         # type: () -> str
+        """The display name of the host EnergyWindowMaterialGasMixture, or 'No Host'."""
         return self.host.display_name if self.host else "No Host"
 
     def duplicate(self, _host=None):
@@ -259,7 +279,15 @@ class EnergyWindowMaterialGasMixtureReviveProperties(object):
 
 
 class EnergyWindowMaterialGasCustomReviveProperties(object):
-    """Honeybee-REVIVE Properties for storing REVIVE data."""
+    """REVIVE properties extension for an EnergyWindowMaterialGasCustom layer.
+
+    Attributes:
+        id_num (int): Numeric identifier for this material. Default: 0.
+        kg_CO2_per_m2 (Unit): Embodied carbon per unit area. Default: 0.0 KG/M2.
+        cost_per_m2 (Unit): Installed cost per unit area. Default: 0.0 COST/M2.
+        labor_fraction (float): Fraction of cost attributed to labor. Default: 0.4.
+        lifetime_years (int): Expected service life in years. Default: 25.
+    """
 
     def __init__(self, _host=None):
         # type: (EnergyWindowMaterialGasCustom | None) -> None
@@ -273,11 +301,13 @@ class EnergyWindowMaterialGasCustomReviveProperties(object):
     @property
     def host(self):
         # type: () -> EnergyWindowMaterialGasCustom | None
+        """The EnergyWindowMaterialGasCustom this properties object is attached to."""
         return self._host
 
     @property
     def host_name(self):
         # type: () -> str
+        """The display name of the host EnergyWindowMaterialGasCustom, or 'No Host'."""
         return self.host.display_name if self.host else "No Host"
 
     def duplicate(self, _host=None):

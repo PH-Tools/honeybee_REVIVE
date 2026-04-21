@@ -23,7 +23,14 @@ class LightingReviveProperties_FromDictError(Exception):
 
 
 class LightingReviveProperties(object):
-    """Honeybee-REVIVE Properties for storing REVIVE data."""
+    """REVIVE extension properties for a Lighting load object.
+
+    Attributes:
+        id_num (int): Numeric identifier for this lighting object. Default: 0.
+        cost (float): Installed cost in USD. Default: 0.0.
+        labor_fraction (float): Fraction of cost attributable to labor (0-1). Default: 0.4.
+        lifetime_years (int): Expected service life in years. Default: 25.
+    """
 
     def __init__(self, _host=None):
         # type: (Lighting | None) -> None
@@ -36,11 +43,13 @@ class LightingReviveProperties(object):
     @property
     def host(self):
         # type: () -> Lighting | None
+        """The Lighting host object for these REVIVE properties."""
         return self._host
 
     @property
     def host_name(self):
         # type: () -> str
+        """The display name of the host, or 'No Host'."""
         return self.host.display_name if self.host else "No Host"
 
     def duplicate(self, new_host=None):

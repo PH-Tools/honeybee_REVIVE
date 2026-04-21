@@ -28,7 +28,15 @@ class EnergyWindowMaterialShadeReviveProperties_FromDictError(Exception):
 
 
 class EnergyWindowMaterialShadeReviveProperties(object):
-    """Honeybee-REVIVE Properties for storing REVIVE data."""
+    """REVIVE properties extension for an EnergyWindowMaterialShade layer.
+
+    Attributes:
+        id_num (int): Numeric identifier for this material. Default: 0.
+        kg_CO2_per_m2 (Unit): Embodied carbon per unit area. Default: 0.0 KG/M2.
+        cost_per_m2 (Unit): Installed cost per unit area. Default: 0.0 COST/M2.
+        labor_fraction (float): Fraction of cost attributed to labor. Default: 0.4.
+        lifetime_years (int): Expected service life in years. Default: 25.
+    """
 
     def __init__(self, _host=None):
         # type: (EnergyWindowMaterialShade | None) -> None
@@ -42,11 +50,13 @@ class EnergyWindowMaterialShadeReviveProperties(object):
     @property
     def host(self):
         # type: () -> EnergyWindowMaterialShade | None
+        """The EnergyWindowMaterialShade this properties object is attached to."""
         return self._host
 
     @property
     def host_name(self):
         # type: () -> str
+        """The display name of the host EnergyWindowMaterialShade, or 'No Host'."""
         return self.host.display_name if self.host else "No Host"
 
     def duplicate(self, new_host=None):
@@ -141,7 +151,15 @@ class EnergyWindowMaterialShadeReviveProperties(object):
 
 
 class EnergyWindowMaterialBlindReviveProperties(object):
-    """Honeybee-REVIVE Properties for storing REVIVE data."""
+    """REVIVE properties extension for an EnergyWindowMaterialBlind layer.
+
+    Attributes:
+        id_num (int): Numeric identifier for this material. Default: 0.
+        kg_CO2_per_m2 (Unit): Embodied carbon per unit area. Default: 0.0 KG/M2.
+        cost_per_m2 (Unit): Installed cost per unit area. Default: 0.0 COST/M2.
+        labor_fraction (float): Fraction of cost attributed to labor. Default: 0.4.
+        lifetime_years (int): Expected service life in years. Default: 25.
+    """
 
     def __init__(self, _host=None):
         # type: (EnergyWindowMaterialBlind | None) -> None
@@ -155,11 +173,13 @@ class EnergyWindowMaterialBlindReviveProperties(object):
     @property
     def host(self):
         # type: () -> EnergyWindowMaterialBlind | None
+        """The EnergyWindowMaterialBlind this properties object is attached to."""
         return self._host
 
     @property
     def host_name(self):
         # type: () -> str
+        """The display name of the host EnergyWindowMaterialBlind, or 'No Host'."""
         return self.host.display_name if self.host else "No Host"
 
     def duplicate(self, new_host=None):

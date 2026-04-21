@@ -44,7 +44,14 @@ class OpaqueConstructionReviveProperties_FromDictError(Exception):
 
 
 class OpaqueConstructionReviveProperties(object):
-    """Honeybee-REVIVE Properties for storing REVIVE data."""
+    """REVIVE cost and carbon properties for a honeybee-energy OpaqueConstruction.
+
+    Aggregates per-layer material data (embodied carbon, cost, labor, lifetime)
+    into construction-level totals and weighted averages.
+
+    Attributes:
+        id_num (int): Integer identifier for this construction. Default: 0.
+    """
 
     def __init__(self, _host=None):
         # type: (OpaqueConstruction | None) -> None
@@ -54,17 +61,19 @@ class OpaqueConstructionReviveProperties(object):
     @property
     def host(self):
         # type: () -> OpaqueConstruction | None
+        """The honeybee-energy OpaqueConstruction this properties object is attached to."""
         return self._host
 
     @property
     def host_name(self):
         # type: () -> str
+        """The display name of the host OpaqueConstruction, or 'No Host'."""
         return self.host.display_name if self.host else "No Host"
 
     @property
     def total_thickness_m(self):
         # type: () -> Unit
-        """Return the total thickness of all the materials in the construction."""
+        """Total thickness of all material layers in the construction, in meters."""
         if not self.host:
             return Unit(0.0, "M")
         return Unit(self.host.thickness, "M")
@@ -72,7 +81,7 @@ class OpaqueConstructionReviveProperties(object):
     @property
     def kg_CO2_per_m2(self):
         # type: () -> Unit
-        """Return the total kg-of-CO2-per-m2 of all the materials in the construction."""
+        """Sum of embodied kg-CO2 per m2 across all material layers."""
 
         if not self.host:
             return Unit(0.0, "KG/M2")
@@ -86,7 +95,7 @@ class OpaqueConstructionReviveProperties(object):
     @property
     def cost_per_m2(self):
         # type: () -> Unit
-        """Return the total cost-per-m2 of all the materials in the construction."""
+        """Sum of cost per m2 across all material layers."""
 
         if not self.host:
             return Unit(0.0, "COST/M2")
@@ -100,7 +109,7 @@ class OpaqueConstructionReviveProperties(object):
     @property
     def labor_fraction(self):
         # type: () -> float
-        """Return the weighted-average labor fraction of all the materials in the construction."""
+        """Thickness-weighted average labor fraction across all material layers."""
 
         if not self.host:
             return 0.0
@@ -117,7 +126,7 @@ class OpaqueConstructionReviveProperties(object):
     @property
     def lifetime_years(self):
         # type: () -> int
-        """Return the weighted-average lifetime of all the materials in the construction."""
+        """Thickness-weighted average lifetime (years) across all material layers, rounded."""
 
         if not self.host:
             return 0

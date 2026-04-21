@@ -23,7 +23,11 @@ class ServiceHotWaterReviveProperties_FromDictError(Exception):
 
 
 class ServiceHotWaterReviveProperties(object):
-    """Honeybee-REVIVE Properties for storing REVIVE data."""
+    """REVIVE extension properties for a ServiceHotWater program object.
+
+    Attributes:
+        id_num (int): Numeric identifier for this hot-water object. Default: 0.
+    """
 
     def __init__(self, _host):
         # type: (ServiceHotWaterProperties | None) -> None
@@ -33,11 +37,13 @@ class ServiceHotWaterReviveProperties(object):
     @property
     def host(self):
         # type: () -> ServiceHotWaterProperties | None
+        """The ServiceHotWaterProperties host object for these REVIVE properties."""
         return self._host
 
     @property
     def host_name(self):
         # type: () -> str
+        """The class name of the host, or 'No Host'."""
         return self.host.__class__.__name__ if self.host else "No Host"
 
     def duplicate(self, new_host=None):

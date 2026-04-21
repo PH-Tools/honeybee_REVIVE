@@ -28,7 +28,15 @@ class EnergyMaterialReviveProperties_FromDictError(Exception):
 
 
 class EnergyMaterialReviveProperties(object):
-    """Honeybee-REVIVE Properties for storing REVIVE data."""
+    """REVIVE properties extension for an EnergyMaterial opaque layer.
+
+    Attributes:
+        id_num (int): Numeric identifier for this material. Default: 0.
+        kg_CO2_per_m2 (Unit): Embodied carbon per unit area. Default: 0.0 KG/M2.
+        cost_per_m2 (Unit): Installed cost per unit area. Default: 0.0 COST/M2.
+        labor_fraction (float): Fraction of cost attributed to labor. Default: 0.4.
+        lifetime_years (int): Expected service life in years. Default: 25.
+    """
 
     def __init__(self, _host=None):
         # type: (EnergyMaterial | None) -> None
@@ -42,11 +50,13 @@ class EnergyMaterialReviveProperties(object):
     @property
     def host(self):
         # type: () -> EnergyMaterial | None
+        """The EnergyMaterial this properties object is attached to."""
         return self._host
 
     @property
     def host_name(self):
         # type: () -> str
+        """The display name of the host EnergyMaterial, or 'No Host'."""
         return self.host.display_name if self.host else "No Host"
 
     def duplicate(self, new_host=None):
@@ -141,7 +151,15 @@ class EnergyMaterialReviveProperties(object):
 
 
 class EnergyMaterialNoMassReviveProperties(object):
-    """Honeybee-REVIVE Properties for storing REVIVE data."""
+    """REVIVE properties extension for an EnergyMaterialNoMass opaque layer.
+
+    Attributes:
+        id_num (int): Numeric identifier for this material. Default: 0.
+        kg_CO2_per_m2 (Unit): Embodied carbon per unit area. Default: 0.0 KG/M2.
+        cost_per_m2 (Unit): Installed cost per unit area. Default: 0.0 COST/M2.
+        labor_fraction (float): Fraction of cost attributed to labor. Default: 0.4.
+        lifetime_years (int): Expected service life in years. Default: 25.
+    """
 
     def __init__(self, _host=None):
         # type: (EnergyMaterialNoMass | None) -> None
@@ -155,11 +173,13 @@ class EnergyMaterialNoMassReviveProperties(object):
     @property
     def host(self):
         # type: () -> EnergyMaterialNoMass | None
+        """The EnergyMaterialNoMass this properties object is attached to."""
         return self._host
 
     @property
     def host_name(self):
         # type: () -> str
+        """The display name of the host EnergyMaterialNoMass, or 'No Host'."""
         return self.host.display_name if self.host else "No Host"
 
     def duplicate(self, _host=None):
@@ -253,7 +273,15 @@ class EnergyMaterialNoMassReviveProperties(object):
 
 
 class EnergyMaterialVegetationReviveProperties(object):
-    """Honeybee-REVIVE Properties for storing REVIVE data."""
+    """REVIVE properties extension for an EnergyMaterialVegetation opaque layer.
+
+    Attributes:
+        id_num (int): Numeric identifier for this material. Default: 0.
+        kg_CO2_per_m2 (Unit): Embodied carbon per unit area. Default: 0.0 KG/M2.
+        cost_per_m2 (Unit): Installed cost per unit area. Default: 0.0 COST/M2.
+        labor_fraction (float): Fraction of cost attributed to labor. Default: 0.4.
+        lifetime_years (int): Expected service life in years. Default: 25.
+    """
 
     def __init__(self, _host=None):
         # type: (EnergyMaterialVegetation | None) -> None
@@ -267,11 +295,13 @@ class EnergyMaterialVegetationReviveProperties(object):
     @property
     def host(self):
         # type: () -> EnergyMaterialVegetation | None
+        """The EnergyMaterialVegetation this properties object is attached to."""
         return self._host
 
     @property
     def host_name(self):
         # type: () -> str
+        """The display name of the host EnergyMaterialVegetation, or 'No Host'."""
         return self.host.display_name if self.host else "No Host"
 
     def duplicate(self, new_host=None):

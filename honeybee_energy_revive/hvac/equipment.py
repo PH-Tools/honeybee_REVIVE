@@ -18,6 +18,20 @@ except ImportError as e:
 
 @lockable
 class PhiusReviveHVACEquipment(object):
+    """A single HVAC equipment item with REVIVE lifecycle cost data.
+
+    Represents a mechanical system component (e.g. heat pump, ERV, boiler)
+    with cost, labor fraction, and expected lifetime for REVIVE analysis.
+
+    Attributes:
+        identifier (str): Unique UUID identifier, auto-generated.
+        display_name (str): Human-readable equipment name.
+            Default: "unnamed_equipment".
+        cost (float): Total installed cost in USD. Default: 0.0.
+        labor_fraction (float): Fraction of cost attributable to labor
+            (0.0 to 1.0). Default: 0.0.
+        lifetime_years (int): Expected service life in years. Default: 0.
+    """
 
     def __init__(self, display_name="unnamed_equipment", cost=0.0, labor_fraction=0.0, lifetime_years=0):
         self.identifier = str(uuid4())
@@ -80,7 +94,10 @@ class PhiusReviveHVACEquipment(object):
 
 
 class PhiusReviveHVACEquipmentCollection(object):
-    """A collection of PhiusReviveHVACEquipment objects."""
+    """An iterable collection of PhiusReviveHVACEquipment objects, keyed by identifier.
+
+    Supports iteration, containment testing, and len().
+    """
 
     def __init__(self):
         self._equipment = {}  # type: dict[str, PhiusReviveHVACEquipment]
@@ -89,14 +106,31 @@ class PhiusReviveHVACEquipmentCollection(object):
     @property
     def equipment(self):
         # type: () -> list[PhiusReviveHVACEquipment]
+        """All equipment items in the collection as a list."""
         return list(self._equipment.values())
 
     def add_equipment(self, _equipment):
         # type: (PhiusReviveHVACEquipment) -> None
+        """Add an equipment item to the collection.
+
+        Arguments:
+        ----------
+            * _equipment (PhiusReviveHVACEquipment): The equipment to add.
+        """
         self._equipment[_equipment.identifier] = _equipment
 
     def get_equipment_by_identifier(self, _identifier):
         # type: (str) -> PhiusReviveHVACEquipment | None
+        """Look up an equipment item by its UUID identifier.
+
+        Arguments:
+        ----------
+            * _identifier (str): The UUID to look up.
+
+        Returns:
+        --------
+            * PhiusReviveHVACEquipment | None: The equipment, or None if not found.
+        """
         return self._equipment.get(_identifier, None)
 
     def __contains__(self, _equipment):

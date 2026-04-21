@@ -15,6 +15,12 @@ import plotly.io as pio
 
 
 class InputFileError(Exception):
+    """Raised when a specified input file path does not exist.
+
+    Attributes:
+        msg (str): Error message including the missing file path.
+    """
+
     def __init__(self, path) -> None:
         self.msg = f"\nCannot locate the specified file:'{path}'"
         super().__init__(self.msg)
@@ -26,7 +32,19 @@ Record = namedtuple("Record", ["Date", "Value", "Zone"])
 def get_time_series_data(
     source_file_path: Path, output_variable: str, year: int = 2021, utc: bool = False
 ) -> list[Record]:
-    """Get Time-Series data from the SQL File."""
+    """Query hourly time-series data for a variable from an EnergyPlus SQL file.
+
+    Arguments:
+    ----------
+        * source_file_path (Path): Path to the EnergyPlus SQL results file.
+        * output_variable (str): The EnergyPlus output variable name to query.
+        * year (int): The year to assign to timestamps. Default: 2021.
+        * utc (bool): If True, create UTC-aware timestamps. Default: False.
+
+    Returns:
+    --------
+        * list[Record]: List of (Date, Value, Zone) named tuples.
+    """
     conn = sqlite3.connect(source_file_path)
     data_ = []
     try:
@@ -73,7 +91,16 @@ def resolve_sql_path(_args: list[str], expected_arg_count: int) -> Path:
 
 
 def df_in_kWh(_data: Iterable[Record]) -> pd.DataFrame:
-    """Convert the data from J to kWh."""
+    """Create a DataFrame from Records, converting the Value column from J to kWh.
+
+    Arguments:
+    ----------
+        * _data (Iterable[Record]): Records with Value in Joules.
+
+    Returns:
+    --------
+        * pd.DataFrame: DataFrame with Value column converted to kWh.
+    """
 
     df = pd.DataFrame(_data)
     if not df.empty:
@@ -82,7 +109,16 @@ def df_in_kWh(_data: Iterable[Record]) -> pd.DataFrame:
 
 
 def df_in_m3hr(_data: list[Record]) -> pd.DataFrame:
-    """Convert the data from m3/s to m3/hr."""
+    """Create a DataFrame from Records, converting the Value column from m3/s to m3/hr.
+
+    Arguments:
+    ----------
+        * _data (list[Record]): Records with Value in m3/s.
+
+    Returns:
+    --------
+        * pd.DataFrame: DataFrame with Value column converted to m3/hr.
+    """
 
     df = pd.DataFrame(_data)
     if not df.empty:
@@ -96,7 +132,19 @@ def create_line_plot_figure(
     _horizontal_lines: list[float] | None = None,
     _stack: bool = False,
 ) -> go.Figure:
-    """Create a line plot figure from the DataFrame."""
+    """Create a Plotly line plot figure from a DataFrame with Date/Value/Zone columns.
+
+    Arguments:
+    ----------
+        * _df (pd.DataFrame): DataFrame with 'Date', 'Value', and 'Zone' columns.
+        * _title (str): The chart title.
+        * _horizontal_lines (list[float] | None): Y-values for dashed red reference lines.
+        * _stack (bool): If True, stack the traces. Default: False.
+
+    Returns:
+    --------
+        * go.Figure: The Plotly figure.
+    """
 
     fig = go.Figure()
     fig.update_layout(
@@ -144,7 +192,16 @@ def create_line_plot_figure(
 
 
 def html_file(_filename: Path) -> Path:
-    """Create an HTML file, but remove it if it already exists."""
+    """Return the file path after removing any existing file at that location.
+
+    Arguments:
+    ----------
+        * _filename (Path): The target HTML file path.
+
+    Returns:
+    --------
+        * Path: The same path, ready for writing.
+    """
 
     if os.path.exists(_filename):
         os.remove(_filename)

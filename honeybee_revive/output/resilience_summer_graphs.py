@@ -58,6 +58,7 @@ def resolve_paths(_args: list[str]) -> Filepaths:
 
 
 def write_outdoor_environment_plots(file_paths: Filepaths) -> None:
+    """Write summer outdoor environment plots (dry-bulb, RH, wind, pressure) to HTML."""
     env_drybulb_C = get_time_series_data(file_paths.sql, "Site Outdoor Air Drybulb Temperature")
     env_RH = get_time_series_data(file_paths.sql, "Site Outdoor Air Relative Humidity")
     env_wind_speed_m3s = get_time_series_data(file_paths.sql, "Site Wind Speed")
@@ -87,6 +88,7 @@ def write_outdoor_environment_plots(file_paths: Filepaths) -> None:
 
 
 def write_heat_index_plots(file_paths: Filepaths) -> None:
+    """Write summer heat index plots with caution/warning/danger thresholds to HTML."""
     heat_index = get_time_series_data(file_paths.sql, "Zone Heat Index")
     drybulb_C = get_time_series_data(file_paths.sql, "Zone Mean Air Temperature")
     zone_RH = get_time_series_data(file_paths.sql, "Zone Air Relative Humidity")
@@ -138,6 +140,7 @@ def write_heat_index_plots(file_paths: Filepaths) -> None:
 
 
 def write_ventilation_plots(file_paths: Filepaths) -> None:
+    """Write summer ventilation plots (infiltration, zone, mechanical ACH) to HTML."""
     vent_infiltration_ach = get_time_series_data(file_paths.sql, "Zone Infiltration Standard Density Air Change Rate")
     vent_zone_ach = get_time_series_data(file_paths.sql, "Zone Ventilation Standard Density Air Change Rate")
     vent_mech_ach = get_time_series_data(file_paths.sql, "Zone Mechanical Ventilation Air Changes per Hour")
@@ -162,6 +165,7 @@ def write_ventilation_plots(file_paths: Filepaths) -> None:
 
 
 def write_energy_flow_plots(file_paths: Filepaths) -> None:
+    """Write summer energy flow plots (people, lights, equipment, windows, infiltration, ventilation) to HTML."""
     total_J_people = get_time_series_data(file_paths.sql, "Zone People Total Heating Energy")
     total_J_lights = get_time_series_data(file_paths.sql, "Zone Lights Total Heating Energy")
     total_J_elec_equip = get_time_series_data(file_paths.sql, "Zone Electric Equipment Total Heating Energy")

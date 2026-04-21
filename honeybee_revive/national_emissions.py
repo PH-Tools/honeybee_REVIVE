@@ -5,6 +5,18 @@
 
 
 class NationalEmissionsFactors(object):
+    """National-level emissions and economic factors for embodied carbon calculations.
+
+    Used by the REVIVE lifecycle cost analysis to convert material costs
+    into embodied CO2 based on the manufacturing country's carbon intensity.
+
+    Attributes:
+        country_name (str): Name of the country.
+        us_trading_rank (int): US trading partner rank (0 = unranked).
+        GDP_million_USD (float): Gross domestic product in millions of USD.
+        CO2_MT (float): National CO2 emissions in megatonnes.
+        kg_CO2_per_USD (float): Carbon intensity factor (kg CO2 per USD of GDP).
+    """
 
     def __init__(self, country_name="", us_trading_rank=0, GDP_million_USD=0.0, CO2_MT=0.0, kg_CO2_per_USD=0.0):
         # type: (str, int, float, float, float) -> None

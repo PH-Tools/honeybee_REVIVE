@@ -28,7 +28,15 @@ class EnergyWindowMaterialGlazingReviveProperties_FromDictError(Exception):
 
 
 class EnergyWindowMaterialGlazingReviveProperties(object):
-    """Honeybee-REVIVE Properties for storing REVIVE data."""
+    """REVIVE properties extension for an EnergyWindowMaterialGlazing layer.
+
+    Attributes:
+        id_num (int): Numeric identifier for this material. Default: 0.
+        kg_CO2_per_m2 (Unit): Embodied carbon per unit area. Default: 0.0 KG/M2.
+        cost_per_m2 (Unit): Installed cost per unit area. Default: 0.0 COST/M2.
+        labor_fraction (float): Fraction of cost attributed to labor. Default: 0.4.
+        lifetime_years (int): Expected service life in years. Default: 25.
+    """
 
     def __init__(self, _host=None):
         # type: (EnergyWindowMaterialGlazing | None) -> None
@@ -42,11 +50,13 @@ class EnergyWindowMaterialGlazingReviveProperties(object):
     @property
     def host(self):
         # type: () -> EnergyWindowMaterialGlazing | None
+        """The EnergyWindowMaterialGlazing this properties object is attached to."""
         return self._host
 
     @property
     def host_name(self):
         # type: () -> str
+        """The display name of the host EnergyWindowMaterialGlazing, or 'No Host'."""
         return self.host.display_name if self.host else "No Host"
 
     def duplicate(self, _host=None):
@@ -141,7 +151,15 @@ class EnergyWindowMaterialGlazingReviveProperties(object):
 
 
 class EnergyWindowMaterialSimpleGlazSysReviveProperties(object):
-    """Honeybee-REVIVE Properties for storing REVIVE data."""
+    """REVIVE properties extension for an EnergyWindowMaterialSimpleGlazSys layer.
+
+    Attributes:
+        id_num (int): Numeric identifier for this material. Default: 0.
+        kg_CO2_per_m2 (Unit): Embodied carbon per unit area. Default: 0.0 KG/M2.
+        cost_per_m2 (Unit): Installed cost per unit area. Default: 0.0 COST/M2.
+        labor_fraction (float): Fraction of cost attributed to labor. Default: 0.4.
+        lifetime_years (int): Expected service life in years. Default: 25.
+    """
 
     def __init__(self, _host=None):
         # type: (EnergyWindowMaterialSimpleGlazSys | None) -> None
@@ -155,11 +173,13 @@ class EnergyWindowMaterialSimpleGlazSysReviveProperties(object):
     @property
     def host(self):
         # type: () -> EnergyWindowMaterialSimpleGlazSys | None
+        """The EnergyWindowMaterialSimpleGlazSys this properties object is attached to."""
         return self._host
 
     @property
     def host_name(self):
         # type: () -> str
+        """The display name of the host EnergyWindowMaterialSimpleGlazSys, or 'No Host'."""
         return self.host.display_name if self.host else "No Host"
 
     def duplicate(self, _host=None):

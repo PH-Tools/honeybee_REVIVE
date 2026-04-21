@@ -23,7 +23,11 @@ class ShadeConstructionReviveProperties_FromDictError(Exception):
 
 
 class ShadeConstructionReviveProperties(object):
-    """Honeybee-REVIVE Properties for storing REVIVE data."""
+    """REVIVE cost and carbon properties for a honeybee-energy ShadeConstruction.
+
+    Attributes:
+        id_num (int): Integer identifier for this construction. Default: 0.
+    """
 
     def __init__(self, _host=None):
         # type: (ShadeConstruction | None) -> None
@@ -33,11 +37,13 @@ class ShadeConstructionReviveProperties(object):
     @property
     def host(self):
         # type: () -> ShadeConstruction | None
+        """The honeybee-energy ShadeConstruction this properties object is attached to."""
         return self._host
 
     @property
     def host_name(self):
         # type: () -> str
+        """The display name of the host ShadeConstruction, or 'No Host'."""
         return self.host.display_name if self.host else "No Host"
 
     def duplicate(self, new_host=None):

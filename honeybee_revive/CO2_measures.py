@@ -10,6 +10,29 @@ except ImportError:
 
 
 class CO2ReductionMeasure(object):
+    """A single CO2 reduction measure for Phius REVIVE lifecycle cost analysis.
+
+    Represents a building improvement or component with associated cost and
+    embodied carbon data. Measures are classified as either PERFORMANCE
+    (energy-related) or NON_PERFORMANCE (non-energy-related).
+
+    Attributes:
+        name (str): Display name of the measure.
+            Default: "unnamed_CO2_measure".
+        measure_type (str): Classification of the measure. Must be
+            "PERFORMANCE" or "NON_PERFORMANCE". Default: "PERFORMANCE".
+        year (int): The year (in the analysis timeline) when this measure
+            is applied. Default: 60.
+        cost (float): Total installed cost of the measure in USD.
+            Default: 8500.0.
+        kg_CO2 (float): Embodied carbon of the measure in kg CO2.
+            Default: 0.0.
+        country_name (str): Country of origin for emissions factor lookup.
+            Default: "USA".
+        labor_fraction (float): Fraction of cost attributable to labor
+            (0.0 to 1.0). Default: 0.4.
+    """
+
     def __init__(
         self,
         name="unnamed_CO2_measure",
@@ -31,11 +54,13 @@ class CO2ReductionMeasure(object):
     @property
     def unique_id(self):
         # type: () -> str
+        """Composite identifier derived from name, type, year, cost, and labor fraction."""
         return "{}-{}-{}-{}-{}".format(self.name, self.measure_type, self.year, int(self.cost), self.labor_fraction)
 
     @property
     def measure_type(self):
         # type: () -> str
+        """The measure classification: 'PERFORMANCE' or 'NON_PERFORMANCE'."""
         return self._measure_type
 
     @measure_type.setter
@@ -97,23 +122,38 @@ class CO2ReductionMeasure(object):
 
 
 class CO2ReductionMeasureCollection(object):
+    """An ordered collection of CO2ReductionMeasure objects, keyed by unique_id.
+
+    Supports iteration, containment testing, and len(). Measures are stored
+    internally by unique_id and returned sorted by unique_id when iterated.
+    """
+
     def __init__(self):
         self._storage = {}  # type: dict[str, CO2ReductionMeasure]
 
     def add_measure(self, measure):
         # type: (CO2ReductionMeasure) -> None
+        """Add a CO2ReductionMeasure to the collection.
+
+        Arguments:
+        ----------
+            * measure (CO2ReductionMeasure): The measure to add. Keyed by its unique_id.
+        """
         self._storage[measure.unique_id] = measure
 
     def measures(self):
         # type: () -> list[CO2ReductionMeasure]
+        """Return all measures in the collection as a list."""
         return list(self._storage.values())
 
     def keys(self):
         # type: () -> list[str]
+        """Return all unique_id keys, sorted by unique_id."""
         return [k for k, v in sorted(self._storage.items(), key=lambda x: x[1].unique_id)]
 
     def values(self):
         # type: () -> list[CO2ReductionMeasure]
+        """Return all measures, sorted by unique_id."""
         return list(sorted(self._storage.values(), key=lambda x: x.unique_id))
 
     def duplicate(self):

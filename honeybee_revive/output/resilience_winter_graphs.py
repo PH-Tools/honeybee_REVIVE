@@ -75,6 +75,16 @@ def resolve_paths(_args: list[str]) -> Filepaths:
 
 
 def get_constructions(source_file_path: Path) -> dict[int, Construction]:
+    """Query all construction definitions from the EnergyPlus SQL file.
+
+    Arguments:
+    ----------
+        * source_file_path (Path): Path to the EnergyPlus SQL results file.
+
+    Returns:
+    --------
+        * dict[int, Construction]: Constructions keyed by ConstructionIndex.
+    """
     conn = sqlite3.connect(source_file_path)
     data_ = {}
     try:
@@ -93,6 +103,16 @@ def get_constructions(source_file_path: Path) -> dict[int, Construction]:
 
 
 def get_surface_data(source_file_path: Path) -> list[Surface]:
+    """Query all surface definitions from the EnergyPlus SQL file.
+
+    Arguments:
+    ----------
+        * source_file_path (Path): Path to the EnergyPlus SQL results file.
+
+    Returns:
+    --------
+        * list[Surface]: All surfaces in the model.
+    """
     conn = sqlite3.connect(source_file_path)
     data_ = []
     try:
@@ -117,7 +137,19 @@ def surface_df_by_construction(
     _surfaces_df: pd.DataFrame,
     _exterior_surface_names: set[str],
 ) -> pd.DataFrame:
-    """Get the surface data as a DataFrame, merged by the construction type."""
+    """Filter surface time-series records to exterior surfaces and convert to kWh.
+
+    Arguments:
+    ----------
+        * _records (list[Record]): Time-series records for a surface variable.
+        * _constructions (dict[int, Construction]): Construction lookup by index.
+        * _surfaces_df (pd.DataFrame): DataFrame of all surfaces.
+        * _exterior_surface_names (set[str]): Names of exterior boundary surfaces.
+
+    Returns:
+    --------
+        * pd.DataFrame: Filtered DataFrame with values in kWh.
+    """
 
     ext_surfaces = (r for r in _records if r.Zone in _exterior_surface_names)
     surface_conductance_df = df_in_kWh(ext_surfaces)
@@ -138,6 +170,7 @@ def rename_set_temps(_data: list[Record]) -> list[Record]:
 
 
 def write_outdoor_environment_plots(_file_paths: Filepaths) -> None:
+    """Write winter outdoor environment plots (dry-bulb, RH, wind, pressure) to HTML."""
     env_drybulb_C = get_time_series_data(_file_paths.sql, "Site Outdoor Air Drybulb Temperature")
     env_RH = get_time_series_data(_file_paths.sql, "Site Outdoor Air Relative Humidity")
     env_wind_speed_m3s = get_time_series_data(_file_paths.sql, "Site Wind Speed")
@@ -167,6 +200,7 @@ def write_outdoor_environment_plots(_file_paths: Filepaths) -> None:
 
 
 def write_ventilation_plots(_file_paths: Filepaths) -> None:
+    """Write winter ventilation plots (infiltration, zone, mechanical ACH) to HTML."""
     vent_infiltration_ach = get_time_series_data(_file_paths.sql, "Zone Infiltration Standard Density Air Change Rate")
     vent_mech_ach = get_time_series_data(_file_paths.sql, "Zone Mechanical Ventilation Air Changes per Hour")
     vent_zone_ach = get_time_series_data(_file_paths.sql, "Zone Ventilation Standard Density Air Change Rate")
@@ -203,6 +237,7 @@ def write_ventilation_plots(_file_paths: Filepaths) -> None:
 
 
 def write_SET_temp_plots(_file_paths: Filepaths) -> None:
+    """Write winter SET temperature plots with 12.22C threshold to HTML."""
     drybulb_C = get_time_series_data(_file_paths.sql, "Zone Mean Air Temperature")
     zone_RH = get_time_series_data(_file_paths.sql, "Zone Air Relative Humidity")
     set_temps = rename_set_temps(
@@ -229,6 +264,7 @@ def write_SET_temp_plots(_file_paths: Filepaths) -> None:
 
 
 def write_energy_flow_plots(_file_paths: Filepaths) -> None:
+    """Write winter energy flow plots (people, lights, equipment, windows, infiltration, ventilation) to HTML."""
     total_J_people = get_time_series_data(_file_paths.sql, "Zone People Total Heating Energy")
     total_J_lights = get_time_series_data(_file_paths.sql, "Zone Lights Total Heating Energy")
     total_J_elec_equip = get_time_series_data(_file_paths.sql, "Zone Electric Equipment Total Heating Energy")
@@ -287,6 +323,7 @@ def write_energy_flow_plots(_file_paths: Filepaths) -> None:
 
 
 def write_envelope_details_plots(_file_paths: Filepaths):
+    """Write winter envelope detail plots (conductance, window heat transfer, storage, shading, face temps) to HTML."""
     srfc_avg_face_conductance = get_time_series_data(
         _file_paths.sql, "Surface Average Face Conduction Heat Transfer Energy"
     )
