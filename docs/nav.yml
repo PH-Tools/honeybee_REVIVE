@@ -1,5 +1,4 @@
 nav:
-  - Overview: index.md
   - API Reference:
     - CO2_measures: api/CO2_measures.md
     - fuels: api/fuels.md
