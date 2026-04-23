@@ -1,21 +1,9 @@
-# Honeybee-REVIVE
-
-REVIVE resilience modeling extensions for the Honeybee / PH-Tools ecosystem.
-
-Honeybee-REVIVE adds resilience analysis capabilities for evaluating building performance during extended power outages and extreme weather events, supporting the Phius REVIVE program.
-
-## Installation
-
-```bash
-pip install honeybee-revive
-```
-
-## Key Features
-
-- Resilience modeling for Passive House buildings
-- Extended power outage simulation
-- Phius REVIVE program compliance
-
-## Links
-
-- [Source Code](https://github.com/PH-Tools/honeybee_REVIVE_grasshopper)
+---
+title: Honeybee-REVIVE
+subtitle: "Phius REVIVE resilience and lifecycle carbon-cost extensions for Ladybug Tools."
+version: "0.1.13"
+pills:
+  - "v0.1.13 — latest"
+  - "Phius REVIVE"
+  - "Python 3.10+"
+---

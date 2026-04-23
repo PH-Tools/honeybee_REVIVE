@@ -1,4 +1,8 @@
 nav:
+  - Getting Started:
+    - Overview: getting-started.md
+  - Packages:
+    - Overview: packages.md
   - API Reference:
     - CO2_measures: api/CO2_measures.md
     - fuels: api/fuels.md
