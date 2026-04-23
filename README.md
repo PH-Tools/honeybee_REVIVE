@@ -67,4 +67,4 @@ For questions about Honeybee-REVIVE, feel free to reach out at: PHTools@bldgtyp.
 You can also post questions or comment to the Ladybug-Tools use forum at: [https://discourse.ladybug.tools/](https://discourse.ladybug.tools/)
 </details>
 
-![Tests](https://github.com/PH-Tools/honeybee_revive/actions/workflows/ci.yaml/badge.svg)
+![Tests](https://github.com/PH-Tools/honeybee_revive/actions/workflows/ci.yml/badge.svg)
