@@ -32,6 +32,9 @@ This package is [hosted on PyPi](https://pypi.org/project/honeybee-REVIVE/). To 
 <details>
 <summary><strong>Development:</strong></summary>
 
+### Development [Orientation]:
+For contributor/agent orientation, see [`CLAUDE.md`](CLAUDE.md) and the [`context/`](context/) folder (PRD, architecture, coding standards, tech stack). Note the runtime split: the model-extension code must remain **IronPython 2.7** compatible (loaded into Rhino via the Grasshopper plugins), while the `honeybee_revive/output/` resilience reporting is **pandas-based, CPython-only** and must not be imported into the Rhino load path.
+
 ### Development [Local]:
 Honeybee-REVIVE is free and open-source. We welcome any and all thoughts, opinions, and contributions! To get setup for local development:
 1. **Fork** this GitHub repository to your own GitHub account.
