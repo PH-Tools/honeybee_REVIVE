@@ -14,6 +14,7 @@ from honeybee_revive.output.set_calculator import (
     EXTERNAL_WORK_MET,
     SetInputError,
     calculate_set,
+    calculate_winter_set,
     met_from_activity_level,
 )
 
@@ -93,6 +94,20 @@ def test_calculate_set_rejects_non_hourly_records() -> None:
             _records("ZONE A", [20.0, 21.0], interval_hours=2),
             _records("ZONE A", [19.0, 20.0], interval_hours=2),
             _records("ZONE A", [40.0, 41.0], interval_hours=2),
+        )
+
+
+def test_calculate_winter_set_validates_run_length_before_pierce(monkeypatch: pytest.MonkeyPatch) -> None:
+    """An incomplete winter run fails before expensive row calculations."""
+    monkeypatch.setattr(
+        "honeybee_revive.output.set_calculator.pierce_set",
+        lambda *_args: pytest.fail("Pierce SET should not run for an incomplete winter period."),
+    )
+    with pytest.raises(SetInputError, match="216 hourly records"):
+        calculate_winter_set(
+            _records("ZONE A", [20.0] * 215),
+            _records("ZONE A", [19.0] * 215),
+            _records("ZONE A", [40.0] * 215),
         )
 
 

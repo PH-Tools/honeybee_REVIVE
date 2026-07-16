@@ -4,12 +4,13 @@ from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from math import fsum, isfinite
+from pathlib import Path
 from typing import Iterable
 
 import pandas as pd
 from ladybug_comfort.pmv import pierce_set
 
-from honeybee_revive.output._shared import Record
+from honeybee_revive.output._shared import Record, get_time_series_data
 
 # EnergyPlus ThermalComfort Pierce-model constants, also used by ladybug-comfort.
 BODY_SURFACE_AREA_M2 = 1.8258
@@ -224,8 +225,28 @@ def calculate_set(
     air_by_key, radiant_by_key, humidity_by_key = validate_set_inputs(
         air_temperature, mean_radiant_temperature, relative_humidity
     )
-    metabolic_rate = met_from_activity_level(activity_level_w_per_person)
+    return _calculate_set_from_indexes(
+        air_by_key,
+        radiant_by_key,
+        humidity_by_key,
+        activity_level_w_per_person,
+        air_speed_m_s,
+        clothing_insulation_clo,
+        external_work_met,
+    )
 
+
+def _calculate_set_from_indexes(
+    air_by_key: dict[RecordKey, Record],
+    radiant_by_key: dict[RecordKey, Record],
+    humidity_by_key: dict[RecordKey, Record],
+    activity_level_w_per_person: float,
+    air_speed_m_s: float,
+    clothing_insulation_clo: float,
+    external_work_met: float,
+) -> list[Record]:
+    """Calculate SET from inputs that have already passed alignment checks."""
+    metabolic_rate = met_from_activity_level(activity_level_w_per_person)
     return [
         Record(
             air_record.Date,
@@ -242,6 +263,75 @@ def calculate_set(
         )
         for key, air_record in air_by_key.items()
     ]
+
+
+def read_winter_set_inputs_from_sql(
+    source_file_path: Path,
+    year: int = 2021,
+    utc: bool = False,
+) -> tuple[list[Record], list[Record], list[Record]]:
+    """Read the three hourly winter SET inputs from an EnergyPlus SQL file."""
+    return (
+        get_time_series_data(source_file_path, "Zone Mean Air Temperature", year=year, utc=utc),
+        get_time_series_data(source_file_path, "Zone Mean Radiant Temperature", year=year, utc=utc),
+        get_time_series_data(source_file_path, "Zone Air Relative Humidity", year=year, utc=utc),
+    )
+
+
+def _validate_expected_run_hours(records_by_key: dict[RecordKey, Record]) -> None:
+    """Require the fixed 24 + 168 + 24 winter run for every zone."""
+    counts_by_zone: dict[str, int] = defaultdict(int)
+    for zone, _ in records_by_key:
+        counts_by_zone[zone] += 1
+    for zone, count in counts_by_zone.items():
+        if count != EXPECTED_RUN_HOURS:
+            raise SetInputError(
+                "Winter SET calculation requires {} hourly records for zone '{}'; received {}.".format(
+                    EXPECTED_RUN_HOURS, zone, count
+                )
+            )
+
+
+def calculate_winter_set(
+    air_temperature: RecordInput,
+    mean_radiant_temperature: RecordInput,
+    relative_humidity: RecordInput,
+) -> WinterSetResult:
+    """Calculate and evaluate the fixed 216-hour winter SET run."""
+    air_by_key, radiant_by_key, humidity_by_key = validate_set_inputs(
+        air_temperature, mean_radiant_temperature, relative_humidity
+    )
+    _validate_expected_run_hours(air_by_key)
+    set_records = _calculate_set_from_indexes(
+        air_by_key,
+        radiant_by_key,
+        humidity_by_key,
+        ACTIVITY_LEVEL_W_PER_PERSON,
+        AIR_SPEED_M_S,
+        CLOTHING_INSULATION_CLO,
+        EXTERNAL_WORK_MET,
+    )
+    return evaluate_winter_set(set_records)
+
+
+def calculate_winter_set_from_sql(
+    source_file_path: Path,
+    year: int = 2021,
+    utc: bool = False,
+) -> WinterSetResult:
+    """Read hourly zone conditions and calculate winter SET from an E+ SQL file.
+
+    Arguments:
+    ----------
+        * source_file_path (Path): EnergyPlus results SQLite file.
+        * year (int): Year assigned to SQL month/day/hour timestamps.
+        * utc (bool): If True, use timezone-aware UTC timestamps.
+
+    Returns:
+    --------
+        * WinterSetResult: Full and central-outage SET records and metrics.
+    """
+    return calculate_winter_set(*read_winter_set_inputs_from_sql(source_file_path, year=year, utc=utc))
 
 
 def evaluate_winter_set(set_records: RecordInput) -> WinterSetResult:
@@ -266,6 +356,7 @@ def evaluate_winter_set(set_records: RecordInput) -> WinterSetResult:
     if not records_by_key:
         raise SetInputError("Winter SET evaluation requires at least one hourly record.")
     _validate_hourly(records_by_key)
+    _validate_expected_run_hours(records_by_key)
 
     records_by_zone: dict[str, list[Record]] = defaultdict(list)
     for record in records_by_key.values():
@@ -277,13 +368,6 @@ def evaluate_winter_set(set_records: RecordInput) -> WinterSetResult:
     zone_metrics = {}
     for zone, zone_records in records_by_zone.items():
         zone_records.sort(key=lambda record: record.Date)
-        if len(zone_records) != EXPECTED_RUN_HOURS:
-            raise SetInputError(
-                "Winter SET evaluation requires {} hourly records for zone '{}'; received {}.".format(
-                    EXPECTED_RUN_HOURS, zone, len(zone_records)
-                )
-            )
-
         set_values = {}
         for record in zone_records:
             try:

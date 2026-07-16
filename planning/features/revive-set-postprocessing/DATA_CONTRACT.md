@@ -1,13 +1,13 @@
 # Winter SET data contract
 
-## Current two-consumer pipeline
+## Measure-era two-consumer pipeline
 
-The measure-era workflow has two independent consumers of the same EnergyPlus Pierce SET variable:
+Before this implementation, the workflow had two independent consumers of the same EnergyPlus Pierce SET variable:
 
 1. `honeybee_revive/output/resilience_winter_graphs.py::write_SET_temp_plots()` reads `Zone Thermal Comfort Pierce Model Standard Effective Temperature`, rewrites the People-keyed result name with `rename_set_temps()`, and plots it in the winter HTML report.
 2. `honeybee_REVIVE_grasshopper/.../generate_winter_output.py::GHCompo_ResiliencyWinterOutput.run()` separately invokes `resilience_hourly_data.py` for that same variable, reads the resulting `Date` / `Value` / `Zone` JSON, and builds the two existing IronPython Grasshopper degree-hour DataTrees.
 
-Phase 4 will replace both reads with one CPython SET calculator. The Grasshopper wrapper remains a JSON consumer and does not import pandas or `ladybug-comfort` into Rhino.
+The core package now exposes one CPython loader/calculator pipeline through `read_winter_set_inputs_from_sql()` and `calculate_winter_set()`, with `calculate_winter_set_from_sql()` as the direct composition. The winter graph reuses the loaded inputs and plots the full 216-hour result; `resilience_set_data.py` writes the central 168-hour result with the existing JSON shape. The Grasshopper wrapper remains a JSON consumer and will switch to this entry point after the core release; it does not import pandas or `ladybug-comfort` into Rhino.
 
 ## Repository-owned SQL fixture
 
