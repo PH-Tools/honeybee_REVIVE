@@ -8,7 +8,7 @@ _Last updated: 2026-07-15_
 
 | Item | Kind | Status | Pointer |
 |------|------|--------|---------|
-| _(none active)_ | | | |
+| REVIVE SET post-processing | Feature | In progress | [`features/revive-set-postprocessing/`](features/revive-set-postprocessing/) |
 
 ## Update rule
 
