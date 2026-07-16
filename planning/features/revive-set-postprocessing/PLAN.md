@@ -10,6 +10,7 @@
 ## Phase 1 — Pure SET calculation
 
 - Add aligned-input validation and `ladybug_comfort.pmv.pierce_set` calculation under `honeybee_revive/output/`.
+- Declare `ladybug-comfort` as a direct runtime dependency when the calculator begins importing it.
 - Test normative inputs, alignment failures, and multi-zone isolation.
 
 ## Phase 2 — Outage metrics
@@ -25,7 +26,7 @@
 ## Phase 4 — Shared graph and JSON path
 
 - Add the computed-SET JSON entry point and update winter graphs to use the same calculator.
-- Declare `ladybug-comfort` directly and remove the measure-era zone rename from the computed path.
+- Remove the measure-era zone rename from the computed path.
 
 ## Phase 5 — Closeout
 
