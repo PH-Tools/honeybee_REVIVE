@@ -1,7 +1,9 @@
 """Measure-free winter Standard Effective Temperature calculation."""
 
 from collections import defaultdict
+from dataclasses import dataclass
 from datetime import datetime, timedelta
+from math import fsum, isfinite
 from typing import Iterable
 
 import pandas as pd
@@ -19,12 +21,54 @@ AIR_SPEED_M_S = 0.16
 CLOTHING_INSULATION_CLO = 1.0
 EXTERNAL_WORK_MET = 0.0
 
+# Phius REVIVE seven-day winter outage and 54 F degree-hour criterion.
+EDGE_BUFFER_HOURS = 24
+OUTAGE_HOURS = 168
+EXPECTED_RUN_HOURS = EDGE_BUFFER_HOURS + OUTAGE_HOURS + EDGE_BUFFER_HOURS
+SET_THRESHOLD_C = (54.0 - 32.0) / 1.8
+DEGREE_HOUR_LIMIT_K_H = 120.0
+DEGREE_HOUR_F_PER_K = 1.8
+
 RecordKey = tuple[str, datetime]
 RecordInput = Iterable[Record] | pd.DataFrame
 
 
 class SetInputError(ValueError):
     """Raised when winter SET input records do not align one-to-one."""
+
+
+@dataclass(frozen=True, slots=True)
+class ZoneSetMetric:
+    """Winter SET degree-hour totals and verdict for one zone.
+
+    Attributes:
+        zone (str): Zone identifier.
+        degree_hours_k_h (float): SET deficit below 54 F in K-h.
+        degree_hours_f_h (float): SET deficit below 54 F in degF-h.
+        passes (bool): True when the total is at most 120 K-h.
+    """
+
+    zone: str
+    degree_hours_k_h: float
+    degree_hours_f_h: float
+    passes: bool
+
+
+@dataclass(frozen=True, slots=True)
+class WinterSetResult:
+    """Full SET series, certification slice, deficits, and zone metrics.
+
+    Attributes:
+        full_records (list[Record]): All 216 SET records per zone.
+        outage_records (list[Record]): Central 168 SET records per zone.
+        deficit_records (list[Record]): Hourly K deficits below 54 F.
+        zone_metrics (dict[str, ZoneSetMetric]): Metrics keyed by zone.
+    """
+
+    full_records: list[Record]
+    outage_records: list[Record]
+    deficit_records: list[Record]
+    zone_metrics: dict[str, ZoneSetMetric]
 
 
 def met_from_activity_level(activity_level_w_per_person: float) -> float:
@@ -198,3 +242,81 @@ def calculate_set(
         )
         for key, air_record in air_by_key.items()
     ]
+
+
+def evaluate_winter_set(set_records: RecordInput) -> WinterSetResult:
+    """Slice a nine-day SET run and calculate seven-day zone metrics.
+
+    Arguments:
+    ----------
+        * set_records (RecordInput): Full hourly SET series in C. Every zone
+          must contain exactly 216 contiguous hours.
+
+    Returns:
+    --------
+        * WinterSetResult: Full and central-168 records, hourly deficits, and
+          per-zone degree-hour totals/verdicts.
+
+    Raises:
+    -------
+        * SetInputError: If a zone is duplicated, non-hourly, or does not have
+          exactly 216 records.
+    """
+    records_by_key = _records_by_key(set_records, "SET")
+    if not records_by_key:
+        raise SetInputError("Winter SET evaluation requires at least one hourly record.")
+    _validate_hourly(records_by_key)
+
+    records_by_zone: dict[str, list[Record]] = defaultdict(list)
+    for record in records_by_key.values():
+        records_by_zone[record.Zone].append(record)
+
+    full_records = []
+    outage_records = []
+    deficit_records = []
+    zone_metrics = {}
+    for zone, zone_records in records_by_zone.items():
+        zone_records.sort(key=lambda record: record.Date)
+        if len(zone_records) != EXPECTED_RUN_HOURS:
+            raise SetInputError(
+                "Winter SET evaluation requires {} hourly records for zone '{}'; received {}.".format(
+                    EXPECTED_RUN_HOURS, zone, len(zone_records)
+                )
+            )
+
+        set_values = {}
+        for record in zone_records:
+            try:
+                set_value = float(record.Value)
+            except (TypeError, ValueError):
+                set_value = float("nan")
+            if not isfinite(set_value):
+                raise SetInputError(
+                    "Winter SET values must be finite for zone '{}' at {}; received {!r}.".format(
+                        record.Zone, record.Date, record.Value
+                    )
+                )
+            set_values[(record.Zone, record.Date)] = set_value
+
+        zone_outage_records = zone_records[EDGE_BUFFER_HOURS:-EDGE_BUFFER_HOURS]
+        zone_deficit_records = [
+            Record(
+                record.Date,
+                max(0.0, SET_THRESHOLD_C - set_values[(record.Zone, record.Date)]),
+                record.Zone,
+            )
+            for record in zone_outage_records
+        ]
+        degree_hours_k_h = fsum(record.Value for record in zone_deficit_records)
+
+        full_records.extend(zone_records)
+        outage_records.extend(zone_outage_records)
+        deficit_records.extend(zone_deficit_records)
+        zone_metrics[zone] = ZoneSetMetric(
+            zone,
+            degree_hours_k_h,
+            degree_hours_k_h * DEGREE_HOUR_F_PER_K,
+            degree_hours_k_h <= DEGREE_HOUR_LIMIT_K_H,
+        )
+
+    return WinterSetResult(full_records, outage_records, deficit_records, zone_metrics)
