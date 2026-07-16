@@ -3,6 +3,7 @@
 **Status:** In progress
 **Current phase:** Phase 5 implementation checks complete; review/release pending
 **Branch:** `codex/revive-set-postprocessing`
+**Pull request:** [PH-Tools/honeybee_REVIVE #5](https://github.com/PH-Tools/honeybee_REVIVE/pull/5)
 **Last updated:** 2026-07-15
 
 ## Current evidence
@@ -23,7 +24,7 @@
 
 ## Next step
 
-Open the core PR. After review, manually open the regenerated winter HTML, merge to trigger the normal release workflow, and record the released version. Do not delete the existing measure.
+Review PR #5. Before merge, manually open the regenerated winter HTML. Merge then triggers the normal release workflow; record the released version afterward. Do not delete the existing measure.
 
 ## Blockers
 
