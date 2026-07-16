@@ -21,6 +21,7 @@
 - Phase 4 adds `resilience_set_data.py` for the existing `Date` / `Value` / `Zone` JSON shape (central 168 only) and switches the winter SET graph to the same SQL-to-calculator function. Consumer tests pass after deleting the EnergyPlus Pierce output from the fixture; computed records use the actual zone key, writes are atomic, and the rename hack is gone. The full Phase 4 suite is `293 passed`.
 - Phase 5 automated checks finish at `298 passed` and exercise every statement and branch in `set_calculator.py`: `146` statements and `46` branches at 100%. The repository-wide configured gate still reports the pre-existing package baseline at 75% (`760` uncovered statements across legacy modules), so it cannot truthfully pass from this feature alone. Visual acceptance and release remain pending.
 - A fresh report generated from `honeybee_REVIVE_grasshopper/sample_models/resilience/winter/unnamed/openstudio/run/eplusout.sql` contains 216 full / 168 outage records, the three expected Plotly figures, and the same 971.710697 K·h failed verdict. Browser visual inspection remains manual because the controlled browser rejects local `file://` documents; no alternate browser bypass was used.
+- PR #5 CI passes its Python 3.10 `Tests` job; the publish job correctly skips on the feature branch.
 
 ## Next step
 
