@@ -85,6 +85,21 @@ def test_evaluate_winter_set_rejects_non_finite_values() -> None:
         evaluate_winter_set(_set_records("ZONE A", values))
 
 
+def test_evaluate_winter_set_rejects_non_numeric_values() -> None:
+    """Non-numeric SET values produce the same actionable finite-value error."""
+    values: list[float | str] = [SET_THRESHOLD_C] * EXPECTED_RUN_HOURS
+    values[24] = "not-a-number"
+    records = [Record(START + timedelta(hours=index), value, "ZONE A") for index, value in enumerate(values)]
+    with pytest.raises(SetInputError, match="finite.*not-a-number"):
+        evaluate_winter_set(records)
+
+
+def test_evaluate_winter_set_rejects_empty_inputs() -> None:
+    """An empty SET series cannot produce certification metrics."""
+    with pytest.raises(SetInputError, match="at least one hourly record"):
+        evaluate_winter_set([])
+
+
 @pytest.mark.parametrize(
     ("values", "interval_hours", "message"),
     (([SET_THRESHOLD_C] * 215, 1, "216 hourly"), ([SET_THRESHOLD_C] * 216, 2, "hourly.*ZONE A")),

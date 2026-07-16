@@ -138,6 +138,26 @@ def test_calculate_set_accepts_long_form_dataframes() -> None:
     assert actual == expected
 
 
+def test_calculate_set_rejects_incomplete_dataframe_contract() -> None:
+    """Long-form DataFrames must expose all three Record columns."""
+    incomplete = pd.DataFrame({"Date": [START], "Value": [20.0]})
+    with pytest.raises(SetInputError, match="missing required column.*Zone"):
+        calculate_set(incomplete, incomplete, incomplete)
+
+
+def test_calculate_set_rejects_non_datetime_keys() -> None:
+    """String timestamps cannot silently enter the hourly keyed join."""
+    records = [Record("2021-01-27 00:00:00", 20.0, "ZONE A")]
+    with pytest.raises(SetInputError, match="non-datetime timestamp"):
+        calculate_set(records, records, records)
+
+
+def test_calculate_set_rejects_empty_inputs() -> None:
+    """An empty aligned input set cannot produce a compliance series."""
+    with pytest.raises(SetInputError, match="at least one hourly input"):
+        calculate_set([], [], [])
+
+
 def test_calculate_set_keeps_zones_isolated() -> None:
     """Multi-zone records use only inputs with the same zone and timestamp."""
     air_temperature = _records("ZONE A", [20.0, 21.0]) + _records("ZONE B", [5.0, 6.0])

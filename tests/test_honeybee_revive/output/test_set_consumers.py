@@ -50,7 +50,13 @@ def test_graph_and_json_share_measure_free_set_calculation(tmp_path: Path) -> No
     json_result = write_winter_set_json(fixture_path, tmp_path / "computed_set.json")
     graph_result = write_SET_temp_plots(Filepaths(fixture_path, tmp_path))
 
-    assert (tmp_path / "winter_SET_temperature.html").is_file()
+    graph_path = tmp_path / "winter_SET_temperature.html"
+    assert graph_path.is_file()
+    graph_html = graph_path.read_text()
+    assert "Zone SET Temperature [C]" in graph_html
+    assert "Dry-Bulb Air Temperature [C]" in graph_html
+    assert "Air Relative Humidity [%]" in graph_html
+    assert all(figure_id in graph_html for figure_id in ("set_fig1", "set_fig2", "set_fig3"))
     assert {record.Zone for record in graph_result.full_records} == {ZONE_NAME}
     assert [record.Value for record in graph_result.full_records] == pytest.approx(
         [record.Value for record in json_result.full_records]
