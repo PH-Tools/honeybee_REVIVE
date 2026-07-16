@@ -2,6 +2,8 @@
 
 Replace the EnergyPlus Pierce-SET measure dependency with one CPython calculation path for winter graphs and the existing Grasshopper JSON contract.
 
+**Status:** ✅ Implemented in [PH-Tools/honeybee_REVIVE #5](https://github.com/PH-Tools/honeybee_REVIVE/pull/5); manual visual acceptance, merge, and release remain.
+
 ## Read order
 
 1. [`PRD.md`](PRD.md) — scope and acceptance criteria.
@@ -14,3 +16,4 @@ Replace the EnergyPlus Pierce-SET measure dependency with one CPython calculatio
 
 - [ladybug-tools/honeybee-energy#1043](https://github.com/ladybug-tools/honeybee-energy/issues/1043)
 - [ladybug-tools/honeybee-energy#1146](https://github.com/ladybug-tools/honeybee-energy/pull/1146)
+- [PH-Tools/honeybee_REVIVE#5](https://github.com/PH-Tools/honeybee_REVIVE/pull/5)

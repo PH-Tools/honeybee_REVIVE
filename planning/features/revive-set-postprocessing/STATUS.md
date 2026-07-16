@@ -1,10 +1,10 @@
 # Status — REVIVE SET post-processing
 
-**Status:** In progress
+**Status:** Implemented
 **Current phase:** Phase 5 implementation checks complete; review/release pending
 **Branch:** `codex/revive-set-postprocessing`
 **Pull request:** [PH-Tools/honeybee_REVIVE #5](https://github.com/PH-Tools/honeybee_REVIVE/pull/5)
-**Last updated:** 2026-07-15
+**Last updated:** 2026-07-16
 
 ## Current evidence
 

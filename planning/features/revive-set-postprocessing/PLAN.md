@@ -1,5 +1,7 @@
 # Plan — REVIVE SET post-processing
 
+**Implementation record (2026-07-16):** Phase 0 ✅ · Phase 1 ✅ · Phase 2 ✅ · Phase 3 ✅ · Phase 4 ✅ · Phase 5 local tests/calculator coverage ✅. Remaining closeout gates: manual report comparison, PR #5 merge, and release verification. The repository-wide configured 100% coverage gate remains at its pre-existing 75% baseline; see `STATUS.md` and `CLOSEOUT.md`.
+
 ## Phase 0 — Baseline and data contract
 
 - Run `python -m pytest` in the existing `.venv` and record the result.
