@@ -1,7 +1,7 @@
 # Status — REVIVE SET post-processing
 
 **Status:** In progress
-**Current phase:** Phase 2 complete; Phase 3 next
+**Current phase:** Phase 3 complete; Phase 4 next
 **Branch:** `codex/revive-set-postprocessing`
 **Last updated:** 2026-07-15
 
@@ -16,10 +16,11 @@
 - Phase 1 adds one typed Record/DataFrame calculation path with the normative 120 W/person, 0.16 m/s, 1.0 clo, and zero-work inputs. Eleven focused tests cover direct `pierce_set` parity, actionable alignment errors, timezone consistency, DataFrame normalization, and order-independent multi-zone joins.
 - `ladybug-comfort>=0.19.0` is now a direct runtime dependency; the lock refresh also reconciles previously stale root-package metadata and runtime resolutions.
 - Phase 2 exposes the full 216-hour SET series, central 168-hour outage, per-hour deficits, and per-zone K·h / °F·h totals and verdicts. Seven focused tests cover edge-buffer exclusion, exact unit math, the inclusive 120 K·h limit, finite-value validation, and incorrect count/cadence failures.
+- Phase 3 equivalence gate passed on all 216 hours: median / 95th / maximum absolute ΔSET = 0.082138 / 0.121371 / 0.134251 K. Central-168 totals are 971.710697 K·h computed vs 957.789744 K·h EnergyPlus (1.453% difference); both verdicts fail. See `SET_COMPARISON.md`.
 
 ## Next step
 
-Run the Phase 3 computed-vs-EnergyPlus equivalence gate on the committed fixture and document all 216-hour deltas plus central-168 totals/verdicts.
+Begin Phase 4 with red tests for the central-168 JSON export and a graph writer that succeeds without the EnergyPlus Pierce output variable.
 
 ## Blockers
 

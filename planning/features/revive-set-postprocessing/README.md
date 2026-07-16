@@ -8,6 +8,7 @@ Replace the EnergyPlus Pierce-SET measure dependency with one CPython calculatio
 2. [`STATUS.md`](STATUS.md) — current phase, evidence, and blockers.
 3. [`PLAN.md`](PLAN.md) — phased implementation sequence.
 4. [`DATA_CONTRACT.md`](DATA_CONTRACT.md) — current consumers and winter SQL fixture contract.
+5. [`SET_COMPARISON.md`](SET_COMPARISON.md) — computed-vs-EnergyPlus equivalence evidence.
 
 ## External context
 
