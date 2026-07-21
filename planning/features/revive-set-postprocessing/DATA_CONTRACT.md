@@ -33,4 +33,6 @@ Fixture SHA-256: `79b22f559d680fe33cb2de546f354a19c171d6921a97fc91e027040fd57642
 - Every input is reported `Hourly` for the same zone and the same 216 `(zone, timestamp)` keys.
 - The nine-day run spans 2021-01-26 00:00 through 2021-02-03 23:00 in the reporting helper's assigned year.
 - The compliance slice is `records[24:-24]`: 168 hours from 2021-01-27 00:00 through 2021-02-02 23:00.
-- The reference EnergyPlus Pierce SET series also has 216 hourly values. Its key is People-based, which explains the current graph-only `rename_set_temps()` workaround.
+- The reference EnergyPlus Pierce SET series also has 216 hourly values. Its key is People-based (`<zone>_SPACE <people-object>`) rather than zone-based.
+  - The former graph-only `rename_set_temps()` workaround has been **removed**. People-based keys are now resolved by the general legend mapper, `output/_shared.zone_label()`, which handles all three E+ key shapes (zone, `_SPACE` enclosure, and People). See `context/ARCHITECTURE.md` → "Chart legends vs data keys".
+- The nine-day / 216-hour run is **not** automatic — it depends on `ladybug_revive.resiliency_epw.get_outage_period()` returning a day-aligned expanded period. See the note in `CLOSEOUT.md`.
