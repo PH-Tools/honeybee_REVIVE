@@ -21,6 +21,7 @@ from honeybee_revive.output._shared import (
     create_line_plot_figure,
     df_in_kWh,
     get_time_series_data,
+    load_zone_labels,
     write_figures_to_html,
 )
 
@@ -234,6 +235,10 @@ if __name__ == "__main__":
     file_paths = resolve_paths(sys.argv)
     print(f"\t>> Source SQL File: '{file_paths.sql}'")
     print(f"\t>> Target Output Folder: '{file_paths.graphs}'")
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # -- Use the HB-Room display-names (not the E+ identifiers) for the chart legends
+    load_zone_labels(file_paths.sql)
 
     # ------------------------------------------------------------------------------------------------------------------
     # -- Generate the Summer Resiliency Graphs

@@ -3,6 +3,7 @@
 
 """Shared utilities for the resilience output modules."""
 
+import json
 import os
 import sqlite3
 from collections import namedtuple
@@ -27,6 +28,160 @@ class InputFileError(Exception):
 
 
 Record = namedtuple("Record", ["Date", "Value", "Zone"])
+
+
+# ---------------------------------------------------------------------------------------
+# -- Zone display-names for chart legends
+#
+# EnergyPlus names each Zone after the Honeybee Room's *identifier* ("03_NORTH_0ac0d721"),
+# never its display_name. That is correct at the honeybee-energy layer: identifiers are
+# guaranteed unique and E+-safe, while display_names are neither. But it makes for ugly
+# chart legends, so we map back to display_name for the human-facing traces only.
+#
+# The map is deliberately NOT applied to `Record.Zone`. That value flows into the CSV/JSON
+# exports which are consumed by the Grasshopper wrapper and the web report, so it stays the
+# stable machine key. Only the plotted trace names are relabeled.
+#
+# Module-level cache: these are single-shot CLI scripts, one SQL file per process. When the
+# cache is empty every lookup falls through to the raw key, so the un-loaded default is
+# exactly the previous behavior.
+# ---------------------------------------------------------------------------------------
+
+_ZONE_LABELS: dict[str, str] = {}
+
+_ENCLOSURE_SUFFIX = "_SPACE"
+
+
+def build_zone_label_map(_hbjson_path: Path) -> dict[str, str]:
+    """Build an {UPPERCASE-room-identifier: display_name} map from a HBJSON file.
+
+    Where two Rooms share a display_name the entries are disambiguated with a short slice
+    of the identifier, so a legend never shows two identical labels.
+
+    Arguments:
+    ----------
+        * _hbjson_path (Path): Path to the HBJSON model file.
+
+    Returns:
+    --------
+        * dict[str, str]: Map of upper-cased Room identifier -> label.
+    """
+
+    with open(_hbjson_path, "r") as f:
+        model = json.load(f)
+
+    rooms = [(r["identifier"], r.get("display_name") or r["identifier"]) for r in model.get("rooms", [])]
+
+    # -- Find any display_names used by more than one Room
+    counts: dict[str, int] = {}
+    for _, display_name in rooms:
+        counts[display_name] = counts.get(display_name, 0) + 1
+
+    map_: dict[str, str] = {}
+    for identifier, display_name in rooms:
+        if counts[display_name] > 1:
+            # -- Not unique: keep a short discriminator from the identifier
+            map_[identifier.upper()] = "{} [{}]".format(display_name, identifier[-8:])
+        else:
+            map_[identifier.upper()] = display_name
+    return map_
+
+
+def find_hbjson_beside_sql(_sql_path: Path) -> Path | None:
+    """Locate the HBJSON model that produced an EnergyPlus SQL file.
+
+    The OpenStudio workflow writes the model alongside the run directory:
+        <run-dir>/openstudio/<model>.hbjson
+        <run-dir>/openstudio/run/eplusout.sql
+
+    Arguments:
+    ----------
+        * _sql_path (Path): Path to the EnergyPlus SQL results file.
+
+    Returns:
+    --------
+        * Path | None: The HBJSON file, or None if one cannot be found.
+    """
+
+    for parent in list(Path(_sql_path).resolve().parents)[:3]:
+        matches = sorted(parent.glob("*.hbjson"))
+        if matches:
+            return matches[0]
+    return None
+
+
+def load_zone_labels(_sql_path: Path) -> dict[str, str]:
+    """Load the zone display-name map for a SQL file into the module cache.
+
+    Safe to call when no HBJSON is present -- the cache is simply left empty and every
+    lookup falls back to the raw EnergyPlus key.
+
+    Arguments:
+    ----------
+        * _sql_path (Path): Path to the EnergyPlus SQL results file.
+
+    Returns:
+    --------
+        * dict[str, str]: The loaded map (also stored in the module cache).
+    """
+
+    global _ZONE_LABELS
+    _ZONE_LABELS = {}
+
+    hbjson_path = find_hbjson_beside_sql(_sql_path)
+    if hbjson_path is None:
+        print("\t>> No HBJSON found next to the SQL file; using raw EnergyPlus zone names.")
+        return _ZONE_LABELS
+
+    try:
+        _ZONE_LABELS = build_zone_label_map(hbjson_path)
+        print("\t>> Loaded {} zone display-names from: '{}'".format(len(_ZONE_LABELS), hbjson_path.name))
+    except Exception as e:
+        print("\t>> Could not read zone display-names from '{}': {}".format(hbjson_path, e))
+        _ZONE_LABELS = {}
+
+    return _ZONE_LABELS
+
+
+def zone_label(_key: str) -> str:
+    """Resolve an EnergyPlus output key to a human-readable label.
+
+    Handles the three key shapes EnergyPlus produces for Room-related variables:
+        * Zone-level      "03_NORTH_0AC0D721"
+        * Enclosure-level "03_NORTH_0AC0D721_SPACE"
+        * People-level    "03_NORTH_0AC0D721_SPACE RV2024_RESILIENCE_PEOPLE"
+
+    Anything unrecognized -- "Environment", Surface names, an empty cache -- is returned
+    unchanged.
+
+    Arguments:
+    ----------
+        * _key (str): The raw EnergyPlus KeyValue.
+
+    Returns:
+    --------
+        * str: The display label, or the original key if it cannot be resolved.
+    """
+
+    if not _ZONE_LABELS or not _key:
+        return _key
+
+    candidate = _key.upper()
+    if candidate in _ZONE_LABELS:
+        return _ZONE_LABELS[candidate]
+
+    # -- People-level keys are "<space-name> <people-object-name>"
+    candidate = candidate.split(" ")[0]
+    if candidate in _ZONE_LABELS:
+        return _ZONE_LABELS[candidate]
+
+    # -- Enclosure-level keys append "_SPACE" to the zone name
+    if candidate.endswith(_ENCLOSURE_SUFFIX):
+        candidate = candidate[: -len(_ENCLOSURE_SUFFIX)]
+        if candidate in _ZONE_LABELS:
+            return _ZONE_LABELS[candidate]
+
+    return _key
 
 
 def get_time_series_data(
@@ -157,6 +312,9 @@ def create_line_plot_figure(
 
     for zone_name in _df["Zone"].unique():
         zone_data = _df[_df["Zone"] == zone_name]
+        # -- Relabel for the legend only; the underlying 'Zone' key is left untouched so
+        # -- that the CSV/JSON exports keep their stable EnergyPlus identifiers.
+        trace_name = zone_label(zone_name)
         if _stack:
             fig.add_trace(
                 go.Scatter(
@@ -164,7 +322,7 @@ def create_line_plot_figure(
                     y=zone_data["Value"],
                     mode="lines",
                     stackgroup="one",
-                    name=zone_name,
+                    name=trace_name,
                 )
             )
         else:
@@ -173,7 +331,7 @@ def create_line_plot_figure(
                     x=zone_data["Date"],
                     y=zone_data["Value"],
                     mode="lines",
-                    name=zone_name,
+                    name=trace_name,
                 )
             )
 
