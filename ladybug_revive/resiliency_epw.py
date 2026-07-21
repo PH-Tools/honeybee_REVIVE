@@ -105,11 +105,14 @@ def get_outage_period(_extreme_week):
     # type: (AnalysisPeriod | None) -> tuple[AnalysisPeriod, AnalysisPeriod]
     """Get the outage period from the STAT file and expand it by a day on either side.
 
-    Reverses Ladybug's 1-hour analysis period offset so dates align with EPW data.
-    Returns both the corrected extreme week and an expanded version with +/- 1 day
-    padding (needed for proper starting conditions before power shutoff).
+    Returns two DIFFERENT periods, used for two different purposes:
 
-    See: https://discourse.ladybug.tools/t/why-does-analaysis-period-have-a-1-hour-offset/35017
+        1. corrected week (168 hrs) -- drives the EPW *morphing*. Reverses Ladybug's 1-hour
+           analysis-period offset so the hours line up with the EPW data.
+           See: https://discourse.ladybug.tools/t/why-does-analaysis-period-have-a-1-hour-offset/35017
+        2. expanded week (216 hrs / 9 calendar days) -- drives the EnergyPlus *RunPeriod*.
+           1-day warm-up + the 7-day Phius REVIVE outage + 1-day cool-down. Built from the
+           raw week so that it stays aligned to day boundaries (see the note below).
 
     Arguments:
     ----------
@@ -132,11 +135,22 @@ def get_outage_period(_extreme_week):
 
     # -- Add a day to the start and end of the period
     # -- this is needed to ensure we have the right starting conditions (temp, RH, etc...)
-    # -- before we shut off all the power.
+    # -- before we shut off all the power. Phius REVIVE models a 7-day outage, so the
+    # -- simulation period is 1-day warm-up + 7-day outage + 1-day cool-down = 9 days (216 hrs).
+    #
+    # -- NOTE: the expansion is built from the RAW (un-offset) '_extreme_week', NOT from the
+    # -- '+1 hour' corrected week above. The corrected week ends at hour-0 of the following
+    # -- day (Feb-2 23:00 -> Feb-3 00:00), so expanding from it produces a period which is
+    # -- still 216 hours long, but which *touches 10 calendar dates*. EnergyPlus 'RunPeriod'
+    # -- is date-based, not hour-based, so it would then simulate 10 full days (240 hrs) and
+    # -- the winter-SET post-processing (which requires exactly 24+168+24) would fail.
+    # -- Expanding from the raw week keeps the period aligned to day boundaries: 9 dates,
+    # -- 216 hours. The '+1' correction is retained for 'extreme_week_' above, which is what
+    # -- drives the EPW morphing, so the morphed hours are unaffected by this.
     expanded_extreme_week_ = AnalysisPeriod.from_start_end_datetime(
-        DateTime.from_hoy(extreme_week_._st_time.int_hoy - 24),
-        DateTime.from_hoy(extreme_week_._end_time.int_hoy + 24),
-        timestep=extreme_week_.timestep,
+        DateTime.from_hoy(_extreme_week._st_time.int_hoy - 24),
+        DateTime.from_hoy(_extreme_week._end_time.int_hoy + 24),
+        timestep=_extreme_week.timestep,
     )
     return extreme_week_, expanded_extreme_week_
 

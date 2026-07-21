@@ -23,7 +23,14 @@ from honeybee_revive.output._shared import (
     create_line_plot_figure,
     df_in_kWh,
     get_time_series_data,
+    load_zone_labels,
     write_figures_to_html,
+)
+from honeybee_revive.output.set_calculator import (
+    SET_THRESHOLD_C,
+    WinterSetResult,
+    calculate_winter_set,
+    read_winter_set_inputs_from_sql,
 )
 
 Filepaths = namedtuple("Filepaths", ["sql", "graphs"])
@@ -156,19 +163,6 @@ def surface_df_by_construction(
     return surface_conductance_df
 
 
-def rename_set_temps(_data: list[Record]) -> list[Record]:
-    """Rename the SET temperature Zones.
-
-    For some reason, when pulling SET temps from the SQL file, the Zone names come in as the
-    identifier of the Honeybee-Room's Honeybee-Energy-People object. ie: 'FLOOR-0_SPACE RV2024_RESILIENCE_PEOPLE'
-    Shrug. So try and break off the first part of the string and use that as the Zone Name for plotting.
-    """
-    for i, r in enumerate(_data):
-        name_parts = str(r.Zone).split("_SPACE RV2024_")
-        _data[i] = Record(r.Date, r.Value, name_parts[0])
-    return _data
-
-
 def write_outdoor_environment_plots(_file_paths: Filepaths) -> None:
     """Write winter outdoor environment plots (dry-bulb, RH, wind, pressure) to HTML."""
     env_drybulb_C = get_time_series_data(_file_paths.sql, "Site Outdoor Air Drybulb Temperature")
@@ -236,20 +230,16 @@ def write_ventilation_plots(_file_paths: Filepaths) -> None:
     )
 
 
-def write_SET_temp_plots(_file_paths: Filepaths) -> None:
+def write_SET_temp_plots(_file_paths: Filepaths) -> WinterSetResult:
     """Write winter SET temperature plots with 12.22C threshold to HTML."""
-    drybulb_C = get_time_series_data(_file_paths.sql, "Zone Mean Air Temperature")
-    zone_RH = get_time_series_data(_file_paths.sql, "Zone Air Relative Humidity")
-    set_temps = rename_set_temps(
-        get_time_series_data(
-            _file_paths.sql,
-            "Zone Thermal Comfort Pierce Model Standard Effective Temperature",
-        )
-    )
+    drybulb_C, mean_radiant_C, zone_RH = read_winter_set_inputs_from_sql(_file_paths.sql)
+    set_result = calculate_winter_set(drybulb_C, mean_radiant_C, zone_RH)
     env_drybulb_C = get_time_series_data(_file_paths.sql, "Site Outdoor Air Drybulb Temperature")
     env_RH = get_time_series_data(_file_paths.sql, "Site Outdoor Air Relative Humidity")
 
-    set_fig1 = create_line_plot_figure(pd.DataFrame(set_temps), "Zone SET Temperature [C]", [12.22])
+    set_fig1 = create_line_plot_figure(
+        pd.DataFrame(set_result.full_records), "Zone SET Temperature [C]", [SET_THRESHOLD_C]
+    )
     set_fig2 = create_line_plot_figure(pd.DataFrame(drybulb_C + env_drybulb_C), "Dry-Bulb Air Temperature [C]")
     set_fig3 = create_line_plot_figure(pd.DataFrame(zone_RH + env_RH), "Air Relative Humidity [%]")
 
@@ -261,6 +251,7 @@ def write_SET_temp_plots(_file_paths: Filepaths) -> None:
             (set_fig3, "set_fig3"),
         ],
     )
+    return set_result
 
 
 def write_energy_flow_plots(_file_paths: Filepaths) -> None:
@@ -433,6 +424,10 @@ if __name__ == "__main__":
     file_paths = resolve_paths(sys.argv)
     print(f"\t>> Source SQL File: '{file_paths.sql}'")
     print(f"\t>> Target Output Folder: '{file_paths.graphs}'")
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # -- Use the HB-Room display-names (not the E+ identifiers) for the chart legends
+    load_zone_labels(file_paths.sql)
 
     # ------------------------------------------------------------------------------------------------------------------
     # -- Generate the Winter Resiliency Graphs

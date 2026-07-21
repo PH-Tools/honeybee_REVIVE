@@ -2,13 +2,13 @@
 
 Master index of tracked planning work in honeybee-REVIVE.
 
-_Last updated: 2026-07-15_
+_Last updated: 2026-07-16_
 
 ## Active / current work
 
 | Item | Kind | Status | Pointer |
 |------|------|--------|---------|
-| _(none active)_ | | | |
+| REVIVE SET post-processing | Feature | Implemented | [`features/revive-set-postprocessing/`](features/revive-set-postprocessing/) |
 
 ## Update rule
 
