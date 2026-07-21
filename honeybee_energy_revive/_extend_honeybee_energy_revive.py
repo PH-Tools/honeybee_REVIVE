@@ -5,11 +5,15 @@
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 ###### IMPORTANT ######
 ## ALL HONEYBEE-CORE / HONEYBEE-ENERGY CLASSES MUST BE IMPORTED **FIRST** BEFORE ANY OF THE
 ## HONEYBEE-REVIVE EXTENSIONS CAN BE LOADED. SEE ISSUE HERE:
 ## https://discourse.pollination.cloud/t/honeybee-ph-causing-error/
 #
+
+import honeybee_energy
+import honeybee.boundarycondition as hbc
 
 # -- Import the Honeybee-Energy Program and HVAC Items
 # -- Import the Honeybee-Energy Materials
@@ -82,13 +86,14 @@ from honeybee_energy_revive.properties.materials.shade import (
     EnergyWindowMaterialShadeReviveProperties,
 )
 
-# -- Program / Load
+# -- Program / Loads
 from honeybee_energy_revive.properties.ruleset import ScheduleRulesetReviveProperties
 
+# -- New Boundary Conditions
+from honeybee_energy_revive.boundarycondition import Foundation
+
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
-
-
 # -----------------------------------------------------------------------------
 # -- Now that Honeybee-Energy is imported, import the relevant HB-REVIVE classes
 
@@ -130,6 +135,12 @@ setattr(AllAirSystemProperties, "_revive", None)
 setattr(DOASSystemProperties, "_revive", None)
 setattr(HeatCoolSystemProperties, "_revive", None)
 setattr(IdealAirSystemProperties, "_revive", None)
+
+# Extend boundary conditions
+setattr(hbc, "Foundation", Foundation)
+hbc._BoundaryConditions._foundation = Foundation(None)
+hbc._BoundaryConditions.foundation = property(lambda self: self._foundation)
+
 
 # -----------------------------------------------------------------------------
 
