@@ -7,22 +7,42 @@ STATUS: CANONICAL ENGINEERING STANDARD
 
 ## 1. The IronPython 2.7 / CPython boundary (the thing to get right)
 
-This repo is mixed. Two zones:
+The generic dual-runtime rules (banned syntax and modules, comment-style type
+hints, guarded `typing` imports, defensive third-party imports, and the lint
+settings they imply) live in the **ironpython-27-compatibility** skill. Apply it
+before editing anything on the Rhino load path. Only this repo's specifics are
+recorded below.
 
-- **IPy2.7-safe zone** — the model-extension code (`_extend_*`, `properties/`, model objects like `fuels.py`, `grid_region.py`, `CO2_measures.py`, and `honeybee_energy_revive/`, `ladybug_revive/`). This loads into Rhino. It must be Python-2.7 safe:
-  - No f-strings/`pathlib`/modern stdlib; comment-style type hints; guard `typing` imports; keep the `# -*- Python Version: 2.7 -*-` header.
-  - **No `pandas`/`numpy`.**
-- **CPython-only zone** — `honeybee_revive/output/` (resilience graphs, pandas) and dev scripts (e.g. `honeybee_revive_standards/cambium_factors/_generate_json_files.py`). Modern Python is fine here.
+This repo is mixed, and the boundary is the thing to get right.
 
-**Hard boundary:** nothing in the CPython-only zone may be imported from a module Rhino loads (package `__init__`, `_extend`, or any model object). Keep `pandas`/`numpy` imports local to the CPython-only modules.
+- **IPy2.7 zone** (loads into Rhino): the model-extension code (`_extend_*`,
+  `properties/`, model objects like `fuels.py`, `grid_region.py`,
+  `CO2_measures.py`) plus `honeybee_energy_revive/` and `ladybug_revive/`.
+  Keep the `# -*- Python Version: 2.7 -*-` header here.
+- **CPython-only zone:** `honeybee_revive/output/` (resilience graphs, pandas)
+  and dev scripts such as
+  `honeybee_revive_standards/cambium_factors/_generate_json_files.py`.
+
+**Hard boundary:** nothing in the CPython-only zone may be imported from a
+module Rhino loads (package `__init__`, `_extend`, or any model object). Keep
+`pandas`/`numpy` imports local to the CPython-only modules.
 
 ## 2. Backward-compatible serialization
 
-Model objects round-trip through HBJSON. New field → default in `__init__`, written in `to_dict()`, read via `_input_dict.get("key", default)` in `from_dict()`, copied in `duplicate()`. Old HBJSON must still load.
+The HBJSON round-trip contract (four steps for a new field, when `.get()` is
+required, mutable constructor ownership, `duplicate()` recursion) and the
+`_extend`/`properties` attachment mechanism live in the
+**hbjson-serialization-contract** skill. Apply it before adding or changing any
+field on a model class.
+
+REVIVE model objects round-trip through HBJSON. These objects sit in the IPy2.7 zone, so the
+**ironpython-27-compatibility** skill governs their serialization methods too.
 
 ## 3. Use the `_extend`/`properties` mechanism
 
-Attach REVIVE data through Honeybee's `properties` extension API; the `properties/` classes own the serialization. Don't bypass it.
+
+REVIVE data attaches through Honeybee's `properties` extension API; the
+`properties/` classes own the serialization.
 
 ## 4. Formatting
 
