@@ -6,7 +6,7 @@ This README is the index — scan or grep it instead of guessing dates.
 
 | Item | Kind | Completed | Summary | Folder |
 |------|------|-----------|---------|--------|
-| _(none yet)_ | | | | |
+| REVIVE SET post-processing | Feature | 2026-10-21 | Computed winter SET (ladybug-comfort) feeds the HTML chart and `resilience_set_data.py`; merged via PR [#5](https://github.com/PH-Tools/honeybee_REVIVE/pull/5) (`d25a2b7`), released v0.1.18. Open: Grasshopper cutover ([honeybee_REVIVE_grasshopper#3](https://github.com/PH-Tools/honeybee_REVIVE_grasshopper/issues/3)); measure removal pending Phius acceptance. | [`revive-set-postprocessing/`](revive-set-postprocessing/) |
 
 ## Conventions
 

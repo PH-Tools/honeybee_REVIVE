@@ -1,10 +1,10 @@
 # Status — REVIVE SET post-processing
 
-**Status:** Implemented
-**Current phase:** Phase 5 implementation checks complete; review/release pending
+**Status:** Complete
+**Current phase:** Merged to main 2026-07-21 (`d25a2b7`); released in v0.1.18. Archived 2026-10-21.
 **Branch:** `codex/revive-set-postprocessing`
 **Pull request:** [PH-Tools/honeybee_REVIVE #5](https://github.com/PH-Tools/honeybee_REVIVE/pull/5)
-**Last updated:** 2026-07-16
+**Last updated:** 2026-10-21
 
 ## Current evidence
 
@@ -25,7 +25,11 @@
 
 ## Next step
 
-Review PR #5. Before merge, manually open the regenerated winter HTML. Merge then triggers the normal release workflow; record the released version afterward. Do not delete the existing measure.
+None in this repo. Open follow-ups:
+
+- Grasshopper cutover to `resilience_set_data.py`: [PH-Tools/honeybee_REVIVE_grasshopper#3](https://github.com/PH-Tools/honeybee_REVIVE_grasshopper/issues/3).
+- Measure deletion stays blocked on Phius acceptance of post-processed SET.
+- Manual visual acceptance of the regenerated HTML was never recorded here.
 
 ## Blockers
 
