@@ -10,7 +10,13 @@ from typing import Iterable
 import pandas as pd
 from ladybug_comfort.pmv import pierce_set
 
-from honeybee_revive.output._shared import Record, get_time_series_data
+from honeybee_revive.output._shared import (
+    EVALUATION_WINDOW_HOURS,
+    OUTAGE_EDGE_HOURS,
+    OUTAGE_HOURS as OUTAGE_HOURS,
+    Record,
+    get_time_series_data,
+)
 
 # EnergyPlus ThermalComfort Pierce-model constants, also used by ladybug-comfort.
 BODY_SURFACE_AREA_M2 = 1.8258
@@ -22,10 +28,10 @@ AIR_SPEED_M_S = 0.16
 CLOTHING_INSULATION_CLO = 1.0
 EXTERNAL_WORK_MET = 0.0
 
-# Phius REVIVE seven-day winter outage and 54 F degree-hour criterion.
-EDGE_BUFFER_HOURS = 24
-OUTAGE_HOURS = 168
-EXPECTED_RUN_HOURS = EDGE_BUFFER_HOURS + OUTAGE_HOURS + EDGE_BUFFER_HOURS
+# Phius REVIVE seven-day winter outage and 54 F degree-hour criterion. The SQL reader
+# returns only this final 216-hour window, so a conditioned lead-in is never counted.
+EDGE_BUFFER_HOURS = OUTAGE_EDGE_HOURS
+EXPECTED_RUN_HOURS = EVALUATION_WINDOW_HOURS
 SET_THRESHOLD_C = (54.0 - 32.0) / 1.8
 DEGREE_HOUR_LIMIT_K_H = 120.0
 DEGREE_HOUR_F_PER_K = 1.8

@@ -31,6 +31,20 @@ Record = namedtuple("Record", ["Date", "Value", "Zone"])
 
 
 # ---------------------------------------------------------------------------------------
+# -- The REVIVE evaluation window
+#
+# A Phius REVIVE outage run is 24 h of conditioning, the 168 h outage, then 24 h of
+# recovery. A run with Kiva ground contact adds a conditioned lead-in before that window
+# so the ground reaches its seasonal state; the winter lead-in crosses a year boundary.
+# The window is always the final 216 hours of the RunPeriod.
+# ---------------------------------------------------------------------------------------
+
+OUTAGE_EDGE_HOURS = 24
+OUTAGE_HOURS = 168
+EVALUATION_WINDOW_HOURS = OUTAGE_EDGE_HOURS + OUTAGE_HOURS + OUTAGE_EDGE_HOURS
+
+
+# ---------------------------------------------------------------------------------------
 # -- Zone display-names for chart legends
 #
 # EnergyPlus names each Zone after the Honeybee Room's *identifier* ("03_NORTH_0ac0d721"),
@@ -184,17 +198,45 @@ def zone_label(_key: str) -> str:
     return _key
 
 
+def _time_index_before_window(cursor: sqlite3.Cursor, window_hours: int) -> int:
+    """Return the TimeIndex of the last hourly timestamp before the final `window_hours` hours.
+
+    Counts the hourly rows (IntervalType 1) of the Time table, so sub-hourly reporting rows
+    do not shorten the window. Returns -1 when the run is no longer than the window.
+    """
+    cursor.execute(
+        "SELECT TimeIndex FROM Time "
+        "WHERE IntervalType = 1 "
+        "AND DayType NOT IN ('WinterDesignDay', 'SummerDesignDay') "
+        "ORDER BY TimeIndex DESC LIMIT 1 OFFSET ?",
+        (window_hours,),
+    )
+    row = cursor.fetchone()
+    return row[0] if row else -1
+
+
 def get_time_series_data(
-    source_file_path: Path, output_variable: str, year: int = 2021, utc: bool = False
+    source_file_path: Path,
+    output_variable: str,
+    year: int = 2021,
+    utc: bool = False,
+    window_hours: int | None = EVALUATION_WINDOW_HOURS,
 ) -> list[Record]:
     """Query hourly time-series data for a variable from an EnergyPlus SQL file.
+
+    Only the final `window_hours` hours of the RunPeriod are returned, so a conditioned
+    lead-in before the REVIVE evaluation window is dropped. Records are in simulation order
+    (SQL TimeIndex). `year` is stamped on the first record and advances by one each time
+    the month wraps, so a run crossing 31 Dec stays contiguous.
 
     Arguments:
     ----------
         * source_file_path (Path): Path to the EnergyPlus SQL results file.
         * output_variable (str): The EnergyPlus output variable name to query.
-        * year (int): The year to assign to timestamps. Default: 2021.
+        * year (int): The year to assign to the first timestamp. Default: 2021.
         * utc (bool): If True, create UTC-aware timestamps. Default: False.
+        * window_hours (int | None): Hours to keep from the end of the RunPeriod, or None
+            to keep the whole run. Default: 216 (24 + 168 + 24).
 
     Returns:
     --------
@@ -204,15 +246,22 @@ def get_time_series_data(
     data_ = []
     try:
         c = conn.cursor()
+        after_time_index = -1 if window_hours is None else _time_index_before_window(c, window_hours)
         c.execute(
             "SELECT KeyValue, Month, Day, Hour, Value FROM 'ReportVariableWithTime' "
             "WHERE Name=? "
             "AND DayType NOT IN ('WinterDesignDay', 'SummerDesignDay') "
-            "ORDER BY Month, Day, Hour",
-            (output_variable,),
+            "AND TimeIndex > ? "
+            "ORDER BY TimeIndex, ReportDataIndex",
+            (output_variable, after_time_index),
         )
+        year_offset = 0
+        previous_month = None
         for row in c.fetchall():
-            date = pd.to_datetime(f"{year}-{row[1]}-{row[2]} {row[3] - 1}:00:00", utc=utc)
+            if previous_month is not None and row[1] < previous_month:
+                year_offset += 1
+            previous_month = row[1]
+            date = pd.to_datetime(f"{year + year_offset}-{row[1]}-{row[2]} {row[3] - 1}:00:00", utc=utc)
             data_.append(Record(date, row[4], row[0]))
     except Exception as e:
         conn.close()

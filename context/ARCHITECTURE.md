@@ -40,8 +40,23 @@ Keep pandas/numpy imports out of package `__init__` and `_extend` paths.
 
 Phius REVIVE models a **7-day (168 hr) outage**. The simulation brackets it with a 1-day
 warm-up and a 1-day cool-down, so a compliant run is **24 + 168 + 24 = 216 hours over
-exactly 9 calendar days**. `set_calculator.EXPECTED_RUN_HOURS` enforces this and will refuse
-a run of any other length.
+exactly 9 calendar days**. `set_calculator.EXPECTED_RUN_HOURS` requires exactly 216 records
+per zone.
+
+**Evaluation window vs RunPeriod.** A run with Kiva ground contact needs a conditioned lead-in
+before those 9 days, so the ground starts from its seasonal state rather than Kiva's
+initialization. Each lead-in starts after the other season's outage, so the winter one
+crosses a year (e.g. 1 Aug → 20 Jan). `_shared.get_time_series_data()` therefore returns only
+the **final 216 hours of the RunPeriod** (`EVALUATION_WINDOW_HOURS`; `window_hours=None` reads
+the whole run). It counts the hourly rows (`IntervalType = 1`) of the SQL `Time` table, keeps
+every record after the 217th-from-last hourly row (sub-hourly rows of the first window hour
+included), orders by `TimeIndex`, and advances the stamped `year` each time the month wraps.
+Every grapher, the hourly JSON/CSV export and the SET calculator read through it, so a 9-day
+run is unchanged and a lead-in run evaluates the same 216 hours.
+
+Consequence: the reader can no longer tell a lead-in from a **misaligned** RunPeriod. A
+10-date run would now be evaluated on its last 216 hours instead of failing the SET 216-record
+check, so day alignment rests on the guard below.
 
 `ladybug_revive.resiliency_epw.get_outage_period()` returns **two different periods**, and
 the distinction matters:
