@@ -11,7 +11,7 @@ _Last updated: 2026-10-21_
 | REVIVE SET post-processing | Feature | Implemented | [`features/revive-set-postprocessing/`](features/revive-set-postprocessing/) |
 | Outage RunPeriod day-alignment (9 days / 216 hrs) | Fix | **Complete** — folded into `context/ARCHITECTURE.md` | [`features/revive-set-postprocessing/CLOSEOUT.md`](features/revive-set-postprocessing/CLOSEOUT.md) → commit `f2f25cd` |
 | Chart legends use HB-Room display-names | Fix | **Complete** — folded into `context/ARCHITECTURE.md` | commit `f2f25cd` |
-| Envelope charts include ground and Kiva slabs | Fix | Implemented on `fix/kiva-slab-envelope-charts` — folded into `context/ARCHITECTURE.md` | [issue #6](https://github.com/PH-Tools/honeybee_REVIVE/issues/6) |
+| Envelope charts include ground and Kiva slabs | Fix | **Complete** — folded into `context/ARCHITECTURE.md`; merged in PR #7 (`27cba8a`) | [issue #6](https://github.com/PH-Tools/honeybee_REVIVE/issues/6) |
 | Outputs read the final 216-hr window (Kiva lead-in runs) | Fix | **Complete** — folded into `context/ARCHITECTURE.md`; merged in PR #9 (`062d847`) | [issue #8](https://github.com/PH-Tools/honeybee_REVIVE/issues/8) |
 
 ### Notes on the two 2026-07-21 fixes
