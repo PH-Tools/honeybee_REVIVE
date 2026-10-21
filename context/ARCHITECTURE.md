@@ -82,6 +82,25 @@ machine identifier. Unrecognized keys (`Environment`, Surface/Aperture names in 
 -details charts) fall through unchanged, which is intended: those charts identify individual
 faces, and collapsing them to room names would lose information.
 
+## Envelope charts and ground-contact surfaces
+
+The winter envelope-details charts cover every surface whose EnergyPlus `ExtBoundCond` is
+`<= 0`: outdoors (`0`) and the ground and other boundary models (`-1` Ground, `-5` F-factor,
+`-6` Kiva Foundation). Positive values point at an adjacent surface (interzone, adiabatic,
+internal mass) and are excluded. Before 2026-10-21 the filter was `== 0`, so no slab was ever
+charted.
+
+EnergyPlus (checked on 25.1) reports neither `Surface Average Face Conduction Heat Transfer
+Energy` nor `Surface Heat Storage Energy` for Kiva surfaces, only `Surface Inside Face
+Conduction Heat Transfer Energy`. The conduction chart therefore falls back to inside-face
+conduction for any envelope surface with no average-face records, labeling those traces
+`<surface> (inside face)`. Both share a sign convention (positive is heat flow toward the zone),
+so they stack, but they are not the same quantity: inside-face includes the release of stored
+slab heat. The storage chart has no substitute and says so in its title. The resilience output
+request (`honeybee_REVIVE_grasshopper`) adds the inside-face variable.
+
+Guarded by `tests/test_honeybee_revive/output/test_envelope_details.py`.
+
 ## Serialization
 
 Model objects implement `to_dict()`/`from_dict()` with backward-compatible deserialization — see `CODING_STANDARDS.md`.

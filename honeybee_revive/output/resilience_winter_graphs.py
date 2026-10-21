@@ -50,6 +50,12 @@ Surface = namedtuple(
 )
 Construction = namedtuple("Construction", ["ConstructionIndex", "Name", "UValue"])
 
+# -- EnergyPlus 'ExtBoundCond': 0 is outdoors, negative values are ground and other boundary
+# -- models (-1 Ground, -5 F-factor, -6 Kiva Foundation, ...). Positive values point at the
+# -- adjacent surface (interzone, adiabatic, internal mass), so are not part of the envelope.
+KIVA_FOUNDATION = -6
+INSIDE_FACE_LABEL = " (inside face)"
+
 
 def resolve_paths(_args: list[str]) -> Filepaths:
     """Sort out the file input and output paths. Make the output directory if needed.
@@ -161,6 +167,39 @@ def surface_df_by_construction(
     ext_surfaces = (r for r in _records if r.Zone in _exterior_surface_names)
     surface_conductance_df = df_in_kWh(ext_surfaces)
     return surface_conductance_df
+
+
+def envelope_conduction_records(
+    _avg_face_records: list[Record],
+    _inside_face_records: list[Record],
+    _envelope_surface_names: set[str],
+) -> list[Record]:
+    """Return envelope average-face conduction, filling gaps with inside-face conduction.
+
+    EnergyPlus does not report average-face conduction for Kiva 'Foundation' surfaces, only
+    inside-face conduction. Envelope surfaces without average-face records use their
+    inside-face records instead, relabeled so the legend shows the different quantity. Both
+    use the same sign convention (positive is heat flow toward the zone).
+
+    Arguments:
+    ----------
+        * _avg_face_records (list[Record]): 'Surface Average Face Conduction Heat Transfer Energy'.
+        * _inside_face_records (list[Record]): 'Surface Inside Face Conduction Heat Transfer Energy'.
+        * _envelope_surface_names (set[str]): Names of outdoor and ground boundary surfaces.
+
+    Returns:
+    --------
+        * list[Record]: The envelope conduction records, in Joules.
+    """
+
+    avg_face = [r for r in _avg_face_records if r.Zone in _envelope_surface_names]
+    reported = {r.Zone for r in avg_face}
+    inside_face = [
+        Record(r.Date, r.Value, r.Zone + INSIDE_FACE_LABEL)
+        for r in _inside_face_records
+        if r.Zone in _envelope_surface_names and r.Zone not in reported
+    ]
+    return avg_face + inside_face
 
 
 def write_outdoor_environment_plots(_file_paths: Filepaths) -> None:
@@ -318,6 +357,9 @@ def write_envelope_details_plots(_file_paths: Filepaths):
     srfc_avg_face_conductance = get_time_series_data(
         _file_paths.sql, "Surface Average Face Conduction Heat Transfer Energy"
     )
+    srfc_inside_face_conductance = get_time_series_data(
+        _file_paths.sql, "Surface Inside Face Conduction Heat Transfer Energy"
+    )
     srfc_win_heat_transfer = get_time_series_data(_file_paths.sql, "Surface Window Net Heat Transfer Energy")
     srfc_win_heat_gain = get_time_series_data(_file_paths.sql, "Surface Window Heat Gain Energy")
     srfc_win_heat_loss = get_time_series_data(_file_paths.sql, "Surface Window Heat Loss Energy")
@@ -328,18 +370,24 @@ def write_envelope_details_plots(_file_paths: Filepaths):
     constructions = get_constructions(_file_paths.sql)
     surfaces = get_surface_data(_file_paths.sql)
     surfaces_df = pd.DataFrame(surfaces)
-    exterior_surface_names = {s.Name for s in surfaces if s.ExtBoundCond == 0}
+    envelope_surface_names = {s.Name for s in surfaces if s.ExtBoundCond <= 0}
+
+    # -- EnergyPlus reports no heat storage for Kiva surfaces, and there is no substitute.
+    storage_title = "Heat Storage Energy [kWh]"
+    if any(s.ExtBoundCond == KIVA_FOUNDATION for s in surfaces):
+        storage_title += " (not reported for Kiva foundation surfaces)"
 
     write_figures_to_html(
         _file_paths.graphs / "winter_envelope_details.html",
         [
             (
                 create_line_plot_figure(
-                    surface_df_by_construction(
-                        srfc_avg_face_conductance,
-                        constructions,
-                        surfaces_df,
-                        exterior_surface_names,
+                    df_in_kWh(
+                        envelope_conduction_records(
+                            srfc_avg_face_conductance,
+                            srfc_inside_face_conductance,
+                            envelope_surface_names,
+                        )
                     ),
                     "Surface Average Face Conduction Heat Transfer Energy [kWh]",
                     _stack=True,
@@ -352,7 +400,7 @@ def write_envelope_details_plots(_file_paths: Filepaths):
                         srfc_win_heat_transfer,
                         constructions,
                         surfaces_df,
-                        exterior_surface_names,
+                        envelope_surface_names,
                     ),
                     "Window Net Heat Transfer Energy [kWh]",
                     _stack=True,
@@ -365,7 +413,7 @@ def write_envelope_details_plots(_file_paths: Filepaths):
                         srfc_win_heat_gain,
                         constructions,
                         surfaces_df,
-                        exterior_surface_names,
+                        envelope_surface_names,
                     ),
                     "Window Heat Gain Energy [kWh]",
                     _stack=True,
@@ -378,7 +426,7 @@ def write_envelope_details_plots(_file_paths: Filepaths):
                         srfc_win_heat_loss,
                         constructions,
                         surfaces_df,
-                        exterior_surface_names,
+                        envelope_surface_names,
                     ),
                     "Window Heat Loss Energy [kWh]",
                     _stack=True,
@@ -391,9 +439,9 @@ def write_envelope_details_plots(_file_paths: Filepaths):
                         srfc_heat_storage,
                         constructions,
                         surfaces_df,
-                        exterior_surface_names,
+                        envelope_surface_names,
                     ),
-                    "Heat Storage Energy [kWh]",
+                    storage_title,
                     _stack=True,
                 ),
                 "envelope_fig5",
