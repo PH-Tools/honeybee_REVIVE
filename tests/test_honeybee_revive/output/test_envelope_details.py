@@ -10,11 +10,13 @@ EnergyPlus does not report 'Surface Average Face Conduction Heat Transfer Energy
 
 import sqlite3
 from contextlib import closing
+from datetime import datetime
 
 import pytest
 
 from honeybee_revive.output import resilience_winter_graphs
 from honeybee_revive.output.resilience_winter_graphs import Filepaths, write_envelope_details_plots
+from tests.test_honeybee_revive.output._eplus_sql import write_eplus_sql
 
 AVG_FACE = "Surface Average Face Conduction Heat Transfer Energy"
 INSIDE_FACE = "Surface Inside Face Conduction Heat Transfer Energy"
@@ -42,27 +44,21 @@ SERIES = (
 
 @pytest.fixture
 def envelope_sql(tmp_path):
-    """A minimal SQL with the tables the envelope-details plots read. 1 kWh per hour."""
-    sql_path = tmp_path / "eplusout.sql"
+    """A minimal SQL with the tables the envelope-details plots read. 1 kWh per hour for one day."""
+    sql_path = write_eplus_sql(
+        tmp_path / "eplusout.sql", datetime(2025, 1, 1), datetime(2025, 1, 1), SERIES, value=lambda _: 3600000.0
+    )
     with closing(sqlite3.connect(sql_path)) as conn:
         conn.execute(
             "CREATE TABLE Surfaces (SurfaceIndex INTEGER, SurfaceName TEXT, ClassName TEXT, Area REAL, "
             "GrossArea REAL, Tilt REAL, ZoneIndex INTEGER, ExtBoundCond INTEGER, ConstructionIndex INTEGER)"
         )
         conn.execute("CREATE TABLE Constructions (ConstructionIndex INTEGER, Name TEXT, UValue REAL)")
-        conn.execute(
-            "CREATE TABLE ReportVariableWithTime (Name TEXT, KeyValue TEXT, Month INTEGER, Day INTEGER, "
-            "Hour INTEGER, DayType TEXT, Value REAL)"
-        )
         conn.executemany(
             "INSERT INTO Surfaces VALUES (?, ?, ?, 10.0, 10.0, 90.0, 1, ?, 1)",
             [(i, name, class_name, bc) for i, (name, class_name, bc) in enumerate(SURFACES, start=1)],
         )
         conn.execute("INSERT INTO Constructions VALUES (1, 'CONSTRUCTION', 0.2)")
-        conn.executemany(
-            "INSERT INTO ReportVariableWithTime VALUES (?, ?, 1, 1, ?, 'Sunday', 3600000.0)",
-            [(variable, surface, hour) for variable, surface in SERIES for hour in (1, 2)],
-        )
         conn.commit()
     return sql_path
 
@@ -88,7 +84,7 @@ def test_conduction_chart_includes_kiva_floor_from_inside_face(figures):
     """A Kiva floor has no average-face output, so its inside-face conduction is charted, labeled."""
     traces = _trace_values(figures["envelope_fig1"])
 
-    assert traces["FLOOR_KIVA (inside face)"] == pytest.approx([1.0, 1.0], abs=1e-5)
+    assert traces["FLOOR_KIVA (inside face)"] == pytest.approx([1.0] * 24, abs=1e-5)
     assert "FLOOR_KIVA" not in traces
 
 
